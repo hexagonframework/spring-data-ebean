@@ -19,7 +19,7 @@ Download the jar through Maven:
 
 ```xml
 <dependency>
-  <groupId>org.hexagonframework.data</groupId>
+  <groupId>org.springframework.data</groupId>
   <artifactId>spring-data-ebean</artifactId>
   <version>${version}.RELEASE</version>
 </dependency>
@@ -30,11 +30,7 @@ Also include ebean jars and ebean properties.
 The simple Spring Data Ebean configuration with Java-Config looks like this: 
 ```java
 @Configuration
-@EnableEbeanRepositories("io.hexagon.demo.domain.repository")
-class AppConfig {
-
-  @Bean
-  public DataSource dataSource() {
+@EnableEbeanRepositories(corg.springframework.data.ebean.repository.configource dataSource() {
     return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
   }
 
@@ -45,11 +41,9 @@ class AppConfig {
         ServerConfig config = new ServerConfig();
 
         config.setDataSource(dataSource);
-        config.addPackage("io.hexagon.demo.domain.model");
-        config.setExternalTransactionManager(new SpringAwareJdbcTransactionManager());
+        config.addPackage(config);
+        config.setExternalTransactionManager(new SpringJdbcTransactionManager());
 
-        //config.loadFromProperties();
-        //config.setName("db");
         config.setDefaultServer(true);
         config.setAutoCommitMode(false);
         config.setExpressionNativeIlike(true);
@@ -76,9 +70,10 @@ public class User {
   private Integer id;
   private String firstname;
   private String lastname;
+  @Column(nullable = false, unique = true) private String emailAddress;
        
   // Getters and setters
-  // (Firstname, Lastname)-constructor and noargs-constructor
+  // (Firstname, Lastname,emailAddress)-constructor and noargs-constructor
   // equals / hashcode
 }
 ```
@@ -102,15 +97,13 @@ public class UserRepositoryIntegrationTest {
      
   @Test
   public void sampleTestCase() {
-    User dave = new User("Dave", "Matthews");
-    dave = repository.save(dave);
-         
-    User carter = new User("Carter", "Beauford");
-    carter = repository.save(carter);
-         
-    List<User> result = repository.findByLastname("Matthews");
-    assertThat(result.size(), is(1));
-    assertThat(result, hasItem(dave));
+    User user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
+    user = repository.save(user);
+
+    List<User> result = (List<User>) repository.findAll();
+    assertEquals(1, result.size());
+    assertEquals("Yuan", result.get(0).getLastname());
+    assertThat(result, hasItem(user));
   }
 }
 ```
