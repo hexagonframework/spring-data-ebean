@@ -1,4 +1,4 @@
-package org.springframework.data.ebean;
+package org.springframework.data.ebean.repository.sample;
 
 import io.ebean.EbeanServer;
 import io.ebean.EbeanServerFactory;
@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableEbeanRepositories("org.springframework.data.ebean.repository.config")
 @EnableTransactionManagement
-public class AppConfig {
+public class SampleConfig {
     @Bean
     public DataSource dataSource() {
         return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();

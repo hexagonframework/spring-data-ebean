@@ -30,18 +30,27 @@ Also include ebean jars and ebean properties.
 The simple Spring Data Ebean configuration with Java-Config looks like this: 
 ```java
 @Configuration
-@EnableEbeanRepositories(corg.springframework.data.ebean.repository.configource dataSource() {
-    return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
-  }
+@EnableEbeanRepositories("org.springframework.data.ebean.repository.config")
+@EnableTransactionManagement
+public class SampleConfig {
+    @Bean
+    public DataSource dataSource() {
+        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+    }
 
-  @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Bean
     @Primary
     public ServerConfig defaultEbeanServerConfig() {
         ServerConfig config = new ServerConfig();
 
-        config.setDataSource(dataSource);
-        config.addPackage(config);
+        config.setDataSource(dataSource());
+        config.addPackage("org.springframework.data.ebean.domain.config");
         config.setExternalTransactionManager(new SpringJdbcTransactionManager());
 
         config.setDefaultServer(true);
