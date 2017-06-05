@@ -91,7 +91,7 @@ Create a repository interface in `io.hexagon.demo.domain.repository`:
 
 ```java
 public interface UserRepository extends CrudRepository<User, Long> {
-  List<User> findByLastname(String lastname);
+  // List<User> findByLastname(String lastname);// NOT SUPPORT YET
 }
 ```
 
@@ -99,20 +99,22 @@ Write a test client
 
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+@ContextConfiguration(classes = SampleConfig.class)
 public class UserRepositoryIntegrationTest {
-     
-  @Autowired UserRepository repository;
-     
-  @Test
-  public void sampleTestCase() {
-    User user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
-    user = repository.save(user);
 
-    List<User> result = (List<User>) repository.findAll();
-    assertEquals(1, result.size());
-    assertEquals("Yuan", result.get(0).getLastname());
-    assertThat(result, hasItem(user));
-  }
+    @Autowired
+    UserRepository repository;
+
+    @Test
+    public void sampleTestCase() {
+        User user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
+        user = repository.save(user);
+
+        List<User> result = (List<User>) repository.findAll();
+        result.forEach(it -> System.out.println(it));
+        assertEquals(1, result.size());
+        assertEquals("Yuan", result.get(0).getLastname());
+        assertThat(result, hasItem(user));
+    }
 }
 ```

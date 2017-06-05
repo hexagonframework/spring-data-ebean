@@ -20,7 +20,7 @@ import javax.sql.DataSource;
  * @author Xuegui Yuan
  */
 @Configuration
-@EnableEbeanRepositories("org.springframework.data.ebean.repository.config")
+@EnableEbeanRepositories("org.springframework.data.ebean.repository.sample")
 @EnableTransactionManagement
 public class SampleConfig {
     @Bean
@@ -40,7 +40,7 @@ public class SampleConfig {
         ServerConfig config = new ServerConfig();
 
         config.setDataSource(dataSource());
-        config.addPackage("org.springframework.data.ebean.domain.config");
+        config.addPackage("org.springframework.data.ebean.domain.sample");
         config.setExternalTransactionManager(new SpringJdbcTransactionManager());
 
         config.setDefaultServer(true);
