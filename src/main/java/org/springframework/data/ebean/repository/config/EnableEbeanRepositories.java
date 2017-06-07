@@ -88,11 +88,11 @@ public @interface EnableEbeanRepositories {
 
     /**
      * Returns the key of the {@link QueryLookupStrategy} to be used for lookup queries for query methods. Defaults to
-     * {@link Key#CREATE_IF_NOT_FOUND}.
+     * {@link Key#USE_DECLARED_QUERY}.
      *
      * @return
      */
-    Key queryLookupStrategy() default Key.CREATE_IF_NOT_FOUND;
+    Key queryLookupStrategy() default Key.USE_DECLARED_QUERY;
 
     /**
      * Returns the {@link FactoryBean} class to be used for each repository instance. Defaults to
