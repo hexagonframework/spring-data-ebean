@@ -17,11 +17,14 @@ package org.springframework.data.ebean.repository.support;
 
 import io.ebean.EbeanServer;
 import org.springframework.data.ebean.repository.EbeanRepository;
+import org.springframework.data.ebean.repository.query.EbeanQueryLookupStrategy;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.PersistableEntityInformation;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
+import org.springframework.data.repository.query.EvaluationContextProvider;
+import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -102,4 +105,13 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+	 * @see org.springframework.data.repository.core.support.RepositoryFactorySupport#getQueryLookupStrategy(org.springframework.data.repository.query.QueryLookupStrategy.Key, org.springframework.data.repository.query.EvaluationContextProvider)
+	 */
+    @Override
+    protected QueryLookupStrategy getQueryLookupStrategy(QueryLookupStrategy.Key key,
+                                                         EvaluationContextProvider evaluationContextProvider) {
+        return EbeanQueryLookupStrategy.create(ebeanServer, key, evaluationContextProvider);
+    }
 }

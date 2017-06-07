@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.ebean.repository.config.EnableEbeanRepositories;
+import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -20,7 +21,7 @@ import javax.sql.DataSource;
  * @author Xuegui Yuan
  */
 @Configuration
-@EnableEbeanRepositories("org.springframework.data.ebean.repository.sample")
+@EnableEbeanRepositories(value = "org.springframework.data.ebean.repository.sample", queryLookupStrategy = QueryLookupStrategy.Key.USE_DECLARED_QUERY)
 @EnableTransactionManagement
 public class SampleConfig {
     @Bean

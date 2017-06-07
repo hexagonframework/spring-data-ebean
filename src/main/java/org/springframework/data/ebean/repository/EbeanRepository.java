@@ -37,6 +37,7 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
 
     EbeanServer db(EbeanServer db);
 
+
     /*
      * (non-Javadoc)
      * @see org.springframework.data.repository.CrudRepository#findAll()

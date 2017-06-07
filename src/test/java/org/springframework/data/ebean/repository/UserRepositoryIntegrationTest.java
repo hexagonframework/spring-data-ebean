@@ -35,5 +35,10 @@ public class UserRepositoryIntegrationTest {
         assertEquals(1, result.size());
         assertEquals("Yuan", result.get(0).getLastname());
         assertThat(result, hasItem(user));
+
+        List<User> users = repository.findByLastname("Yuan");
+        assertEquals(1, result.size());
+        assertEquals("Yuan", result.get(0).getLastname());
+        assertThat(result, hasItem(user));
     }
 }
