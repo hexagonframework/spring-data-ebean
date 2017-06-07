@@ -3,22 +3,44 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.data.build</groupId>
+        <artifactId>spring-data-parent</artifactId>
+        <version>1.9.3.RELEASE</version>
+    </parent>
 
     <groupId>org.hexagonframework.data</groupId>
     <artifactId>spring-data-ebean</artifactId>
-    <version>2.0.0.BUILD-SNAPSHOT</version>
+    <version>1.0.0.RELEASE</version>
 
     <name>Spring Data Ebean</name>
     <description>Spring Data module for Ebean repositories.</description>
+    <url>https://github.com/hexagonframework/spring-data-ebean.git</url>
+    <developers>
+        <developer>
+            <id>xueguiyuan</id>
+            <name>Xuegui Yuan</name>
+            <email>yuanxuegui@163.com</email>
+        </developer>
+    </developers>
 
-    <parent>
-        <groupId>io.spring.platform</groupId>
-        <artifactId>platform-bom</artifactId>
-        <version>Brussels-RELEASE</version>
-        <relativePath/>
-    </parent>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/hexagonframework/spring-data-ebean</url>
+        <connection>scm:git:git://github.com/hexagonframework/spring-data-ebean.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/hexagonframework/spring-data-ebean.git</developerConnection>
+    </scm>
 
     <properties>
+        <bundlor.failOnWarnings>false</bundlor.failOnWarnings>
+        <springdata.commons>1.13.3.RELEASE</springdata.commons>
+        <jpa>2.0.0</jpa>
         <ebean.version>10.3.1</ebean.version>
         <ebean-spring-txn.version>10.1.1</ebean-spring-txn.version>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -29,6 +51,7 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
+            <version>${springdata.commons}</version>
         </dependency>
 
         <dependency>
@@ -88,10 +111,12 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
+            <version>${aspectj}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj}</version>
             <scope>test</scope>
         </dependency>
 
@@ -112,33 +137,13 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
+            <version>${jodatime}</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -158,21 +163,43 @@
                     </tiles>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
-
     <repositories>
         <repository>
-            <id>spring-libs-snapshot</id>
-            <url>https://repo.spring.io/libs-snapshot</url>
+            <id>spring-libs-milestone</id>
+            <url>https://repo.spring.io/libs-milestone</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
-            <id>spring-plugins-release</id>
-            <url>https://repo.spring.io/plugins-release</url>
+            <id>spring-plugins-snapshot</id>
+            <url>https://repo.spring.io/plugins-snapshot</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>

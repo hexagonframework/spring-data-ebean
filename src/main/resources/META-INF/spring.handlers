@@ -1,1 +1,1 @@
-http\://www.springframework.org/schema/data/jpa=org.springframework.data.ebean.repository.config.EbeanRepositoryNameSpaceHandler
+http\://www.springframework.org/schema/data/ebean=org.springframework.data.ebean.repository.config.EbeanRepositoryNameSpaceHandler
