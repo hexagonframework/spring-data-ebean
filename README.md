@@ -90,8 +90,12 @@ public class User {
 Create a repository interface in `io.hexagon.demo.domain.repository`:
 
 ```java
-public interface UserRepository extends CrudRepository<User, Long> {
-  // List<User> findByLastname(String lastname);// NOT SUPPORT YET
+public interface UserRepository extends EbeanRepository<User, Long> {
+    @EbeanQuery("select (lastname) where lastname = :lastname order by id desc")
+    List<User> findByLastnameOmq(@Param("lastname") String lastname);
+
+    @EbeanQuery(nativeQuery = true, value = "select * from user where lastname = :lastname order by id desc")
+    List<User> findByLastname(@Param("lastname") String lastname);
 }
 ```
 
@@ -112,6 +116,11 @@ public class UserRepositoryIntegrationTest {
 
         List<User> result = (List<User>) repository.findAll();
         result.forEach(it -> System.out.println(it));
+        assertEquals(1, result.size());
+        assertEquals("Yuan", result.get(0).getLastname());
+        assertThat(result, hasItem(user));
+
+        List<User> users = repository.findByLastname("Yuan");
         assertEquals(1, result.size());
         assertEquals("Yuan", result.get(0).getLastname());
         assertThat(result, hasItem(user));
