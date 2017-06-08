@@ -19,7 +19,7 @@ Download the jar through Maven:
 
 ```xml
 <dependency>
-  <groupId>org.springframework.data</groupId>
+  <groupId>org.hexagonframework.data</groupId>
   <artifactId>spring-data-ebean</artifactId>
   <version>${version}.RELEASE</version>
 </dependency>

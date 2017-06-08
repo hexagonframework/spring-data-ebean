@@ -3,7 +3,7 @@ Bundle-SymbolicName: org.springframework.data.ebean
 Bundle-Name: ${project.name}
 Bundle-Vendor: Pivotal Software, Inc
 Bundle-Version: ${project.version}
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: J2SE-1.8
 Export-Template:
  org.springframework.data.ebean.*;version="${project.version}"
 Import-Template:

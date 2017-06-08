@@ -12,10 +12,17 @@
     <groupId>org.hexagonframework.data</groupId>
     <artifactId>spring-data-ebean</artifactId>
     <version>1.0.0.RELEASE</version>
+    <packaging>jar</packaging>
 
     <name>Spring Data Ebean</name>
     <description>Spring Data module for Ebean repositories.</description>
-    <url>https://github.com/hexagonframework/spring-data-ebean.git</url>
+    <url>https://github.com/hexagonframework/spring-data-ebean</url>
+    <inceptionYear>2017</inceptionYear>
+
+    <organization>
+        <name>Hexagon Framework</name>
+        <url>https://github.com/hexagonframework</url>
+    </organization>
     <developers>
         <developer>
             <id>xueguiyuan</id>
@@ -32,7 +39,7 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/hexagonframework/spring-data-ebean</url>
+        <url>https://github.com/hexagonframework/spring-data-ebean.git</url>
         <connection>scm:git:git://github.com/hexagonframework/spring-data-ebean.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/hexagonframework/spring-data-ebean.git</developerConnection>
     </scm>
@@ -46,8 +53,54 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     </properties>
 
-    <dependencies>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <source>1.8</source>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 
+    <dependencies>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
@@ -190,16 +243,4 @@
             <url>https://repo.spring.io/plugins-snapshot</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>oss</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>oss</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
 </project>
