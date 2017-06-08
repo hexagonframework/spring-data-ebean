@@ -87,7 +87,7 @@ public class User {
 }
 ```
 
-Create a repository interface in `io.hexagon.demo.domain.repository`:
+Create a repository interface in `org.springframework.data.ebean.repository.sample`:
 
 ```java
 public interface UserRepository extends EbeanRepository<User, Long> {
