@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface UserRepository extends EbeanRepository<User, Long> {
     @EbeanQuery("select (lastname) where lastname = :lastname order by id desc")
-    List<User> findByLastnameOmq(@Param("lastname") String lastname);
+    List<User> findByLastnameOql(@Param("lastname") String lastname);
 
     @EbeanQuery(nativeQuery = true, value = "select * from user where lastname = :lastname order by id desc")
     List<User> findByLastname(@Param("lastname") String lastname);
