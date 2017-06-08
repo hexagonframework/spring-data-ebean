@@ -1,4 +1,6 @@
 # spring-data-ebean
+
+[![Join the chat at https://gitter.im/hexagonframework/spring-data-ebean](https://badges.gitter.im/hexagonframework/spring-data-ebean.svg)](https://gitter.im/hexagonframework/spring-data-ebean?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/hexagonframework/spring-data-ebean.svg?branch=master)](https://travis-ci.org/hexagonframework/spring-data-ebean)
 > Ebean implementation for spring data.
 
