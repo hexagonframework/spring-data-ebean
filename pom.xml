@@ -9,7 +9,7 @@
         <version>1.9.3.RELEASE</version>
     </parent>
 
-    <groupId>org.hexagonframework.data</groupId>
+    <groupId>io.github.hexagonframework.data</groupId>
     <artifactId>spring-data-ebean</artifactId>
     <version>1.0.0.RELEASE</version>
     <packaging>jar</packaging>
