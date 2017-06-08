@@ -28,8 +28,6 @@ Download the jar through Maven:
 </dependency>
 ```
 
-Also include ebean jars and ebean properties.
-
 The simple Spring Data Ebean configuration with Java-Config looks like this: 
 ```java
 @Configuration

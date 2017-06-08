@@ -28,8 +28,6 @@
 </dependency>
 ```
 
-Also include ebean jars and ebean properties.
-
 最简单的通过Java注解配置的Spring Data Ebean 配置如下所示：
 ```java
 @Configuration
