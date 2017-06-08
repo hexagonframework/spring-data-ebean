@@ -24,7 +24,7 @@ Download the jar through Maven:
 <dependency>
   <groupId>io.github.hexagonframework.data</groupId>
   <artifactId>spring-data-ebean</artifactId>
-  <version>${version}.RELEASE</version>
+  <version>1.0.0.RELEASE</version>
 </dependency>
 ```
 
