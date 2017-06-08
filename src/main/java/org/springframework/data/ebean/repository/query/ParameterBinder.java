@@ -17,6 +17,8 @@ package org.springframework.data.ebean.repository.query;
 
 import io.ebean.Query;
 import io.ebean.SqlQuery;
+import io.ebean.SqlUpdate;
+import io.ebean.Update;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.*;
@@ -128,13 +130,23 @@ public class ParameterBinder {
                 ormQuery.setParameter(
                         Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!")),
                         value);
+            } else if (query instanceof Update) {
+                Update ormUpdate = (Update) query;
+                ormUpdate.setParameter(
+                        Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!")),
+                        value);
             } else if (query instanceof SqlQuery) {
                 SqlQuery sqlQuery = (SqlQuery) query;
                 sqlQuery.setParameter(
                         Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!")),
                         value);
+            } else if (query instanceof SqlUpdate) {
+                SqlUpdate sqlUpdate = (SqlUpdate) query;
+                sqlUpdate.setParameter(
+                        Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!")),
+                        value);
             } else {
-                throw new IllegalArgumentException("query must be Query or SqlQuery!");
+                throw new IllegalArgumentException("query not supported!");
             }
         } else {
             if (query instanceof Query) {
@@ -144,7 +156,7 @@ public class ParameterBinder {
                 SqlQuery sqlQuery = (SqlQuery) query;
                 sqlQuery.setParameter(position, value);
             } else {
-                throw new IllegalArgumentException("query must be Query or SqlQuery!");
+                throw new IllegalArgumentException("query not supported!");
             }
         }
     }

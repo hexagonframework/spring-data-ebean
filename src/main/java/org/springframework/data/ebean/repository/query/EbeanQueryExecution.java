@@ -189,9 +189,9 @@ public abstract class EbeanQueryExecution {
     }
 
     /**
-     * Executes a modifying query such as an update, insert or delete.
+     * Executes a update query such as an update, insert or delete.
      */
-    static class ModifyingExecution extends EbeanQueryExecution {
+    static class UpdateExecution extends EbeanQueryExecution {
 
         private final EbeanServer ebeanServer;
 
@@ -201,14 +201,14 @@ public abstract class EbeanQueryExecution {
          *
          * @param ebeanServer
          */
-        public ModifyingExecution(EbeanQueryMethod method, EbeanServer ebeanServer) {
+        public UpdateExecution(EbeanQueryMethod method, EbeanServer ebeanServer) {
 
             Class<?> returnType = method.getReturnType();
 
             boolean isVoid = void.class.equals(returnType) || Void.class.equals(returnType);
             boolean isInt = int.class.equals(returnType) || Integer.class.equals(returnType);
 
-            Assert.isTrue(isInt || isVoid, "EbeanModify queries can only use void or int/Integer as return type!");
+            Assert.isTrue(isInt || isVoid, "EbeanModifying queries can only use void or int/Integer as return type!");
 
             this.ebeanServer = ebeanServer;
         }
@@ -218,12 +218,15 @@ public abstract class EbeanQueryExecution {
             Object createQuery = query.createQuery(values);
             if (createQuery instanceof Query) {
                 Query ormQuery = (Query) createQuery;
-                int result = ormQuery.update();
-                return result;
-            } else if (createQuery instanceof SqlQuery) {
-                throw new InvalidEbeanQueryMethodException("query must be Query");
+                return ormQuery.update();
+            } else if (createQuery instanceof SqlUpdate) {
+                SqlUpdate sqlUpdate = (SqlUpdate) createQuery;
+                return sqlUpdate.execute();
+            } else if (createQuery instanceof Update) {
+                Update update = (Update) createQuery;
+                return update.execute();
             } else {
-                throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
+                throw new InvalidEbeanQueryMethodException("query not supported");
             }
         }
     }
@@ -250,22 +253,9 @@ public abstract class EbeanQueryExecution {
             Object createQuery = ebeanQuery.createQuery(values);
             if (createQuery instanceof Query) {
                 Query ormQuery = (Query) createQuery;
-                List<?> resultList = ormQuery.findList();
+                ormQuery.delete();
 
-                for (Object o : resultList) {
-                    ebeanServer.delete(o);
-                }
-
-                return ebeanQuery.getQueryMethod().isCollectionQuery() ? resultList : resultList.size();
-            } else if (createQuery instanceof SqlQuery) {
-                SqlQuery sqlQuery = (SqlQuery) createQuery;
-                List<?> resultList = sqlQuery.findList();
-
-                for (Object o : resultList) {
-                    ebeanServer.delete(o);
-                }
-
-                return ebeanQuery.getQueryMethod().isCollectionQuery() ? resultList : resultList.size();
+                return ormQuery.delete();
             } else {
                 throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
             }

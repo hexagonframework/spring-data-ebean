@@ -68,9 +68,19 @@ enum EbeanQueryFactory {
         if (queryString == null) {
             return null;
         }
-
-        return method.isNativeQuery() ? new NativeEbeanQuery(method, ebeanServer, queryString, evaluationContextProvider, PARSER)
-                : new SimpleEbeanQuery(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
+        if (method.isNativeQuery()) { // native
+            if (method.isModifyingQuery()) {
+                return new NativeEbeanUpdate(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
+            } else {
+                return new NativeEbeanQuery(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
+            }
+        } else { // ORM
+            if (method.isModifyingQuery()) {
+                return new OrmEbeanUpdate(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
+            } else {
+                return new OrmEbeanQuery(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
+            }
+        }
     }
 
 }

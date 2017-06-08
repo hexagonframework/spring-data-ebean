@@ -17,7 +17,7 @@ package org.springframework.data.ebean.repository.query;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.data.ebean.repository.EbeanModify;
+import org.springframework.data.ebean.repository.EbeanModifying;
 import org.springframework.data.ebean.repository.EbeanQuery;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -44,7 +44,6 @@ public class EbeanQueryMethod extends QueryMethod {
      * @param metadata must not be {@literal null}
      */
     public EbeanQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
-
         super(method, metadata, factory);
 
         Assert.notNull(method, "Method must not be null!");
@@ -59,8 +58,7 @@ public class EbeanQueryMethod extends QueryMethod {
      */
     @Override
     public boolean isModifyingQuery() {
-
-        return null != AnnotationUtils.findAnnotation(method, EbeanModify.class);
+        return null != AnnotationUtils.findAnnotation(method, EbeanModifying.class);
     }
 
     /**
@@ -69,7 +67,6 @@ public class EbeanQueryMethod extends QueryMethod {
      * @return
      */
     Class<?> getReturnType() {
-
         return method.getReturnType();
     }
 
@@ -82,30 +79,6 @@ public class EbeanQueryMethod extends QueryMethod {
     String getAnnotatedQuery() {
         String query = getAnnotationValue("value", String.class);
         return StringUtils.hasText(query) ? query : null;
-    }
-
-    /**
-     * Returns the countQuery string declared in a {@link EbeanQuery} annotation or {@literal null} if neither the annotation
-     * found nor the attribute was specified.
-     *
-     * @return
-     */
-    String getCountQuery() {
-        String countQuery = getAnnotationValue("countQuery", String.class);
-        return StringUtils.hasText(countQuery) ? countQuery : null;
-    }
-
-    /**
-     * Returns the count query projection string declared in a {@link EbeanQuery} annotation or {@literal null} if neither the
-     * annotation found nor the attribute was specified.
-     *
-     * @return
-     * @since 1.6
-     */
-    String getCountQueryProjection() {
-
-        String countProjection = getAnnotationValue("countProjection", String.class);
-        return StringUtils.hasText(countProjection) ? countProjection : null;
     }
 
     /**
@@ -135,15 +108,6 @@ public class EbeanQueryMethod extends QueryMethod {
     String getNamedCountQueryName() {
         String annotatedName = getAnnotationValue("countName", String.class);
         return StringUtils.hasText(annotatedName) ? annotatedName : getNamedQueryName() + ".count";
-    }
-
-    /**
-     * Returns whether we should clear automatically for modifying queries.
-     *
-     * @return
-     */
-    boolean getClearAutomatically() {
-        return getMergedOrDefaultAnnotationValue("clearAutomatically", EbeanModify.class, Boolean.class);
     }
 
     /**

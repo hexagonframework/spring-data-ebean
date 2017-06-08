@@ -18,28 +18,31 @@ package org.springframework.data.ebean.repository.query;
 import io.ebean.EbeanServer;
 import io.ebean.Query;
 import org.springframework.data.ebean.repository.EbeanQuery;
-import org.springframework.data.repository.query.*;
+import org.springframework.data.repository.query.EvaluationContextProvider;
+import org.springframework.data.repository.query.Parameters;
+import org.springframework.data.repository.query.QueryMethod;
+import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
- * {@link RepositoryQuery} implementation that inspects a {@link org.springframework.data.repository.query.QueryMethod}
+ * {@link RepositoryQuery} implementation that inspects a {@link QueryMethod}
  * for the existence of an {@link EbeanQuery} annotation and creates a Ebean native
  * {@link Query} from it.
  *
  * @author Xuegui Yuan
  */
-final class NativeEbeanQuery extends AbstractStringBasedEbeanQuery {
+final class NativeEbeanUpdate extends AbstractStringBasedEbeanQuery {
 
     /**
-     * Creates a new {@link NativeEbeanQuery} encapsulating the query annotated on the given {@link EbeanQueryMethod}.
+     * Creates a new {@link NativeEbeanUpdate} encapsulating the query annotated on the given {@link EbeanQueryMethod}.
      *
      * @param method                    must not be {@literal null}.
      * @param ebeanServer               must not be {@literal null}.
      * @param queryString               must not be {@literal null} or empty.
      * @param evaluationContextProvider
      */
-    public NativeEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
-                            EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
+    public NativeEbeanUpdate(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
+                             EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
 
         super(method, ebeanServer, queryString, evaluationContextProvider, parser);
 
@@ -55,9 +58,6 @@ final class NativeEbeanQuery extends AbstractStringBasedEbeanQuery {
     }
 
     protected Object createEbeanQuery(String queryString) {
-        ResultProcessor resultFactory = getQueryMethod().getResultProcessor();
-        ReturnedType returnedType = resultFactory.getReturnedType();
-
-        return getEbeanServer().findNative(returnedType.getReturnedType(), queryString);
+        return getEbeanServer().createSqlUpdate(queryString);
     }
 }

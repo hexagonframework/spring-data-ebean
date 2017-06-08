@@ -18,12 +18,12 @@ package org.springframework.data.ebean.repository;
 import java.lang.annotation.*;
 
 /**
- * Indicates a method should be regarded as modifying query.
+ * Indicates a method should be regarded as Update{@link io.ebean.UpdateQuery} or SqlUpdate {@link io.ebean.SqlUpdate}.
  *
  * @author Xuegui Yuan
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
-public @interface EbeanModify {
+public @interface EbeanModifying {
 }

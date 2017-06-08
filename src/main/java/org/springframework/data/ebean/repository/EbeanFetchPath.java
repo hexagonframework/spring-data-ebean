@@ -20,7 +20,7 @@ import org.springframework.data.annotation.QueryAnnotation;
 import java.lang.annotation.*;
 
 /**
- * Annotation to declare finder queries directly on repository methods.
+ * Annotation to declare finder queries FetchPath directly on repository methods.
  *
  * @author Xuegui Yuan
  */
@@ -28,21 +28,12 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @QueryAnnotation
 @Documented
-public @interface EbeanQuery {
+public @interface EbeanFetchPath {
 
     /**
-     * Defines the Ebean query to be executed when the annotated method is called.
+     * Parse the string to return a FetchPath,
+     * format like (a,b,c(d,e),f(g)) where "c" is a path containing "d" and "e" and "f" is a
+     * path containing "g" and the root path contains "a","b","c" and "f".
      */
     String value() default "";
-
-    /**
-     * Configures whether the given query is a SqlQuery. Defaults to {@literal false}.
-     */
-    boolean nativeQuery() default false;
-
-    /**
-     * The named query to be used. If not defined, a {@link javax.persistence.NamedQuery} with name of
-     * {@code $ domainClass}.${queryMethodName}} will be used.
-     */
-    String name() default "";
 }

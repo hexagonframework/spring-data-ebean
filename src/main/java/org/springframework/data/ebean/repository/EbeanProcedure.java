@@ -20,7 +20,7 @@ import org.springframework.data.annotation.QueryAnnotation;
 import java.lang.annotation.*;
 
 /**
- * Annotation to declare finder queries directly on repository methods.
+ * Annotation to declare stored procedure mappings directly on repository methods.
  *
  * @author Xuegui Yuan
  */
@@ -28,21 +28,25 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @QueryAnnotation
 @Documented
-public @interface EbeanQuery {
+public @interface EbeanProcedure {
 
     /**
-     * Defines the Ebean query to be executed when the annotated method is called.
+     * The name of the procedure in the database, defaults to {@code ""}. Short form for {@link #procedureName()}.
      */
     String value() default "";
 
     /**
-     * Configures whether the given query is a SqlQuery. Defaults to {@literal false}.
+     * The name of the procedure in the database, defaults to {@code ""}.
      */
-    boolean nativeQuery() default false;
+    String procedureName() default "";
 
     /**
-     * The named query to be used. If not defined, a {@link javax.persistence.NamedQuery} with name of
-     * {@code $ domainClass}.${queryMethodName}} will be used.
+     * The name of the procedure in the EntityManager - defaults to {@code ""}.
      */
     String name() default "";
+
+    /**
+     * The name of the outputParameter, defaults to {@code ""}.
+     */
+    String outputParameterName() default "";
 }

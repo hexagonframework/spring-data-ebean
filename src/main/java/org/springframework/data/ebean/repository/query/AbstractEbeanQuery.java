@@ -91,7 +91,7 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
         } else if (method.isPageQuery()) {
             return new EbeanQueryExecution.PagedExecution(method.getParameters());
         } else if (method.isModifyingQuery()) {
-            return method.getClearAutomatically() ? new EbeanQueryExecution.ModifyingExecution(method, ebeanServer) : new EbeanQueryExecution.ModifyingExecution(method, null);
+            return new EbeanQueryExecution.UpdateExecution(method, ebeanServer);
         } else {
             return new EbeanQueryExecution.SingleEntityExecution();
         }

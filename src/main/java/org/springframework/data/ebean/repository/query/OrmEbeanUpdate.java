@@ -16,36 +16,34 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import io.ebean.Query;
-import org.springframework.data.ebean.repository.EbeanQuery;
 import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
  * {@link RepositoryQuery} implementation that inspects a {@link org.springframework.data.repository.query.QueryMethod}
- * for the existence of an {@link EbeanQuery} annotation and creates a Ebean
- * {@link Query} from it.
+ * for the existence of an {@link EbeanUpdate} annotation and creates a Ebean
+ * {@link io.ebean.Update} from it.
  *
  * @author Xuegui Yuan
  */
-final class SimpleEbeanQuery extends AbstractStringBasedEbeanQuery {
+final class OrmEbeanUpdate extends AbstractStringBasedEbeanQuery {
 
     /**
-     * Creates a new {@link SimpleEbeanQuery} encapsulating the query annotated on the given {@link EbeanQueryMethod}.
+     * Creates a new {@link OrmEbeanUpdate} encapsulating the query annotated on the given {@link EbeanQueryMethod}.
      *
      * @param method                    must not be {@literal null}
      * @param ebeanServer               must not be {@literal null}
      * @param evaluationContextProvider must not be {@literal null}
      * @param parser                    must not be {@literal null}
      */
-    public SimpleEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, EvaluationContextProvider evaluationContextProvider,
-                            SpelExpressionParser parser) {
+    public OrmEbeanUpdate(EbeanQueryMethod method, EbeanServer ebeanServer, EvaluationContextProvider evaluationContextProvider,
+                          SpelExpressionParser parser) {
         this(method, ebeanServer, method.getAnnotatedQuery(), evaluationContextProvider, parser);
     }
 
     /**
-     * Creates a new {@link SimpleEbeanQuery} that encapsulates a simple query string.
+     * Creates a new {@link OrmEbeanUpdate} that encapsulates a simple query string.
      *
      * @param method                    must not be {@literal null}
      * @param ebeanServer               must not be {@literal null}
@@ -53,8 +51,12 @@ final class SimpleEbeanQuery extends AbstractStringBasedEbeanQuery {
      * @param evaluationContextProvider must not be {@literal null}
      * @param parser                    must not be {@literal null}
      */
-    public SimpleEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
-                            EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
+    public OrmEbeanUpdate(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
+                          EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
         super(method, ebeanServer, queryString, evaluationContextProvider, parser);
+    }
+
+    protected Object createEbeanQuery(String queryString) {
+        return getEbeanServer().createUpdate(getQueryMethod().getEntityInformation().getJavaType(), queryString);
     }
 }
