@@ -1,7 +1,7 @@
 # spring-data-ebean
 > Ebean implementation for spring data.
 
-The primary goal of the [Spring Data](http://projects.spring.io/spring-data) project is to make it easier to build Spring-powered applications that use data access technologies. This module deals with enhanced support for Ebean ORM based data access layers.
+The primary goal of the [Spring Data](http://projects.spring.io/spring-data) project is to make it easier to build Spring-powered applications that use data access technologies. This module deals with enhanced support for [Ebean ORM](https://ebean-orm.github.io) based data access layers.
 
 ## Features ##
 
