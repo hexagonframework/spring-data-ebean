@@ -16,7 +16,7 @@ The primary goal of the [Spring Data](http://projects.spring.io/spring-data) pro
 * Possibility to integrate custom repository code
 * Easy Spring integration with custom namespace
 
-## Maven cental links:
+## Maven cental links
 
 [Maven central - spring-data-ebean](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
 
