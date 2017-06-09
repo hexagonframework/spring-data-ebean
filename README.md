@@ -49,12 +49,15 @@ public class SampleConfig {
     @Primary
     public ServerConfig defaultEbeanServerConfig() {
         ServerConfig config = new ServerConfig();
-
+        
         config.setDataSource(dataSource());
         config.addPackage("org.springframework.data.ebean.domain.sample");
         config.setExternalTransactionManager(new SpringJdbcTransactionManager());
 
+
+        config.loadFromProperties();
         config.setDefaultServer(true);
+        config.setRegister(true);
         config.setAutoCommitMode(false);
         config.setExpressionNativeIlike(true);
 
@@ -115,10 +118,37 @@ public interface UserRepository extends EbeanRepository<User, Long> {
     @EbeanQuery(nativeQuery = true, value = "delete from user where email_address = :emailAddress")
     @EbeanModifying
     int deleteUserByEmailAddress(@Param("emailAddress") String emailAddress);
+
+    @EbeanQuery(name = "withManagerById")
+    List<User> findByLastnameNamedOql(@Param("lastname") String lastname);
 }
 ```
 
-Write a test client
+Create a named query config in `resources/ebean.xml`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ebean xmlns="http://ebean-orm.github.io/xml/ns/ebean">
+    <entity class="org.springframework.data.ebean.domain.sample.User">
+        <named-query name="withManagerById">
+            <query>
+                select (firstname,lastname,address)
+                fetch manager (lastname)
+                where lastname = :lastname order by id desc
+            </query>
+        </named-query>
+        <raw-sql name="byEmailAddressEquals">
+            <query>
+                select * from user
+                where email_address = :emailAddress
+                order by id desc
+            </query>
+        </raw-sql>
+    </entity>
+</ebean>
+```
+
+Write a test client:
 
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)

@@ -35,4 +35,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
     @EbeanQuery(nativeQuery = true, value = "delete from user where email_address = :emailAddress")
     @EbeanModifying
     int deleteUserByEmailAddress(@Param("emailAddress") String emailAddress);
+
+    @EbeanQuery(name = "withManagerById")
+    List<User> findByLastnameNamedOql(@Param("lastname") String lastname);
 }

@@ -43,7 +43,10 @@ public class SampleConfig {
         config.addPackage("org.springframework.data.ebean.domain.sample");
         config.setExternalTransactionManager(new SpringJdbcTransactionManager());
 
+
+        config.loadFromProperties();
         config.setDefaultServer(true);
+        config.setRegister(true);
         config.setAutoCommitMode(false);
         config.setExpressionNativeIlike(true);
 

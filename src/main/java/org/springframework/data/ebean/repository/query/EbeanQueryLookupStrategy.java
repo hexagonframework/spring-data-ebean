@@ -214,6 +214,12 @@ public final class EbeanQueryLookupStrategy {
                         evaluationContextProvider);
             }
 
+            query = NativeEbeanNamedQuery.lookupFrom(method, ebeanServer);
+
+            if (null != query) {
+                return query;
+            }
+
             throw new IllegalStateException(
                     String.format("Did neither find a NamedQuery nor an annotated query for method %s!", method));
         }

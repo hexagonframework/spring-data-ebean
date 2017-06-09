@@ -2,16 +2,17 @@
 [![Build Status](https://travis-ci.org/hexagonframework/spring-data-ebean.svg?branch=master)](https://travis-ci.org/hexagonframework/spring-data-ebean) [![Gitter chat](https://badges.gitter.im/hexagonframework/spring-data-ebean/gitter.png)](https://gitter.im/hexagonframework/spring-data-ebean)
 
 
-项目的主要目标是使构建使用数据访问技术的 Spring 应用程序变得更加容易。此模块处理增强基于Ebean的仓储层的支持。
-通过使用此模块，你可以在基于Ebean为ORM的结构下使用Spring Data模式带来的便利性。
+[Spring Data](http://projects.spring.io/spring-data/)项目的主要目标是使构建使用DDD仓储接口与实现的Spring应用程序变得更加容易。此模块是基于[Ebean ORM](https://ebean-orm.github.io)（轻量级JPA）的仓储层实现。
+通过使用此模块，你可以在基于Ebean ORM下使用Spring Data模式带来的便利性。
 如果你还没有接触过[Spring Data](http://projects.spring.io/spring-data/)或[Ebean ORM](https://ebean-orm.github.io)，建议先了解下该项目。
 
 ## 支持的一些特性 ##
 
-* 对标准Entity支持完整CRUD操作
-* 支持通过接口中的方法名生成对应的查询
+* 对标准Entity支持完整CRUD操作，包括常用的查询操作
+* 支持通过接口中的注解生成对应的查询（orm查询、sql查询、命名orm查询、命名sql查询）
+* 支持通过接口中的方法名生成对应的查询（TODO）
 * 提供基础属性的实体基类
-* 支持透明审计（如创建时间、最后修改)
+* 原生支持使用注解实现审计（如创建人、创建时间、修改人、最后修改时间)
 * 自持自定义编写基于Ebean的查询，方便而不失灵活性
 * 方便的与Spring集成
 * 支持MySQL、Oracle、SQL Server、H2、PostgreSQL等数据库
@@ -49,12 +50,15 @@ public class SampleConfig {
     @Primary
     public ServerConfig defaultEbeanServerConfig() {
         ServerConfig config = new ServerConfig();
-
+        
         config.setDataSource(dataSource());
         config.addPackage("org.springframework.data.ebean.domain.sample");
         config.setExternalTransactionManager(new SpringJdbcTransactionManager());
 
+
+        config.loadFromProperties();
         config.setDefaultServer(true);
+        config.setRegister(true);
         config.setAutoCommitMode(false);
         config.setExpressionNativeIlike(true);
 
@@ -115,7 +119,34 @@ public interface UserRepository extends EbeanRepository<User, Long> {
     @EbeanQuery(nativeQuery = true, value = "delete from user where email_address = :emailAddress")
     @EbeanModifying
     int deleteUserByEmailAddress(@Param("emailAddress") String emailAddress);
+
+    @EbeanQuery(name = "withManagerById")
+    List<User> findByLastnameNamedOql(@Param("lastname") String lastname);
 }
+```
+
+对于使用到的命名sql查询、命名orm查询，编写XML文件resources/ebean.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ebean xmlns="http://ebean-orm.github.io/xml/ns/ebean">
+    <entity class="org.springframework.data.ebean.domain.sample.User">
+        <named-query name="withManagerById">
+            <query>
+                select (firstname,lastname,address)
+                fetch manager (lastname)
+                where lastname = :lastname order by id desc
+            </query>
+        </named-query>
+        <raw-sql name="byEmailAddressEquals">
+            <query>
+                select * from user
+                where email_address = :emailAddress
+                order by id desc
+            </query>
+        </raw-sql>
+    </entity>
+</ebean>
 ```
 
 编写一个测试用例:

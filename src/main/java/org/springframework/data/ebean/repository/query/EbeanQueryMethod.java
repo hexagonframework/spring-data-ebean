@@ -101,16 +101,6 @@ public class EbeanQueryMethod extends QueryMethod {
     }
 
     /**
-     * Returns the name of the NamedQuery that shall be used for count queries.
-     *
-     * @return
-     */
-    String getNamedCountQueryName() {
-        String annotatedName = getAnnotationValue("countName", String.class);
-        return StringUtils.hasText(annotatedName) ? annotatedName : getNamedQueryName() + ".count";
-    }
-
-    /**
      * Returns the {@link EbeanQuery} annotation's attribute casted to the given type or default value if no annotation
      * available.
      *
