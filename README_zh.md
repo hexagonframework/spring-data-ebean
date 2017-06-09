@@ -17,6 +17,13 @@
 * 方便的与Spring集成
 * 支持MySQL、Oracle、SQL Server、H2、PostgreSQL等数据库
 
+## Maven cental链接:
+
+[Maven central - spring-data-ebean](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
+
+## 当前版本
+
+[![Maven Central : ebean](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean) - spring-data-ebean
 
 ## 快速开始 ##
 
@@ -25,7 +32,7 @@
 <dependency>
   <groupId>io.github.hexagonframework.data</groupId>
   <artifactId>spring-data-ebean</artifactId>
-  <version>1.0.0.RELEASE</version>
+  <version>{Current versions}</version>
 </dependency>
 ```
 

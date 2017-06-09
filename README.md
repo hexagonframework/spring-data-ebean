@@ -16,6 +16,14 @@ The primary goal of the [Spring Data](http://projects.spring.io/spring-data) pro
 * Possibility to integrate custom repository code
 * Easy Spring integration with custom namespace
 
+## Maven cental links:
+
+[Maven central - spring-data-ebean](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
+
+## Current versions
+
+[![Maven Central : ebean](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean) - spring-data-ebean
+
 ## Quick Start ##
 
 Download the jar through Maven:
@@ -24,7 +32,7 @@ Download the jar through Maven:
 <dependency>
   <groupId>io.github.hexagonframework.data</groupId>
   <artifactId>spring-data-ebean</artifactId>
-  <version>1.0.0.RELEASE</version>
+  <version>{Current versions}</version>
 </dependency>
 ```
 
