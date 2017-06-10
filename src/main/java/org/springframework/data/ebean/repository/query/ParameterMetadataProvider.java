@@ -15,7 +15,6 @@
  */
 package org.springframework.data.ebean.repository.query;
 
-import io.ebean.ExpressionList;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
@@ -33,47 +32,31 @@ import java.util.*;
  * @author Xuegui Yuan
  */
 class ParameterMetadataProvider {
-    private final ExpressionList expressionList;
     private final Iterator<? extends Parameter> parameters;
     private final List<ParameterMetadata<?>> expressions;
     private final Iterator<Object> bindableParameterValues;
 
     /**
-     * Creates a new {@link ParameterMetadataProvider} from the given {@link ExpressionList} and
+     * Creates a new {@link ParameterMetadataProvider} from the given
      * {@link ParametersParameterAccessor} with support for parameter value customizations.
      *
-     * @param expressionList must not be {@literal null}.
      * @param accessor       must not be {@literal null}.
      */
-    public ParameterMetadataProvider(ExpressionList expressionList, ParametersParameterAccessor accessor) {
-        this(expressionList, accessor.iterator(), accessor.getParameters());
+    public ParameterMetadataProvider(ParametersParameterAccessor accessor) {
+        this(accessor.iterator(), accessor.getParameters());
     }
 
     /**
-     * Creates a new {@link ParameterMetadataProvider} from the given {@link ExpressionList} and {@link Parameters}.
-     *
-     * @param expressionList must not be {@literal null}.
-     * @param parameters     must not be {@literal null}.
-     */
-    public ParameterMetadataProvider(ExpressionList expressionList, Parameters<?, ?> parameters) {
-        this(expressionList, null, parameters);
-    }
-
-    /**
-     * Creates a new {@link ParameterMetadataProvider} from the given {@link ExpressionList} an {@link Iterable} of all
+     * Creates a new {@link ParameterMetadataProvider} from the given {@link Iterable} of all
      * bindable parameter values.
      *
-     * @param expressionList          must not be {@literal null}.
      * @param bindableParameterValues may be {@literal null}.
      * @param parameters              must not be {@literal null}.
      */
-    private ParameterMetadataProvider(ExpressionList expressionList, Iterator<Object> bindableParameterValues,
+    private ParameterMetadataProvider(Iterator<Object> bindableParameterValues,
                                       Parameters<?, ?> parameters) {
-
-        Assert.notNull(expressionList, "ExpressionList must not be null!");
         Assert.notNull(parameters, "Parameters must not be null!");
 
-        this.expressionList = expressionList;
         this.parameters = parameters.getBindableParameters().iterator();
         this.expressions = new ArrayList<ParameterMetadata<?>>();
         this.bindableParameterValues = bindableParameterValues;
@@ -120,14 +103,14 @@ class ParameterMetadataProvider {
      *
      * @param <T>
      * @param part      must not be {@literal null}.
-     * @param type      must not be {@literal null}.
+     * @param type      parameter type, must not be {@literal null}.
      * @param parameter
      * @return
      */
     private <T> ParameterMetadata<T> next(Part part, Class<T> type, Parameter parameter) {
         Assert.notNull(type, "Type must not be null!");
 
-        ParameterMetadata<T> value = new ParameterMetadata<T>(expressionList, part.getType(),
+        ParameterMetadata<T> value = new ParameterMetadata<T>(type, parameter.getName(), part.getType(),
                 bindableParameterValues == null ? ParameterMetadata.PLACEHOLDER : bindableParameterValues.next());
         expressions.add(value);
 
@@ -143,18 +126,23 @@ class ParameterMetadataProvider {
         static final Object PLACEHOLDER = new Object();
 
         private final Type type;
-        private final ExpressionList expression;
+        private final Class<T> parameterType;
+        private final String parameterName;
+        private final Object parameterValue;
 
         /**
          * Creates a new {@link ParameterMetadata}.
          *
-         * @param expression
+         * @param parameterType
+         * @param parameterName
          * @param type
          * @param value
          */
-        public ParameterMetadata(ExpressionList expression, Type type, Object value) {
-            this.expression = expression;
-            this.type = value == null && Type.SIMPLE_PROPERTY.equals(type) ? Type.IS_NULL : type;
+        public ParameterMetadata(Class<T> parameterType, String parameterName, Type type, Object value) {
+            this.parameterType = parameterType;
+            this.parameterName = parameterName;
+            this.parameterValue = value;
+            this.type = (value == null && Type.SIMPLE_PROPERTY.equals(type) ? Type.IS_NULL : type);
         }
 
         /**
@@ -166,7 +154,6 @@ class ParameterMetadataProvider {
          * @return
          */
         private static Collection<?> toCollection(Object value) {
-
             if (value == null) {
                 return null;
             }
@@ -183,21 +170,24 @@ class ParameterMetadataProvider {
         }
 
         /**
-         * Returns the {@link ExpressionList}.
-         *
-         * @return the expression
-         */
-        public ExpressionList getExpression() {
-            return expression;
-        }
-
-        /**
          * Returns whether the parameter shall be considered an {@literal IS NULL} parameter.
          *
          * @return
          */
         public boolean isIsNullParameter() {
             return Type.IS_NULL.equals(type);
+        }
+
+        public Class<T> getParameterType() {
+            return parameterType;
+        }
+
+        public String getParameterName() {
+            return parameterName;
+        }
+
+        public Object getParameterValue() {
+            return parameterValue;
         }
     }
 }

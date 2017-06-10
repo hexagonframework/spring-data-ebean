@@ -94,4 +94,16 @@ public class UserRepositoryIntegrationTest {
         User result13 = repository.findUserByEmailAddressEquals("yuanxuegui@163.com");
         assertNull(result13);
     }
+
+    @Test
+    public void testFindByMethodName() {
+        User user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
+        user.setAge(29);
+        user = repository.save(user);
+
+        List<User> result1 = repository.findAllByEmailAddressAndLastname("yuanxuegui@163.com", "Yuan");
+        assertEquals(1, result1.size());
+        assertEquals("Yuan", result1.get(0).getLastname());
+        assertThat(result1, hasItem(user));
+    }
 }

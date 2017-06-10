@@ -16,20 +16,20 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
+import io.ebean.ExpressionList;
 import io.ebean.Query;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
+import org.springframework.data.repository.query.ResultProcessor;
 import org.springframework.data.repository.query.parser.PartTree;
 
 /**
  * A {@link AbstractEbeanQuery} implementation based on a {@link PartTree}.
  *
- * @author Oliver Gierke
- * @author Thomas Darimont
- * @author Christoph Strobl
+ * @author Xuegui Yuan
  */
-public abstract class PartTreeEbeanQuery extends AbstractEbeanQuery {
+public class PartTreeEbeanQuery extends AbstractEbeanQuery {
 
     private final Class<?> domainClass;
     private final PartTree tree;
@@ -44,7 +44,6 @@ public abstract class PartTreeEbeanQuery extends AbstractEbeanQuery {
      * @param ebeanServer must not be {@literal null}.
      */
     public PartTreeEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer) {
-
         super(method, ebeanServer);
 
         this.domainClass = method.getEntityInformation().getJavaType();
@@ -55,19 +54,18 @@ public abstract class PartTreeEbeanQuery extends AbstractEbeanQuery {
 
     /*
      * (non-Javadoc)
-     * @see org.springframework.data.jpa.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
+     * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
      */
-//	@Override
-//	public EbeanQuery doCreateQuery(Object[] values) {
-//		return queryPreparer.createQuery(values);
-//	}
+    @Override
+    public Object doCreateQuery(Object[] values) {
+        return queryPreparer.createQuery(values);
+    }
     /*
 	 * (non-Javadoc)
 	 * @see org.springframework.data.jpa.repository.query.AbstractEbeanQuery#getExecution()
 	 */
     @Override
     protected EbeanQueryExecution getExecution() {
-
         if (this.tree.isDelete()) {
             return new EbeanQueryExecution.DeleteExecution(getEbeanServer());
         } else if (this.tree.isExistsProjection()) {
@@ -80,8 +78,7 @@ public abstract class PartTreeEbeanQuery extends AbstractEbeanQuery {
     /**
      * EbeanQuery preparer to create {@link Query} instances and potentially cache them.
      *
-     * @author Oliver Gierke
-     * @author Thomas Darimont
+     * @author Xuegui Yuan
      */
     private class QueryPreparer {
 
@@ -97,12 +94,11 @@ public abstract class PartTreeEbeanQuery extends AbstractEbeanQuery {
          * @param values
          * @return
          */
-//		public EbeanQuery createQuery(Object[] values) {
-//			ParametersParameterAccessor accessor = new ParametersParameterAccessor(parameters, values);
-//			EbeanQueryCreator ebeanQueryCreator = createCreator(accessor);
-//
-//			return restrictMaxResultsIfNecessary(invokeBinding(getBinder(values), ebeanQueryCreator));
-//		}
+        public Object createQuery(Object[] values) {
+            ParametersParameterAccessor accessor = new ParametersParameterAccessor(parameters, values);
+            EbeanQueryCreator ebeanQueryCreator = createCreator(accessor);
+            return restrictMaxResultsIfNecessary((Query) invokeBinding(getBinder(values), ebeanQueryCreator.createQuery()));
+        }
 
         /**
          * Restricts the max results of the given {@link Query} if the current {@code tree} marks this {@code query} as
@@ -112,7 +108,6 @@ public abstract class PartTreeEbeanQuery extends AbstractEbeanQuery {
          * @return
          */
         private Query restrictMaxResultsIfNecessary(Query query) {
-
             if (tree.isLimiting()) {
 
                 if (query.getMaxRows() != Integer.MAX_VALUE) {
@@ -137,40 +132,34 @@ public abstract class PartTreeEbeanQuery extends AbstractEbeanQuery {
             return query;
         }
 
-//		protected EbeanQueryCreator createCreator(ParametersParameterAccessor accessor) {
-//
-//			EbeanServer ebeanServer = getEbeanServer();
-//			EbeanQuery ebeanQuery = ebeanServer.createQuery(domainClass);
-//			ExpressionList expressionList = ebeanQuery.where();
-//
-//			ParameterMetadataProvider provider = accessor
-//					.map(it -> new ParameterMetadataProvider(expressionList, it))//
-//					.orElseGet(() -> new ParameterMetadataProvider(expressionList, parameters));
-//
-//			ResultProcessor processor = getQueryMethod().getResultProcessor();
-//			ReturnedType returnedType = accessor.map(it -> processor.withDynamicProjection(it))//
-//					.orElse(processor).getReturnedType();
-//
-//			return new EbeanQueryCreator(tree, returnedType, expressionList, provider);
-//		}
-//		/**
-//		 * Invokes parameter binding on the given {@link ExpressionList}.
-//		 *
-//		 * @param binder
-//		 * @param query
-//		 * @return
-//		 */
-//		protected EbeanQuery invokeBinding(ParameterBinder binder, ExpressionList<?> expressionList) {
-//
-//			return binder.bindAndPrepare(expressionList);
-//		}
+        protected EbeanQueryCreator createCreator(ParametersParameterAccessor accessor) {
+            EbeanServer ebeanServer = getEbeanServer();
+            Query ebeanQuery = ebeanServer.createQuery(domainClass);
+            ExpressionList expressionList = ebeanQuery.where();
+
+            ParameterMetadataProvider provider = new ParameterMetadataProvider(accessor);
+
+            ResultProcessor processor = getQueryMethod().getResultProcessor();
+
+            return new EbeanQueryCreator(tree, processor.getReturnedType(), expressionList, provider);
+        }
+
+        /**
+         * Invokes parameter binding on the given {@link ExpressionList}.
+         *
+         * @param binder
+         * @param query
+         * @return
+         */
+        protected Object invokeBinding(ParameterBinder binder, Query query) {
+            return binder.bindAndPrepare(query);
+        }
 
         private ParameterBinder getBinder(Object[] values) {
             return new ParameterBinder(parameters, values);
         }
 
         private Sort getDynamicSort(Object[] values) {
-
             return parameters.potentiallySortsDynamically() ? new ParametersParameterAccessor(parameters, values).getSort()
                     : null;
         }

@@ -81,7 +81,6 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
     }
 
     protected EbeanQueryExecution getExecution() {
-
         if (method.isStreamQuery()) {
             return new EbeanQueryExecution.StreamExecution();
         } else if (method.isCollectionQuery()) {

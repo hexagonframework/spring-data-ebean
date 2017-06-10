@@ -38,4 +38,6 @@ public interface UserRepository extends EbeanRepository<User, Long> {
 
     @EbeanQuery(name = "withManagerById")
     List<User> findByLastnameNamedOql(@Param("lastname") String lastname);
+
+    List<User> findAllByEmailAddressAndLastname(@Param("emailAddress") String emailAddress, @Param("lastname") String lastname);
 }
