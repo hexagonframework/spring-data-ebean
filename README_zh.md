@@ -13,9 +13,13 @@
 * 支持通过接口中的方法名生成对应的查询（TODO）
 * 提供基础属性的实体基类
 * 原生支持使用注解实现审计（如创建人、创建时间、修改人、最后修改时间)
-* 自持自定义编写基于Ebean的查询，方便而不失灵活性
+* 支持自定义编写基于Ebean的查询，方便而不失灵活性
 * 方便的与Spring集成
 * 支持MySQL、Oracle、SQL Server、H2、PostgreSQL等数据库
+
+## 为什么选择[Ebean ORM](https://ebean-orm.github.io)
+
+基于JPA注解的轻量级实现，但相比Hibernate/JPA具有Mybatis的查询灵活性，支持查询[partial objects](https://ebean-orm.github.io/docs/query/partialobjects)。[查看更多详情](http://ebean-orm.github.io/architecture/compare-jpa)
 
 ## Maven cental链接
 
@@ -32,7 +36,7 @@
 <dependency>
   <groupId>io.github.hexagonframework.data</groupId>
   <artifactId>spring-data-ebean</artifactId>
-  <version>{Current versions}</version>
+  <version>{current version}</version>
 </dependency>
 ```
 
@@ -132,7 +136,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
 }
 ```
 
-对于使用到的命名sql查询、命名orm查询，编写XML文件resources/ebean.xml
+对于使用到的命名sql查询、命名orm查询，编写XML文件`resources/ebean.xml`：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
