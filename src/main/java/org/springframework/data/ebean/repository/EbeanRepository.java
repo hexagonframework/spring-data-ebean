@@ -15,7 +15,7 @@
  */
 package org.springframework.data.ebean.repository;
 
-import io.ebean.EbeanServer;
+import io.ebean.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,19 +34,72 @@ import java.util.List;
 public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID> {
 
     /**
-     * Return the current EbeanServer
+     * Return the current EbeanServer.
      *
      * @return the current EbeanServer
      */
     EbeanServer db();
 
     /**
-     * Set the current EbeanServer
+     * Set the current EbeanServer.
      *
      * @param db current EbeanServer
      * @return the current EbeanServer
      */
     EbeanServer db(EbeanServer db);
+
+    /**
+     * Return an object relational query for finding a List, Set, Map or single entity bean.
+     *
+     * @return the Query.
+     */
+    Query<T> query();
+
+    /**
+     * Return a query using OQL.
+     *
+     * @param oql the Ebean ORM query
+     * @return the created Query using ORM query
+     */
+    Query<T> queryWithOql(String oql);
+
+    /**
+     * Return a query using native SQL.
+     *
+     * @param sql native SQL
+     * @return the created Query using native SQL
+     */
+    Query<T> queryWithSql(String sql);
+
+    /**
+     * Return a query using query name.
+     *
+     * @param queryName
+     * @return
+     */
+    Query<T> namedQuery(String queryName);
+
+    /**
+     * Return an SqlQuery for performing native SQL queries that return SqlRow's.
+     *
+     * @param sql the sql to create SqlQuery using native SQL
+     * @return the created SqlQuery.
+     */
+    SqlQuery sqlQuery(String sql);
+
+    /**
+     * Return an UpdateQuery to perform a bulk update of many rows that match the query.
+     *
+     * @return the created UpdateQuery.
+     */
+    UpdateQuery<T> updateQuery();
+
+    /**
+     * Return a SqlUpdate for executing insert update or delete statements.
+     *
+     * @return the created SqlUpdate using native SQL
+     */
+    SqlUpdate sqlUpdate(String sql);
 
     /*
      * (non-Javadoc)
@@ -73,22 +126,41 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
     <S extends T> List<S> save(Iterable<S> entities);
 
     /**
-     * Retrieves an entity by its id and select return entity properties with FetchPath string
+     * Retrieves an entity by its id and select return entity properties with FetchPath string.
      * @param id ID
      * @param selects FetchPath string
-     * @return the entity only select/fetch with FetchPath string
+     * @return the entity only select/fetch with FetchPath string with the given id or {@literal null} if none found
      */
     T findOne(ID id, String selects);
 
     /**
-     * Returns all entities and select return entity properties with FetchPath string
+     * Retrieves an entity by its property name value.
+     *
+     * @param propertyName  property name
+     * @param propertyValue property value
+     * @return the entity with the given property name value or {@literal null} if none found
+     */
+    T findOneByProperty(String propertyName, Object propertyValue);
+
+    /**
+     * Retrieves an entity by its property name value and select return entity properties with FetchPath string.
+     *
+     * @param propertyName  property name
+     * @param propertyValue property value
+     * @param selects       FetchPath string
+     * @return the entity only select/fetch with FetchPath string with the given property name value or {@literal null} if none found
+     */
+    T findOneByProperty(String propertyName, Object propertyValue, String selects);
+
+    /**
+     * Returns all entities and select return entity properties with FetchPath string.
      * @param selects FetchPath string
      * @return all entities only select/fetch with FetchPath string
      */
     List<T> findAll(String selects);
 
     /**
-     * Returns all entities in ids and select return entity properties with FetchPath string
+     * Returns all entities in ids and select return entity properties with FetchPath string.
      * @param ids ID list
      * @param selects FetchPath string
      * @return all entities by id in ids and select/fetch with FetchPath string
@@ -104,7 +176,7 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
     List<T> findAll(Sort sort, String selects);
 
     /**
-     * Returns a {@link Page} of entities meeting the paging restriction provided in the {@code Pageable} object
+     * Returns a {@link Page} of entities meeting the paging restriction provided in the {@code Pageable} object.
      * and select return entity properties with FetchPath string.
      * @param pageable
      * @param selects

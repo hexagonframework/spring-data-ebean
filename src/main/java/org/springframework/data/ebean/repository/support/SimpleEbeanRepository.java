@@ -15,9 +15,8 @@
  */
 package org.springframework.data.ebean.repository.support;
 
-import io.ebean.EbeanServer;
-import io.ebean.OrderBy;
-import io.ebean.PagedList;
+import io.ebean.*;
+import io.ebean.text.PathProperties;
 import org.springframework.data.domain.*;
 import org.springframework.data.ebean.repository.EbeanRepository;
 import org.springframework.stereotype.Repository;
@@ -68,6 +67,41 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     public EbeanServer db(EbeanServer db) {
         this.ebeanServer = db;
         return this.ebeanServer;
+    }
+
+    @Override
+    public Query<T> query() {
+        return db().find(getEntityType());
+    }
+
+    @Override
+    public Query<T> queryWithOql(String oql) {
+        return db().createQuery(getEntityType(), oql);
+    }
+
+    @Override
+    public Query<T> queryWithSql(String sql) {
+        return db().findNative(getEntityType(), sql);
+    }
+
+    @Override
+    public Query<T> namedQuery(String queryName) {
+        return db().createNamedQuery(getEntityType(), queryName);
+    }
+
+    @Override
+    public SqlQuery sqlQuery(String sql) {
+        return db().createSqlQuery(sql);
+    }
+
+    @Override
+    public UpdateQuery<T> updateQuery() {
+        return db().update(getEntityType());
+    }
+
+    @Override
+    public SqlUpdate sqlUpdate(String sql) {
+        return db().createSqlUpdate(sql);
     }
 
     public Class<T> getEntityType() {
@@ -172,6 +206,16 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     @Override
     public T findOne(ID id, String selects) {
         return db().find(getEntityType()).select(selects).where().idEq(id).findUnique();
+    }
+
+    @Override
+    public T findOneByProperty(String propertyName, Object propertyValue) {
+        return db().find(getEntityType()).where().eq(propertyName, propertyValue).findOne();
+    }
+
+    @Override
+    public T findOneByProperty(String propertyName, Object propertyValue, String selects) {
+        return db().find(getEntityType()).apply(PathProperties.parse(selects)).where().eq(propertyName, propertyValue).findOne();
     }
 
     @Override
