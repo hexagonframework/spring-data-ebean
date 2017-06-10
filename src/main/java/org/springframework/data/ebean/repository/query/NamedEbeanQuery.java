@@ -32,17 +32,17 @@ import javax.persistence.PersistenceException;
  *
  * @author Xuegui Yuan
  */
-final class NativeEbeanNamedQuery extends AbstractEbeanQuery {
+final class NamedEbeanQuery extends AbstractEbeanQuery {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NativeEbeanNamedQuery.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NamedEbeanQuery.class);
 
     private final String queryName;
     private Query query;
 
     /**
-     * Creates a new {@link NativeEbeanNamedQuery}.
+     * Creates a new {@link NamedEbeanQuery}.
      */
-    private NativeEbeanNamedQuery(EbeanQueryMethod method, EbeanServer ebeanServer, Query query) {
+    private NamedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, Query query) {
         super(method, ebeanServer);
 
         this.queryName = method.getNamedQueryName();
@@ -62,7 +62,7 @@ final class NativeEbeanNamedQuery extends AbstractEbeanQuery {
 
         try {
             Query query = ebeanServer.createNamedQuery(method.getEntityInformation().getJavaType(), queryName);
-            return new NativeEbeanNamedQuery(method, ebeanServer, query);
+            return new NamedEbeanQuery(method, ebeanServer, query);
         } catch (PersistenceException e) {
             LOG.debug("Did not find named query {}", queryName);
             return null;

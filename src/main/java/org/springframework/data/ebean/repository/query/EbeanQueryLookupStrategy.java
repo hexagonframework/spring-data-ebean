@@ -214,7 +214,7 @@ public final class EbeanQueryLookupStrategy {
                         evaluationContextProvider);
             }
 
-            query = NativeEbeanNamedQuery.lookupFrom(method, ebeanServer);
+            query = NamedEbeanQuery.lookupFrom(method, ebeanServer);
 
             if (null != query) {
                 return query;
