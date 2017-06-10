@@ -20,7 +20,7 @@
 ## 为什么选择[Ebean ORM](https://ebean-orm.github.io)
 
 基于JPA注解的轻量级ORM实现，支持Mybatis不支持的实体关联，但相比Hibernate/JPA具有Mybatis的查询灵活性，支持查询[partial objects](https://ebean-orm.github.io/docs/query/partialobjects)。
-聚合根实体保存(保存聚合根实体同时保存聚合根上的关联实体、值对象)和partial objects特性非常适合DDD的领域模型仓储接口的技术实现技术。
+对于实现领域模型仓储接口的聚合根实体保存(保存聚合根实体同时保存聚合根上的关联实体、值对象)和partial objects等技术要求，Ebean都非常适用。
 [查看更多详情](http://ebean-orm.github.io/architecture/compare-jpa)
 
 ## Maven cental链接
