@@ -33,10 +33,20 @@ import java.util.List;
 @NoRepositoryBean
 public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID> {
 
+    /**
+     * Return the current EbeanServer
+     *
+     * @return the current EbeanServer
+     */
     EbeanServer db();
 
+    /**
+     * Set the current EbeanServer
+     *
+     * @param db current EbeanServer
+     * @return the current EbeanServer
+     */
     EbeanServer db(EbeanServer db);
-
 
     /*
      * (non-Javadoc)
@@ -62,14 +72,44 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
      */
     <S extends T> List<S> save(Iterable<S> entities);
 
+    /**
+     * Retrieves an entity by its id and select return entity properties with FetchPath string
+     * @param id ID
+     * @param selects FetchPath string
+     * @return the entity only select/fetch with FetchPath string
+     */
     T findOne(ID id, String selects);
 
+    /**
+     * Returns all entities and select return entity properties with FetchPath string
+     * @param selects FetchPath string
+     * @return all entities only select/fetch with FetchPath string
+     */
     List<T> findAll(String selects);
 
+    /**
+     * Returns all entities in ids and select return entity properties with FetchPath string
+     * @param ids ID list
+     * @param selects FetchPath string
+     * @return all entities by id in ids and select/fetch with FetchPath string
+     */
     List<T> findAll(Iterable<ID> ids, String selects);
 
+    /**
+     * Returns all entities sorted by the given options and select return entity properties with FetchPath string.
+     * @param sort
+     * @param selects
+     * @return all entities sorted and select/fetch with FetchPath string
+     */
     List<T> findAll(Sort sort, String selects);
 
+    /**
+     * Returns a {@link Page} of entities meeting the paging restriction provided in the {@code Pageable} object
+     * and select return entity properties with FetchPath string.
+     * @param pageable
+     * @param selects
+     * @return a page of entities select/fetch with FetchPath string
+     */
     Page<T> findAll(Pageable pageable, String selects);
 
 }
