@@ -41,7 +41,7 @@ public @interface EnableEbeanRepositories {
 
     /**
      * Alias for the {@link #basePackages()} attribute. Allows for more concise annotation declarations e.g.:
-     * {@code @EnableJpaRepositories("org.my.pkg")} instead of {@code @EnableJpaRepositories(basePackages="org.my.pkg")}.
+     * {@code @EnableEbeanRepositories("org.my.pkg")} instead of {@code @EnableEbeanRepositories(basePackages="org.my.pkg")}.
      */
     String[] value() default {};
 
