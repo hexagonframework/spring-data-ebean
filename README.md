@@ -16,7 +16,7 @@ The primary goal of the [Spring Data](http://projects.spring.io/spring-data) pro
 * Possibility to integrate custom repository code
 * Easy Spring integration with custom namespace
 
-## Why choose[Ebean ORM](https://ebean-orm.github.io)
+## Why choose [Ebean ORM](https://ebean-orm.github.io)
 
 [see](http://ebean-orm.github.io/architecture/compare-jpa)
 
