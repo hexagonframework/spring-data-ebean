@@ -184,4 +184,58 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
      */
     Page<T> findAll(Pageable pageable, String selects);
 
+    /**
+     * Returns a single entity matching the given {@link ExampleExpression} or {@literal null} if none was found.
+     *
+     * @param example can be {@literal null}.
+     * @return a single entity matching the given {@link ExampleExpression} or {@literal null} if none was found.
+     * @throws org.springframework.dao.IncorrectResultSizeDataAccessException if the Example yields more than one result.
+     */
+    T findOne(ExampleExpression example);
+
+    /**
+     * Returns a {@link Page} of entities matching the given {@link ExampleExpression}. In case no match could be found, an empty
+     * {@link Page} is returned.
+     *
+     * @param example  can be {@literal null}.
+     * @param pageable can be {@literal null}.
+     * @return a {@link Page} of entities matching the given {@link ExampleExpression}.
+     */
+    Page<T> findAll(ExampleExpression example, Pageable pageable);
+
+    /**
+     * Returns all entities matching the given {@link ExampleExpression}. In case no match could be found an empty {@link Iterable}
+     * is returned.
+     *
+     * @param example can be {@literal null}.
+     * @return all entities matching the given {@link ExampleExpression}.
+     */
+    List<T> findAll(ExampleExpression example);
+
+    /**
+     * Returns all entities matching the given {@link ExampleExpression} applying the given {@link Sort}. In case no match could be
+     * found an empty {@link Iterable} is returned.
+     *
+     * @param example can be {@literal null}.
+     * @param sort    the {@link Sort} specification to sort the results by, must not be {@literal null}.
+     * @return all entities matching the given {@link ExampleExpression}.
+     * @since 1.10
+     */
+    List<T> findAll(ExampleExpression example, Sort sort);
+
+    /**
+     * Returns the number of instances matching the given {@link ExampleExpression}.
+     *
+     * @param example the {@link ExampleExpression} to count instances for, can be {@literal null}.
+     * @return the number of instances matching the {@link ExampleExpression}.
+     */
+    long count(ExampleExpression example);
+
+    /**
+     * Checks whether the data store contains elements that match the given {@link ExampleExpression}.
+     *
+     * @param example the {@link ExampleExpression} to use for the existence check, can be {@literal null}.
+     * @return {@literal true} if the data store contains elements that match the given {@link ExampleExpression}.
+     */
+    boolean exists(ExampleExpression example);
 }
