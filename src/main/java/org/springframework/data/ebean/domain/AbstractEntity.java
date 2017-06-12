@@ -58,11 +58,9 @@ public abstract class AbstractEntity<PK extends Serializable> implements Persist
     }
 
     /**
-     * Must be {@link Transient} in order to ensure that no JPA provider complains because of a missing setter.
-     *
      * @see org.springframework.data.domain.Persistable#isNew()
      */
-    @Transient // DATAJPA-622
+    @Transient
     public boolean isNew() {
         return null == getId();
     }

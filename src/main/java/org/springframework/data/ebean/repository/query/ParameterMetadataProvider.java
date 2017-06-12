@@ -153,7 +153,7 @@ class ParameterMetadataProvider {
          * @param value
          * @return
          */
-        private static Collection<?> toCollection(Object value) {
+        public static Collection<?> toCollection(Object value) {
             if (value == null) {
                 return null;
             }
