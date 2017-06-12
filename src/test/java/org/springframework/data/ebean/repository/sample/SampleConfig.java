@@ -2,6 +2,7 @@ package org.springframework.data.ebean.repository.sample;
 
 import io.ebean.EbeanServer;
 import io.ebean.EbeanServerFactory;
+import io.ebean.config.CurrentUserProvider;
 import io.ebean.config.ServerConfig;
 import io.ebean.spring.txn.SpringJdbcTransactionManager;
 import org.springframework.context.annotation.Bean;
@@ -49,6 +50,13 @@ public class SampleConfig {
         config.setRegister(true);
         config.setAutoCommitMode(false);
         config.setExpressionNativeIlike(true);
+
+        config.setCurrentUserProvider(new CurrentUserProvider() {
+            @Override
+            public Object currentUser() {
+                return "test"; // just for test, can rewrite to get the currentUser from threadLocal
+            }
+        });
 
         return config;
     }
