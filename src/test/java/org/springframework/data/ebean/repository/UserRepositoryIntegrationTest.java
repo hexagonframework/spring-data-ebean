@@ -1,8 +1,11 @@
 package org.springframework.data.ebean.repository;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.ebean.domain.sample.User;
 import org.springframework.data.ebean.repository.sample.SampleConfig;
 import org.springframework.data.ebean.repository.sample.UserRepository;
@@ -24,12 +27,19 @@ public class UserRepositoryIntegrationTest {
     @Autowired
     UserRepository repository;
 
-    @Test
-    public void sampleTestCase() {
-        User user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
+    // Test fixture
+    User user;
+
+    @Before
+    public void setUp() throws Exception {
+        user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
         user.setAge(29);
         user = repository.save(user);
+    }
 
+
+    @Test
+    public void sampleTestCase() {
         // test find all orm query
         List<User> result1 = (List<User>) repository.findAll();
         result1.forEach(it -> System.out.println(it));
@@ -97,13 +107,26 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     public void testFindByMethodName() {
-        User user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
-        user.setAge(29);
-        user = repository.save(user);
-
         List<User> result1 = repository.findAllByEmailAddressAndLastname("yuanxuegui@163.com", "Yuan");
         assertEquals(1, result1.size());
         assertEquals("Yuan", result1.get(0).getLastname());
         assertThat(result1, hasItem(user));
+    }
+
+    @Test
+    public void testFindByExample() {
+        User u = new User();
+        u.setEmailAddress("YUANXUEGUI");
+        List<User> result1 = repository.findAll(Example.of(u, ExampleMatcher.matchingAll()
+                .withIgnoreCase(true)
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)));
+        assertEquals(1, result1.size());
+        assertEquals("Yuan", result1.get(0).getLastname());
+        assertThat(result1, hasItem(user));
+
+        List<User> result2 = repository.findAll(Example.of(u, ExampleMatcher.matchingAll()
+                .withIgnoreCase(false)
+                .withStringMatcher(ExampleMatcher.StringMatcher.EXACT)));
+        assertEquals(0, result2.size());
     }
 }

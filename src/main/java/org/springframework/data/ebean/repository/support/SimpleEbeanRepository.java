@@ -17,11 +17,15 @@ package org.springframework.data.ebean.repository.support;
 
 import io.ebean.*;
 import io.ebean.text.PathProperties;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.ebean.convert.ExampleExpressionBuilder;
+import org.springframework.data.ebean.convert.PageListOrderConverter;
 import org.springframework.data.ebean.repository.EbeanRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -190,28 +194,17 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
 
     @Override
     public List<T> findAll(Sort sort) {
-        return db().find(getEntityType()).setOrder(ebeanOrderFromSpringDataSort(sort)).findList();
+        return db().find(getEntityType()).setOrder(PageListOrderConverter.convertToEbeanOrder(sort)).findList();
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
-        return springDataPageFromEbeanPageList(db().find(getEntityType()).setMaxRows(pageable.getPageSize()).setFirstRow(pageable.getOffset()).setOrder(ebeanOrderFromSpringDataSort(pageable.getSort())).findPagedList(), pageable.getSort());
+        return PageListOrderConverter.convertToSpringDataPage(db().find(getEntityType())
+                .setMaxRows(pageable.getPageSize()).setFirstRow(pageable.getOffset())
+                .setOrder(PageListOrderConverter.convertToEbeanOrder(pageable.getSort()))
+                .findPagedList(), pageable.getSort());
     }
 
-    protected OrderBy<T> ebeanOrderFromSpringDataSort(Sort sort) {
-        List<String> list = new ArrayList<>();
-        while (sort.iterator().hasNext()) {
-            Sort.Order so = sort.iterator().next();
-            list.add(so.getDirection() == Sort.Direction.ASC ? so.getProperty() + " asc" : so.getProperty() + " desc");
-        }
-        return new OrderBy<T>(StringUtils.collectionToCommaDelimitedString(list));
-    }
-
-    protected Page<T> springDataPageFromEbeanPageList(PagedList pagedList, Sort sort) {
-        return new PageImpl<T>(pagedList.getList(),
-                new PageRequest(pagedList.getPageIndex(), pagedList.getPageSize(), sort),
-                pagedList.getTotalCount());
-    }
 
     @Override
     public T findOne(ID id, String selects) {
@@ -225,7 +218,8 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
 
     @Override
     public T findOneByProperty(String propertyName, Object propertyValue, String selects) {
-        return db().find(getEntityType()).apply(PathProperties.parse(selects)).where().eq(propertyName, propertyValue).findOne();
+        return db().find(getEntityType()).apply(PathProperties.parse(selects)).where()
+                .eq(propertyName, propertyValue).findOne();
     }
 
     @Override
@@ -240,41 +234,54 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
 
     @Override
     public List<T> findAll(Sort sort, String selects) {
-        return db().find(getEntityType()).select(selects).setOrder(ebeanOrderFromSpringDataSort(sort)).findList();
+        return db().find(getEntityType()).select(selects).setOrder(PageListOrderConverter.convertToEbeanOrder(sort)).findList();
     }
 
     @Override
     public Page<T> findAll(Pageable pageable, String selects) {
-        return springDataPageFromEbeanPageList(db().find(getEntityType()).select(selects).setMaxRows(pageable.getPageSize()).setFirstRow(pageable.getOffset()).setOrder(ebeanOrderFromSpringDataSort(pageable.getSort())).findPagedList(), pageable.getSort());
+        return PageListOrderConverter.convertToSpringDataPage(db().find(getEntityType())
+                .select(selects).setMaxRows(pageable.getPageSize())
+                .setFirstRow(pageable.getOffset())
+                .setOrder(PageListOrderConverter.convertToEbeanOrder(pageable.getSort()))
+                .findPagedList(), pageable.getSort());
     }
 
     @Override
-    public T findOne(ExampleExpression example) {
-        return db().find(getEntityType()).where(example).findOne();
+    public <S extends T> S findOne(Example<S> example) {
+        return db().find(example.getProbeType())
+                .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findOne();
     }
 
     @Override
-    public Page<T> findAll(ExampleExpression example, Pageable pageable) {
-        return springDataPageFromEbeanPageList(db().find(getEntityType()).where(example).setMaxRows(pageable.getPageSize()).setFirstRow(pageable.getOffset()).setOrder(ebeanOrderFromSpringDataSort(pageable.getSort())).findPagedList(), pageable.getSort());
+    public <S extends T> List<S> findAll(Example<S> example) {
+        return db().find(example.getProbeType())
+                .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findList();
     }
 
     @Override
-    public List<T> findAll(ExampleExpression example) {
-        return db().find(getEntityType()).where(example).findList();
+    public <S extends T> List<S> findAll(Example<S> example, Sort sort) {
+        return db().find(example.getProbeType())
+                .where(ExampleExpressionBuilder.exampleExpression(db(), example))
+                .setOrder(PageListOrderConverter.convertToEbeanOrder(sort))
+                .findList();
     }
 
     @Override
-    public List<T> findAll(ExampleExpression example, Sort sort) {
-        return db().find(getEntityType()).where(example).setOrder(ebeanOrderFromSpringDataSort(sort)).findList();
+    public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
+        return PageListOrderConverter.convertToSpringDataPage(db().find(example.getProbeType())
+                .where(ExampleExpressionBuilder.exampleExpression(db(), example))
+                .findPagedList(), pageable.getSort());
     }
 
     @Override
-    public long count(ExampleExpression example) {
-        return db().find(getEntityType()).where(example).findCount();
+    public <S extends T> long count(Example<S> example) {
+        return db().find(example.getProbeType())
+                .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount();
     }
 
     @Override
-    public boolean exists(ExampleExpression example) {
-        return db().find(getEntityType()).where(example).findCount() > 0;
+    public <S extends T> boolean exists(Example<S> example) {
+        return db().find(example.getProbeType())
+                .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount() > 0;
     }
 }

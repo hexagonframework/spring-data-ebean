@@ -15,6 +15,8 @@
  */
 package org.springframework.data.ebean.domain.sample;
 
+import io.ebean.annotation.CreatedTimestamp;
+
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Date;
@@ -38,7 +40,8 @@ public class User {
     private String lastname;
     private int age;
     private boolean active;
-    @Temporal(TemporalType.TIMESTAMP)
+
+    @CreatedTimestamp
     private Date createdAt;
 
     @Column(nullable = false, unique = true)
@@ -89,7 +92,6 @@ public class User {
         this.roles = new HashSet<Role>(Arrays.asList(roles));
         this.colleagues = new HashSet<User>();
         this.attributes = new HashSet<String>();
-        this.createdAt = new Date();
     }
 
     /**
