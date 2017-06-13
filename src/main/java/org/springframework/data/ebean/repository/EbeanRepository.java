@@ -77,7 +77,7 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
      * @param queryName
      * @return
      */
-    Query<T> namedQuery(String queryName);
+    Query<T> namedQueryOf(String queryName);
 
     /**
      * Return an SqlQuery for performing native SQL queries that return SqlRow's.
@@ -85,7 +85,7 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
      * @param sql the sql to create SqlQuery using native SQL
      * @return the created SqlQuery.
      */
-    SqlQuery sqlQuery(String sql);
+    SqlQuery sqlQueryOf(String sql);
 
     /**
      * Return an UpdateQuery to perform a bulk update of many rows that match the query.
@@ -99,7 +99,21 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
      *
      * @return the created SqlUpdate using native SQL
      */
-    SqlUpdate sqlUpdate(String sql);
+    SqlUpdate sqlUpdateOf(String sql);
+
+    /**
+     * Return a ExampleExpression using example.
+     *
+     * @return the created ExampleExpression using example
+     */
+    ExampleExpression exampleOf(Object example);
+
+    /**
+     * Return a ExampleExpression specifying more options.
+     *
+     * @return the created ExampleExpression specifying more options
+     */
+    ExampleExpression exampleOf(Object example, boolean caseInsensitive, LikeType likeType);
 
     /*
      * (non-Javadoc)

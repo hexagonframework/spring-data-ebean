@@ -85,12 +85,12 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     }
 
     @Override
-    public Query<T> namedQuery(String queryName) {
+    public Query<T> namedQueryOf(String queryName) {
         return db().createNamedQuery(getEntityType(), queryName);
     }
 
     @Override
-    public SqlQuery sqlQuery(String sql) {
+    public SqlQuery sqlQueryOf(String sql) {
         return db().createSqlQuery(sql);
     }
 
@@ -100,8 +100,18 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     }
 
     @Override
-    public SqlUpdate sqlUpdate(String sql) {
+    public SqlUpdate sqlUpdateOf(String sql) {
         return db().createSqlUpdate(sql);
+    }
+
+    @Override
+    public ExampleExpression exampleOf(Object example) {
+        return db().getExpressionFactory().exampleLike(example);
+    }
+
+    @Override
+    public ExampleExpression exampleOf(Object example, boolean caseInsensitive, LikeType likeType) {
+        return db().getExpressionFactory().exampleLike(example, caseInsensitive, likeType);
     }
 
     public Class<T> getEntityType() {
