@@ -16,8 +16,7 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import io.ebean.Query;
-import org.springframework.data.ebean.repository.EbeanQuery;
+import org.springframework.data.ebean.annotations.Query;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -30,7 +29,7 @@ import org.springframework.util.Assert;
 import java.lang.reflect.Method;
 
 /**
- * EbeanQuery lookup strategy to execute finders.
+ * Query lookup strategy to execute finders.
  *
  * @author Xuegui Yuan
  */
@@ -128,7 +127,7 @@ public final class EbeanQueryLookupStrategy {
 
     /**
      * {@link QueryLookupStrategy} to try to detect a declared query first (
-     * {@link EbeanQuery}, ebean named query). In case none is found we fall back on
+     * {@link Query}, ebean named query). In case none is found we fall back on
      * query creation.
      *
      * @author Oliver Gierke
@@ -169,7 +168,7 @@ public final class EbeanQueryLookupStrategy {
     }
 
     /**
-     * {@link QueryLookupStrategy} that tries to detect a declared query declared via {@link Query} annotation followed by
+     * {@link QueryLookupStrategy} that tries to detect a declared query declared via {@link io.ebean.Query} annotation followed by
      * a ebean named query lookup.
      *
      * @author Oliver Gierke

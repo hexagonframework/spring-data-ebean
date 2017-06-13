@@ -16,16 +16,15 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import io.ebean.Query;
-import org.springframework.data.ebean.repository.EbeanQuery;
+import org.springframework.data.ebean.annotations.Query;
 import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
  * {@link RepositoryQuery} implementation that inspects a {@link org.springframework.data.repository.query.QueryMethod}
- * for the existence of an {@link EbeanQuery} annotation and creates a Ebean
- * {@link Query} from it.
+ * for the existence of an {@link Query} annotation and creates a Ebean
+ * {@link io.ebean.Query} from it.
  *
  * @author Xuegui Yuan
  */

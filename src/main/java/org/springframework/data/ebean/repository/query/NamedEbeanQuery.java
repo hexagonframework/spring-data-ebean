@@ -16,10 +16,9 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import io.ebean.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.ebean.repository.EbeanQuery;
+import org.springframework.data.ebean.annotations.Query;
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.RepositoryQuery;
 
@@ -27,8 +26,8 @@ import javax.persistence.PersistenceException;
 
 /**
  * {@link RepositoryQuery} implementation that inspects a {@link QueryMethod}
- * for the existence of an {@link EbeanQuery} annotation and creates a Ebean native
- * {@link Query} from it.
+ * for the existence of an {@link Query} annotation and creates a Ebean native
+ * {@link io.ebean.Query} from it.
  *
  * @author Xuegui Yuan
  */
@@ -37,12 +36,12 @@ final class NamedEbeanQuery extends AbstractEbeanQuery {
     private static final Logger LOG = LoggerFactory.getLogger(NamedEbeanQuery.class);
 
     private final String queryName;
-    private Query query;
+    private io.ebean.Query query;
 
     /**
      * Creates a new {@link NamedEbeanQuery}.
      */
-    private NamedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, Query query) {
+    private NamedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, io.ebean.Query query) {
         super(method, ebeanServer);
 
         this.queryName = method.getNamedQueryName();
@@ -61,7 +60,7 @@ final class NamedEbeanQuery extends AbstractEbeanQuery {
         LOG.debug("Looking up named query {}", queryName);
 
         try {
-            Query query = ebeanServer.createNamedQuery(method.getEntityInformation().getJavaType(), queryName);
+            io.ebean.Query query = ebeanServer.createNamedQuery(method.getEntityInformation().getJavaType(), queryName);
             return new NamedEbeanQuery(method, ebeanServer, query);
         } catch (PersistenceException e) {
             LOG.debug("Did not find named query {}", queryName);

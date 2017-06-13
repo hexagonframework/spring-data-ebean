@@ -109,31 +109,31 @@ public class User {
 
 ```java
 public interface UserRepository extends EbeanRepository<User, Long> {
-    @EbeanQuery("where emailAddress = :emailAddress order by id desc")
+    @Query("where emailAddress = :emailAddress order by id desc")
     User findUserByEmailAddressEqualsOql(@Param("emailAddress") String emailAddress);
 
-    @EbeanQuery("select (firstname,lastname,address) fetch manager (lastname) where lastname = :lastname order by id desc")
+    @Query("select (firstname,lastname,address) fetch manager (lastname) where lastname = :lastname order by id desc")
     List<User> findByLastnameOql(@Param("lastname") String lastname);
 
-    @EbeanQuery(nativeQuery = true, value = "select * from user where email_address = :emailAddress order by id desc")
+    @Query(nativeQuery = true, value = "select * from user where email_address = :emailAddress order by id desc")
     User findUserByEmailAddressEquals(@Param("emailAddress") String emailAddress);
 
-    @EbeanQuery(nativeQuery = true, value = "select * from user where lastname = :lastname order by id desc")
+    @Query(nativeQuery = true, value = "select * from user where lastname = :lastname order by id desc")
     List<User> findUsersByLastnameEquals(@Param("lastname") String lastname);
 
-    @EbeanQuery(nativeQuery = true, value = "update user set email_address = :newEmail where email_address = :oldEmail")
-    @EbeanModifying
+    @Query(nativeQuery = true, value = "update user set email_address = :newEmail where email_address = :oldEmail")
+    @Modifying
     int changeUserEmailAddress(@Param("oldEmail") String oldEmail, @Param("newEmail") String newEmail);
 
-    @EbeanQuery("delete from user where emailAddress = :emailAddress")
-    @EbeanModifying
+    @Query("delete from user where emailAddress = :emailAddress")
+    @Modifying
     int deleteUserByEmailAddressOql(@Param("emailAddress") String emailAddress);
 
-    @EbeanQuery(nativeQuery = true, value = "delete from user where email_address = :emailAddress")
-    @EbeanModifying
+    @Query(nativeQuery = true, value = "delete from user where email_address = :emailAddress")
+    @Modifying
     int deleteUserByEmailAddress(@Param("emailAddress") String emailAddress);
 
-    @EbeanQuery(name = "withManagerById")
+    @Query(name = "withManagerById")
     List<User> findByLastnameNamedOql(@Param("lastname") String lastname);
     
     List<User> findAllByEmailAddressAndLastname(@Param("emailAddress") String emailAddress, @Param("lastname") String lastname);

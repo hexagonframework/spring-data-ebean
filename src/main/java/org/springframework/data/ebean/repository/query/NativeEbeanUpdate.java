@@ -16,8 +16,7 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import io.ebean.Query;
-import org.springframework.data.ebean.repository.EbeanQuery;
+import org.springframework.data.ebean.annotations.Query;
 import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryMethod;
@@ -26,8 +25,8 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
  * {@link RepositoryQuery} implementation that inspects a {@link QueryMethod}
- * for the existence of an {@link EbeanQuery} annotation and creates a Ebean native
- * {@link Query} from it.
+ * for the existence of an {@link Query} annotation and creates a Ebean native
+ * {@link io.ebean.Query} from it.
  *
  * @author Xuegui Yuan
  */

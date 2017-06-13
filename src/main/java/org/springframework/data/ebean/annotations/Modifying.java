@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.data.ebean.repository;
+package org.springframework.data.ebean.annotations;
 
 import java.lang.annotation.*;
 
@@ -25,5 +25,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
-public @interface EbeanModifying {
+public @interface Modifying {
 }

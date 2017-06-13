@@ -17,8 +17,8 @@ package org.springframework.data.ebean.repository.query;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.data.ebean.repository.EbeanModifying;
-import org.springframework.data.ebean.repository.EbeanQuery;
+import org.springframework.data.ebean.annotations.Modifying;
+import org.springframework.data.ebean.annotations.Query;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.query.QueryMethod;
@@ -58,7 +58,7 @@ public class EbeanQueryMethod extends QueryMethod {
      */
     @Override
     public boolean isModifyingQuery() {
-        return null != AnnotationUtils.findAnnotation(method, EbeanModifying.class);
+        return null != AnnotationUtils.findAnnotation(method, Modifying.class);
     }
 
     /**
@@ -71,7 +71,7 @@ public class EbeanQueryMethod extends QueryMethod {
     }
 
     /**
-     * Returns the query string declared in a {@link EbeanQuery} annotation or {@literal null} if neither the annotation found
+     * Returns the query string declared in a {@link Query} annotation or {@literal null} if neither the annotation found
      * nor the attribute was specified.
      *
      * @return
@@ -101,7 +101,7 @@ public class EbeanQueryMethod extends QueryMethod {
     }
 
     /**
-     * Returns the {@link EbeanQuery} annotation's attribute casted to the given type or default value if no annotation
+     * Returns the {@link Query} annotation's attribute casted to the given type or default value if no annotation
      * available.
      *
      * @param attribute
@@ -109,7 +109,7 @@ public class EbeanQueryMethod extends QueryMethod {
      * @return
      */
     private <T> T getAnnotationValue(String attribute, Class<T> type) {
-        return getMergedOrDefaultAnnotationValue(attribute, EbeanQuery.class, type);
+        return getMergedOrDefaultAnnotationValue(attribute, Query.class, type);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

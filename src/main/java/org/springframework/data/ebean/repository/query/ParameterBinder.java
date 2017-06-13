@@ -87,7 +87,7 @@ public class ParameterBinder {
      */
     public Object bind(Object query) {
 
-        Assert.notNull(query, "EbeanQuery must not be null!");
+        Assert.notNull(query, "Query must not be null!");
 
         int bindableParameterIndex = 0;
         int queryParameterPosition = 1;

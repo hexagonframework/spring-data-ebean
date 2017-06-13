@@ -52,7 +52,7 @@ public class StringQueryParameterBinder extends ParameterBinder {
 
     /*
      * (non-Javadoc)
-     * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.EbeanQuery, org.springframework.data.repository.query.Parameter, java.lang.Object, int)
+     * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.Query, org.springframework.data.repository.query.Parameter, java.lang.Object, int)
      */
     @Override
     protected void bind(Object ebeanQuery, Parameter methodParameter, Object value, int position) {
@@ -71,7 +71,7 @@ public class StringQueryParameterBinder extends ParameterBinder {
      */
     private ParameterBinding getBindingFor(Object ebeanQuery, int position, Parameter parameter) {
 
-        Assert.notNull(ebeanQuery, "EbeanQuery must not be null!");
+        Assert.notNull(ebeanQuery, "Query must not be null!");
         Assert.notNull(parameter, "Parameter must not be null!");
 
         if (parameter.isNamedParameter()) {

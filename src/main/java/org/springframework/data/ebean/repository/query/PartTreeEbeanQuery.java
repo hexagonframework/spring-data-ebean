@@ -76,7 +76,7 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
     }
 
     /**
-     * EbeanQuery preparer to create {@link Query} instances and potentially cache them.
+     * Query preparer to create {@link Query} instances and potentially cache them.
      *
      * @author Xuegui Yuan
      */

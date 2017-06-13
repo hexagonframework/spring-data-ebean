@@ -32,7 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * EbeanQuery creator to create a {@link io.ebean.Expression} from a {@link PartTree}.
+ * Query creator to create a {@link io.ebean.Expression} from a {@link PartTree}.
  *
  * @author Xuegui Yuan
  */

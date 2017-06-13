@@ -62,7 +62,7 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
 
     /*
      * (non-Javadoc)
-     * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.EbeanQuery)
+     * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.Query)
      */
     @Override
     public Object bind(Object ebeanQuery) {

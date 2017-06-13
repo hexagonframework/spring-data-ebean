@@ -208,7 +208,7 @@ public abstract class EbeanQueryExecution {
             boolean isVoid = void.class.equals(returnType) || Void.class.equals(returnType);
             boolean isInt = int.class.equals(returnType) || Integer.class.equals(returnType);
 
-            Assert.isTrue(isInt || isVoid, "EbeanModifying queries can only use void or int/Integer as return type!");
+            Assert.isTrue(isInt || isVoid, "Modifying queries can only use void or int/Integer as return type!");
 
             this.ebeanServer = ebeanServer;
         }

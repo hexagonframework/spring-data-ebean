@@ -51,7 +51,7 @@ class StringQuery {
      */
     public StringQuery(String query) {
 
-        Assert.hasText(query, "EbeanQuery must not be null or empty!");
+        Assert.hasText(query, "Query must not be null or empty!");
 
         this.bindings = new ArrayList<ParameterBinding>();
         this.query = ParameterBindingParser.INSTANCE.parseParameterBindingsOfQueryIntoBindingsAndReturnCleanedQuery(query,

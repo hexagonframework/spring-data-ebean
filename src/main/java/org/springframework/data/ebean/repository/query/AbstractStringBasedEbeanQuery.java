@@ -47,7 +47,7 @@ abstract class AbstractStringBasedEbeanQuery extends AbstractEbeanQuery {
 
         super(method, ebeanServer);
 
-        Assert.hasText(queryString, "EbeanQuery string must not be null or empty!");
+        Assert.hasText(queryString, "Query string must not be null or empty!");
         Assert.notNull(evaluationContextProvider, "ExpressionEvaluationContextProvider must not be null!");
         Assert.notNull(parser, "Parser must not be null or empty!");
 
