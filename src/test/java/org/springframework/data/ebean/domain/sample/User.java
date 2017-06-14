@@ -15,7 +15,7 @@
  */
 package org.springframework.data.ebean.domain.sample;
 
-import io.ebean.annotation.CreatedTimestamp;
+import org.springframework.data.ebean.domain.AbstractEntity;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -31,18 +31,12 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
     private String firstname;
     private String lastname;
     private int age;
     private boolean active;
-
-    @CreatedTimestamp
-    private Date createdAt;
 
     @Column(nullable = false, unique = true)
     private String emailAddress;
@@ -92,22 +86,6 @@ public class User {
         this.roles = new HashSet<Role>(Arrays.asList(roles));
         this.colleagues = new HashSet<User>();
         this.attributes = new HashSet<String>();
-    }
-
-    /**
-     * @return the id
-     */
-    public Integer getId() {
-
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Integer id) {
-
-        this.id = id;
     }
 
     /**
@@ -277,17 +255,6 @@ public class User {
     public void setManager(User manager) {
 
         this.manager = manager;
-    }
-
-    /**
-     * @return the createdAt
-     */
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 
     /**

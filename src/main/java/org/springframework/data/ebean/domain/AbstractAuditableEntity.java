@@ -23,32 +23,30 @@ import org.joda.time.DateTime;
 import org.springframework.data.domain.Auditable;
 
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
 
 /**
  * Abstract base class for auditable entities. Stores the audition values in persistent fields.
  *
  * @param <U>  the auditing type. Typically some kind of user.
- * @param <PK> the type of the auditing type's idenifier
  * @author Xuegui Yuan
  */
 @MappedSuperclass
-public abstract class AbstractAuditableEntity<U, PK extends Serializable> extends AbstractEntity<PK>
-        implements Auditable<U, PK> {
+public abstract class AbstractAuditableEntity<U> extends AbstractEntity
+        implements Auditable<U, Long> {
 
     private static final long serialVersionUID = 141481953116476081L;
 
     @WhoCreated
-    private U createdBy;
+    U createdBy;
 
     @CreatedTimestamp
-    private DateTime createdDate;
+    DateTime createdDate;
 
     @WhoModified
-    private U lastModifiedBy;
+    U lastModifiedBy;
 
     @UpdatedTimestamp
-    private DateTime lastModifiedDate;
+    DateTime lastModifiedDate;
 
     /*
      * (non-Javadoc)

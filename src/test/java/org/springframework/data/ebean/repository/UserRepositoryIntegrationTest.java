@@ -32,11 +32,11 @@ public class UserRepositoryIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
+        repository.deleteAll();
         user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
         user.setAge(29);
         user = repository.save(user);
     }
-
 
     @Test
     public void sampleTestCase() {

@@ -22,29 +22,27 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-import java.io.Serializable;
 
 /**
  * Abstract base class for entities. Allows parameterization of id type, chooses auto-generation and implements
  * {@link #equals(Object)} and {@link #hashCode()} based on that id.
  *
- * @param <PK> the type of the identifier.
  * @author Xuegui Yuan
  */
 @MappedSuperclass
-public abstract class AbstractEntity<PK extends Serializable> implements Persistable<PK> {
+public abstract class AbstractEntity implements Persistable<Long> {
 
     private static final long serialVersionUID = -5554308939380869754L;
 
     @Id
     @GeneratedValue
-    private PK id;
+    protected Long id;
 
     /*
      * (non-Javadoc)
      * @see org.springframework.data.domain.Persistable#getId()
      */
-    public PK getId() {
+    public Long getId() {
         return id;
     }
 
@@ -53,7 +51,7 @@ public abstract class AbstractEntity<PK extends Serializable> implements Persist
      *
      * @param id the id to set
      */
-    protected void setId(final PK id) {
+    protected void setId(final Long id) {
         this.id = id;
     }
 
@@ -95,7 +93,7 @@ public abstract class AbstractEntity<PK extends Serializable> implements Persist
             return false;
         }
 
-        AbstractEntity<?> that = (AbstractEntity<?>) obj;
+        AbstractEntity that = (AbstractEntity) obj;
 
         return null == this.getId() ? false : this.getId().equals(that.getId());
     }
