@@ -15,7 +15,7 @@
  */
 package org.springframework.data.ebean.domain.sample;
 
-import org.springframework.data.ebean.domain.AbstractEntity;
+import org.springframework.data.ebean.domain.AbstractAuditableEntity;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "user")
-public class User extends AbstractEntity {
+public class User extends AbstractAuditableEntity {
 
     private String firstname;
     private String lastname;

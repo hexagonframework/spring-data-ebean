@@ -122,10 +122,6 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
         return entityType;
     }
 
-    public void setEntityType(Class<T> entityType) {
-        this.entityType = entityType;
-    }
-
     @Override
     public <S extends T> S save(S s) {
         db().save(s);

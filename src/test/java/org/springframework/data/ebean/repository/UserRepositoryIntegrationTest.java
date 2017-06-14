@@ -129,4 +129,11 @@ public class UserRepositoryIntegrationTest {
                 .withStringMatcher(ExampleMatcher.StringMatcher.EXACT)));
         assertEquals(0, result2.size());
     }
+
+    @Test
+    public void testAuditable() {
+        User u = repository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
+        assertEquals("test", u.getCreatedBy());
+        assertEquals("test", u.getLastModifiedBy());
+    }
 }

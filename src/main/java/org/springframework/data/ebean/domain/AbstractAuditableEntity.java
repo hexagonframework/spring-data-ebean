@@ -27,23 +27,22 @@ import javax.persistence.MappedSuperclass;
 /**
  * Abstract base class for auditable entities. Stores the audition values in persistent fields.
  *
- * @param <U>  the auditing type. Typically some kind of user.
  * @author Xuegui Yuan
  */
 @MappedSuperclass
-public abstract class AbstractAuditableEntity<U> extends AbstractEntity
-        implements Auditable<U, Long> {
+public abstract class AbstractAuditableEntity extends AbstractEntity
+        implements Auditable<String, Long> {
 
     private static final long serialVersionUID = 141481953116476081L;
 
     @WhoCreated
-    U createdBy;
+    String createdBy;
 
     @CreatedTimestamp
     DateTime createdDate;
 
     @WhoModified
-    U lastModifiedBy;
+    String lastModifiedBy;
 
     @UpdatedTimestamp
     DateTime lastModifiedDate;
@@ -53,7 +52,7 @@ public abstract class AbstractAuditableEntity<U> extends AbstractEntity
      * @see org.springframework.data.domain.Auditable#getCreatedBy()
      */
     @Override
-    public U getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
@@ -62,7 +61,7 @@ public abstract class AbstractAuditableEntity<U> extends AbstractEntity
      * @see org.springframework.data.domain.Auditable#setCreatedBy(java.lang.Object)
      */
     @Override
-    public void setCreatedBy(U createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -89,7 +88,7 @@ public abstract class AbstractAuditableEntity<U> extends AbstractEntity
      * @see org.springframework.data.domain.Auditable#getLastModifiedBy()
      */
     @Override
-    public U getLastModifiedBy() {
+    public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
@@ -98,7 +97,7 @@ public abstract class AbstractAuditableEntity<U> extends AbstractEntity
      * @see org.springframework.data.domain.Auditable#setLastModifiedBy(java.lang.Object)
      */
     @Override
-    public void setLastModifiedBy(U lastModifiedBy) {
+    public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
