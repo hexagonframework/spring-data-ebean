@@ -11,7 +11,7 @@
 
     <groupId>io.github.hexagonframework.data</groupId>
     <artifactId>spring-data-ebean</artifactId>
-    <version>1.1.0.RELEASE</version>
+    <version>1.2.0.RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Spring Data Ebean</name>
@@ -51,6 +51,7 @@
         <ebean.version>10.3.1</ebean.version>
         <ebean-spring-txn.version>10.1.1</ebean-spring-txn.version>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <guava.verion>20.0</guava.verion>
     </properties>
 
     <profiles>
@@ -210,6 +211,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.verion}</version>
         </dependency>
 
     </dependencies>

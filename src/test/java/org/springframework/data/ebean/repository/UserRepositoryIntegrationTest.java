@@ -1,12 +1,15 @@
 package org.springframework.data.ebean.repository;
 
+import com.google.common.eventbus.Subscribe;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.ebean.domain.guava.SimpleGuavaDomainEventPublisher;
 import org.springframework.data.ebean.domain.sample.User;
+import org.springframework.data.ebean.domain.sample.UserEvent;
 import org.springframework.data.ebean.repository.sample.SampleConfig;
 import org.springframework.data.ebean.repository.sample.UserRepository;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,6 +35,12 @@ public class UserRepositoryIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
+        SimpleGuavaDomainEventPublisher.getInstance().register(new Object() {
+            @Subscribe
+            public void lister(UserEvent userEvent) {
+                System.out.println(userEvent.toString());
+            }
+        });
         repository.deleteAll();
         user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
         user.setAge(29);
@@ -135,5 +144,10 @@ public class UserRepositoryIntegrationTest {
         User u = repository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
         assertEquals("test", u.getCreatedBy());
         assertEquals("test", u.getLastModifiedBy());
+    }
+
+    @Test
+    public void testDomainEvent() {
+        user.register();
     }
 }

@@ -16,6 +16,7 @@
 package org.springframework.data.ebean.domain.sample;
 
 import org.springframework.data.ebean.domain.AbstractAuditableEntity;
+import org.springframework.data.ebean.domain.guava.SimpleGuavaDomainEventPublisher;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -283,6 +284,11 @@ public class User extends AbstractAuditableEntity {
      */
     public void setBinaryData(byte[] binaryData) {
         this.binaryData = binaryData;
+    }
+
+    public void register() {
+        SimpleGuavaDomainEventPublisher.getInstance()
+                .publish(new UserEvent(this.getEmailAddress()));
     }
 
     /*
