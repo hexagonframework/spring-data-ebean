@@ -1,5 +1,10 @@
 # spring-data-ebean
 [![Build Status](https://travis-ci.org/hexagonframework/spring-data-ebean.svg?branch=master)](https://travis-ci.org/hexagonframework/spring-data-ebean) [![Gitter chat](https://badges.gitter.im/hexagonframework/spring-data-ebean/gitter.png)](https://gitter.im/hexagonframework/spring-data-ebean)
+[![Maven Central : ebean](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean) 
+ 
+[Maven cental link](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
+
+
 > Ebean implementation for spring data.
 
 [简体中文](README_zh.md)
@@ -19,14 +24,6 @@ The primary goal of the [Spring Data](http://projects.spring.io/spring-data) pro
 ## Why choose [Ebean ORM](https://ebean-orm.github.io)
 
 [see](http://ebean-orm.github.io/architecture/compare-jpa)
-
-## Maven cental link
-
-[Maven central - spring-data-ebean](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
-
-## Current version
-
-[![Maven Central : ebean](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean) - spring-data-ebean
 
 ## Quick Start ##
 
