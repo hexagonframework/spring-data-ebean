@@ -15,42 +15,22 @@
  */
 package org.springframework.data.ebean.domain.sample;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Embeddable;
 
 /**
  * @author Thomas Darimont
  */
 @Embeddable
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Address {
-
     private String country;
     private String city;
     private String streetName;
     private String streetNo;
-
-    public Address() {
-    }
-
-    public Address(String country, String city, String streetName, String streetNo) {
-        this.country = country;
-        this.city = city;
-        this.streetName = streetName;
-        this.streetNo = streetNo;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public String getStreetName() {
-        return streetName;
-    }
-
-    public String getStreetNo() {
-        return streetNo;
-    }
 }

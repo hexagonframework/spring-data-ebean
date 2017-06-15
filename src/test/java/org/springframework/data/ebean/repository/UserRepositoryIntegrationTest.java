@@ -53,19 +53,19 @@ public class UserRepositoryIntegrationTest {
         List<User> result1 = (List<User>) repository.findAll();
         result1.forEach(it -> System.out.println(it));
         assertEquals(1, result1.size());
-        assertEquals("Yuan", result1.get(0).getLastname());
+        assertEquals("Yuan", result1.get(0).getFullName().getLastName());
         assertThat(result1, hasItem(user));
 
         // test find list orm query
         List<User> result2 = repository.findByLastnameOql("Yuan");
         assertEquals(1, result2.size());
-        assertEquals("Yuan", result2.get(0).getLastname());
+        assertEquals("Yuan", result2.get(0).getFullName().getLastName());
         assertThat(result2, hasItem(user));
 
         // test find list sql query
-        List<User> result3 = repository.findUsersByLastnameEquals("Yuan");
+        List<User> result3 = repository.findUsersByLastNameEquals("Yuan");
         assertEquals(1, result3.size());
-        assertEquals("Yuan", result3.get(0).getLastname());
+        assertEquals("Yuan", result3.get(0).getFullName().getLastName());
 
         // test find one orm query
         User result4 = repository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
@@ -97,9 +97,9 @@ public class UserRepositoryIntegrationTest {
         user = repository.save(user);
 
         // test find list named orm query
-        List<User> result10 = repository.findByLastnameNamedOql("Yuan");
+        List<User> result10 = repository.findByLastNameNamedOql("Yuan");
         assertEquals(1, result10.size());
-        assertEquals("Yuan", result10.get(0).getLastname());
+        assertEquals("Yuan", result10.get(0).getFullName().getLastName());
 
         // test find one orm query
         User result11 = repository.findUserByEmailAddressEquals("yuanxuegui@163.com");
@@ -116,9 +116,9 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     public void testFindByMethodName() {
-        List<User> result1 = repository.findAllByEmailAddressAndLastname("yuanxuegui@163.com", "Yuan");
+        List<User> result1 = repository.findAllByEmailAddressAndFullNameLastName("yuanxuegui@163.com", "Yuan");
         assertEquals(1, result1.size());
-        assertEquals("Yuan", result1.get(0).getLastname());
+        assertEquals("Yuan", result1.get(0).getFullName().getLastName());
         assertThat(result1, hasItem(user));
     }
 
@@ -130,7 +130,7 @@ public class UserRepositoryIntegrationTest {
                 .withIgnoreCase(true)
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)));
         assertEquals(1, result1.size());
-        assertEquals("Yuan", result1.get(0).getLastname());
+        assertEquals("Yuan", result1.get(0).getFullName().getLastName());
         assertThat(result1, hasItem(user));
 
         List<User> result2 = repository.findAll(Example.of(u, ExampleMatcher.matchingAll()

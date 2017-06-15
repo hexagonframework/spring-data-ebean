@@ -153,51 +153,51 @@ public class EbeanQueryCreator extends AbstractQueryCreator<Query, Expression> {
 				case BETWEEN:
 					ParameterMetadataProvider.ParameterMetadata<Comparable> first = provider.next(part);
 					ParameterMetadataProvider.ParameterMetadata<Comparable> second = provider.next(part);
-					return Expr.between(property.getSegment(), first.getParameterValue(), second.getParameterValue()); // property.getSegment()
+					return Expr.between(property.toDotPath(), first.getParameterValue(), second.getParameterValue()); // property.toDotPath()
 				case AFTER:
 				case GREATER_THAN:
-					return Expr.gt(property.getSegment(), provider.next(part).getParameterValue());
+					return Expr.gt(property.toDotPath(), provider.next(part).getParameterValue());
 				case GREATER_THAN_EQUAL:
-					return Expr.ge(property.getSegment(), provider.next(part).getParameterValue());
+					return Expr.ge(property.toDotPath(), provider.next(part).getParameterValue());
 				case BEFORE:
 				case LESS_THAN:
-					return Expr.lt(property.getSegment(), provider.next(part).getParameterValue());
+					return Expr.lt(property.toDotPath(), provider.next(part).getParameterValue());
 				case LESS_THAN_EQUAL:
-					return Expr.le(property.getSegment(), provider.next(part).getParameterValue());
+					return Expr.le(property.toDotPath(), provider.next(part).getParameterValue());
 				case IS_NULL:
-					return Expr.isNull(property.getSegment());
+					return Expr.isNull(property.toDotPath());
 				case IS_NOT_NULL:
-					return Expr.isNotNull(property.getSegment());
+					return Expr.isNotNull(property.toDotPath());
 				case NOT_IN:
 					ParameterMetadataProvider.ParameterMetadata<? extends Collection> pmNotIn = provider.next(part, Collection.class);
-					return Expr.not(Expr.in(property.getSegment(), ParameterMetadataProvider.ParameterMetadata.toCollection(pmNotIn.getParameterValue())));
+					return Expr.not(Expr.in(property.toDotPath(), ParameterMetadataProvider.ParameterMetadata.toCollection(pmNotIn.getParameterValue())));
 				case IN:
 					ParameterMetadataProvider.ParameterMetadata<? extends Collection> pmIn = provider.next(part, Collection.class);
-					return Expr.in(property.getSegment(), ParameterMetadataProvider.ParameterMetadata.toCollection(pmIn.getParameterValue()));
+					return Expr.in(property.toDotPath(), ParameterMetadataProvider.ParameterMetadata.toCollection(pmIn.getParameterValue()));
 				case STARTING_WITH:
-					return Expr.startsWith(property.getSegment(), (String) provider.next(part).getParameterValue());
+					return Expr.startsWith(property.toDotPath(), (String) provider.next(part).getParameterValue());
 				case ENDING_WITH:
-					return Expr.endsWith(property.getSegment(), (String) provider.next(part).getParameterValue());
+					return Expr.endsWith(property.toDotPath(), (String) provider.next(part).getParameterValue());
 				case CONTAINING:
-					return Expr.contains(property.getSegment(), (String) provider.next(part).getParameterValue());
+					return Expr.contains(property.toDotPath(), (String) provider.next(part).getParameterValue());
 				case NOT_CONTAINING:
-					return Expr.not(Expr.contains(property.getSegment(), (String) provider.next(part).getParameterValue()));
+					return Expr.not(Expr.contains(property.toDotPath(), (String) provider.next(part).getParameterValue()));
 				case LIKE:
-					return Expr.like(property.getSegment(), (String) provider.next(part).getParameterValue());
+					return Expr.like(property.toDotPath(), (String) provider.next(part).getParameterValue());
 				case NOT_LIKE:
-					return Expr.not(Expr.like(property.getSegment(), (String) provider.next(part).getParameterValue()));
+					return Expr.not(Expr.like(property.toDotPath(), (String) provider.next(part).getParameterValue()));
 				case TRUE:
-					return Expr.eq(property.getSegment(), true);
+					return Expr.eq(property.toDotPath(), true);
 				case FALSE:
-					return Expr.eq(property.getSegment(), false);
+					return Expr.eq(property.toDotPath(), false);
 				case SIMPLE_PROPERTY:
 					ParameterMetadataProvider.ParameterMetadata<Object> pmEquals = provider.next(part);
-					return pmEquals.isIsNullParameter() ? Expr.isNull(property.getSegment())
-							: Expr.eq(property.getSegment(), pmEquals.getParameterValue());
+					return pmEquals.isIsNullParameter() ? Expr.isNull(property.toDotPath())
+							: Expr.eq(property.toDotPath(), pmEquals.getParameterValue());
 				case NEGATING_SIMPLE_PROPERTY:
 					ParameterMetadataProvider.ParameterMetadata<Object> pmNot = provider.next(part);
-					return pmNot.isIsNullParameter() ? Expr.isNull(property.getSegment())
-							: Expr.ne(property.getSegment(), pmNot.getParameterValue());
+					return pmNot.isIsNullParameter() ? Expr.isNull(property.toDotPath())
+							: Expr.ne(property.toDotPath(), pmNot.getParameterValue());
 //				case IS_EMPTY:
 //					return root.isEmpty(part.getProperty().getSegment());
 //				case IS_NOT_EMPTY:

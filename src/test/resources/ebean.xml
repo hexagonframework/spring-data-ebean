@@ -3,9 +3,9 @@
     <entity class="org.springframework.data.ebean.domain.sample.User">
         <named-query name="withManagerById">
             <query>
-                select (firstname,lastname,address)
-                fetch manager (lastname)
-                where lastname = :lastname order by id desc
+                select (fullName,address)
+                fetch manager (lastName)
+                where fullName.lastName = :lastName order by id desc
             </query>
         </named-query>
         <raw-sql name="byEmailAddressEquals">

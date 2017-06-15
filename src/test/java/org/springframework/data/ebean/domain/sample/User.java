@@ -15,6 +15,8 @@
  */
 package org.springframework.data.ebean.domain.sample;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.ebean.domain.AbstractAuditableEntity;
 import org.springframework.data.ebean.eventbus.guava.SimpleGuavaDomainEventPublisher;
 
@@ -32,10 +34,12 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "user")
+@Getter
+@Setter
 public class User extends AbstractAuditableEntity {
 
-    private String firstname;
-    private String lastname;
+    @Embedded
+    private FullName fullName;
     private int age;
     private boolean active;
 
@@ -71,17 +75,15 @@ public class User extends AbstractAuditableEntity {
     }
 
     /**
-     * Creates a new instance of {@code User} with preinitialized values for firstname, lastname, email address and roles.
+     * Creates a new instance of {@code User} with preinitialized values for firstName, lastName, email address and roles.
      *
-     * @param firstname
-     * @param lastname
+     * @param firstName
+     * @param lastName
      * @param emailAddress
      * @param roles
      */
-    public User(String firstname, String lastname, String emailAddress, Role... roles) {
-
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public User(String firstName, String lastName, String emailAddress, Role... roles) {
+        this.fullName = new FullName(firstName, lastName);
         this.emailAddress = emailAddress;
         this.active = true;
         this.roles = new HashSet<Role>(Arrays.asList(roles));
@@ -93,132 +95,6 @@ public class User extends AbstractAuditableEntity {
         this.emailAddress = emailAddress;
         SimpleGuavaDomainEventPublisher.getInstance()
                 .asyncPublish(new UserEmailChangedEvent(this.getId(), this.getEmailAddress(), new Date()));
-    }
-
-    /**
-     * Returns the firstname.
-     *
-     * @return the firstname
-     */
-    public String getFirstname() {
-
-        return firstname;
-    }
-
-    /**
-     * Sets the firstname.
-     *
-     * @param firstname the firstname to set
-     */
-    public void setFirstname(final String firstname) {
-
-        this.firstname = firstname;
-    }
-
-    /**
-     * Returns the lastname.
-     *
-     * @return the lastname
-     */
-    public String getLastname() {
-
-        return lastname;
-    }
-
-    /**
-     * Sets the lastname.
-     *
-     * @param lastname the lastname to set
-     */
-    public void setLastname(String lastname) {
-
-        this.lastname = lastname;
-    }
-
-    /**
-     * @return the age
-     */
-    public int getAge() {
-        return age;
-    }
-
-    /**
-     * @param age the age to set
-     */
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    /**
-     * Returns the email address.
-     *
-     * @return the emailAddress
-     */
-    public String getEmailAddress() {
-
-        return emailAddress;
-    }
-
-    /**
-     * Sets the email address.
-     *
-     * @param emailAddress the emailAddress to set
-     */
-    public void setEmailAddress(String emailAddress) {
-
-        this.emailAddress = emailAddress;
-    }
-
-    /**
-     * @return the active
-     */
-    public boolean isActive() {
-        return active;
-    }
-
-    /**
-     * @param active the active to set
-     */
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    /**
-     * Returns the user's roles.
-     *
-     * @return the roles
-     */
-    public Set<Role> getRoles() {
-
-        return roles;
-    }
-
-    /**
-     * Gives the user a role. Adding a role the user already owns is a no-op.
-     */
-    public void addRole(Role role) {
-
-        roles.add(role);
-    }
-
-    /**
-     * Revokes a role from a user.
-     *
-     * @param role
-     */
-    public void removeRole(Role role) {
-
-        roles.remove(role);
-    }
-
-    /**
-     * Returns the colleagues of the user.
-     *
-     * @return the colleagues
-     */
-    public Set<User> getColleagues() {
-
-        return colleagues;
     }
 
     /**
@@ -246,103 +122,5 @@ public class User extends AbstractAuditableEntity {
 
         colleagues.remove(colleague);
         colleague.getColleagues().remove(this);
-    }
-
-    /**
-     * @return the manager
-     */
-    public User getManager() {
-
-        return manager;
-    }
-
-    /**
-     * @param manager the manager to set
-     */
-    public void setManager(User manager) {
-
-        this.manager = manager;
-    }
-
-    /**
-     * @return the address
-     */
-    public Address getAddress() {
-        return address;
-    }
-
-    /**
-     * @param address the address to set
-     */
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    /**
-     * @return the binaryData
-     */
-    public byte[] getBinaryData() {
-        return binaryData;
-    }
-
-    /**
-     * @param binaryData the binaryData to set
-     */
-    public void setBinaryData(byte[] binaryData) {
-        this.binaryData = binaryData;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-
-        if (!(obj instanceof User)) {
-            return false;
-        }
-
-        User that = (User) obj;
-
-        if (null == this.getId() || null == that.getId()) {
-            return false;
-        }
-
-        return this.getId().equals(that.getId());
-    }
-
-    /**
-     * @return the attributes
-     */
-    public Set<String> getAttributes() {
-        return attributes;
-    }
-
-    /**
-     * @param attributes the attributes to set
-     */
-    public void setAttributes(Set<String> attributes) {
-        this.attributes = attributes;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-
-        return "User: " + getId() + ", " + getFirstname() + " " + getLastname() + ", " + getEmailAddress();
     }
 }

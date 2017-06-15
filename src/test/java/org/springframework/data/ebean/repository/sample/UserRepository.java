@@ -15,14 +15,14 @@ public interface UserRepository extends EbeanRepository<User, Long> {
     @Query("where emailAddress = :emailAddress order by id desc")
     User findUserByEmailAddressEqualsOql(@Param("emailAddress") String emailAddress);
 
-    @Query("select (firstname,lastname,address) fetch manager (lastname) where lastname = :lastname order by id desc")
-    List<User> findByLastnameOql(@Param("lastname") String lastname);
+    @Query("select (fullName,address) fetch manager (fullName) where fullName.lastName = :lastName order by id desc")
+    List<User> findByLastnameOql(@Param("lastName") String lastName);
 
     @Query(nativeQuery = true, value = "select * from user where email_address = :emailAddress order by id desc")
     User findUserByEmailAddressEquals(@Param("emailAddress") String emailAddress);
 
-    @Query(nativeQuery = true, value = "select * from user where lastname = :lastname order by id desc")
-    List<User> findUsersByLastnameEquals(@Param("lastname") String lastname);
+    @Query(nativeQuery = true, value = "select * from user where last_name = :lastName order by id desc")
+    List<User> findUsersByLastNameEquals(@Param("lastName") String lastName);
 
     @Query(nativeQuery = true, value = "update user set email_address = :newEmail where email_address = :oldEmail")
     @Modifying
@@ -37,7 +37,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
     int deleteUserByEmailAddress(@Param("emailAddress") String emailAddress);
 
     @Query(name = "withManagerById")
-    List<User> findByLastnameNamedOql(@Param("lastname") String lastname);
+    List<User> findByLastNameNamedOql(@Param("lastName") String lastName);
 
-    List<User> findAllByEmailAddressAndLastname(@Param("emailAddress") String emailAddress, @Param("lastname") String lastname);
+    List<User> findAllByEmailAddressAndFullNameLastName(@Param("emailAddress") String emailAddress, @Param("lastName") String lastName);
 }
