@@ -1,4 +1,4 @@
-package org.springframework.data.ebean.domain.guava;
+package org.springframework.data.ebean.eventbus.guava;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
@@ -12,9 +12,11 @@ import java.util.concurrent.Executors;
  *
  * @author Xuegui Yuan
  */
-public abstract class GuavaDomainEventPublisher implements DomainEventPublisher {
+public abstract class AbstractGuavaDomainEventPublisher implements DomainEventPublisher {
     private EventBus syncBus = new EventBus(identify());
     private EventBus asyncBus = new AsyncEventBus(identify(), Executors.newFixedThreadPool(1));
+
+    abstract String identify();
 
     @Override
     public void register(Object listener) {

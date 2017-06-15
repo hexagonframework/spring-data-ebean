@@ -1,11 +1,11 @@
-package org.springframework.data.ebean.domain.guava;
+package org.springframework.data.ebean.eventbus.guava;
 
 /**
  * SimpleGuavaDomainEventPublisher singleton class.
  *
  * @author Xuegui Yuan
  */
-public class SimpleGuavaDomainEventPublisher extends GuavaDomainEventPublisher {
+public class SimpleGuavaDomainEventPublisher extends AbstractGuavaDomainEventPublisher {
 
     private static SimpleGuavaDomainEventPublisher instance = new SimpleGuavaDomainEventPublisher();
 
@@ -15,6 +15,6 @@ public class SimpleGuavaDomainEventPublisher extends GuavaDomainEventPublisher {
 
     @Override
     public String identify() {
-        return "default";
+        return "simple";
     }
 }

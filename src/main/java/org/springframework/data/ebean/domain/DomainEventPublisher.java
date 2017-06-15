@@ -7,11 +7,22 @@ package org.springframework.data.ebean.domain;
  */
 public interface DomainEventPublisher<T extends DomainEvent> {
 
-    String identify();
-
+    /**
+     * Register a listener.
+     *
+     * @param listener
+     */
     void register(Object listener);
 
+    /**
+     * Publish sync event.
+     * @param event
+     */
     void publish(T event);
 
+    /**
+     * Publish async event.
+     * @param event
+     */
     void asyncPublish(T event);
 }

@@ -7,9 +7,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.ebean.domain.guava.SimpleGuavaDomainEventPublisher;
 import org.springframework.data.ebean.domain.sample.User;
-import org.springframework.data.ebean.domain.sample.UserEvent;
+import org.springframework.data.ebean.domain.sample.UserEmailChangedEvent;
+import org.springframework.data.ebean.eventbus.guava.SimpleGuavaDomainEventPublisher;
 import org.springframework.data.ebean.repository.sample.SampleConfig;
 import org.springframework.data.ebean.repository.sample.UserRepository;
 import org.springframework.test.context.ContextConfiguration;
@@ -37,8 +37,8 @@ public class UserRepositoryIntegrationTest {
     public void setUp() throws Exception {
         SimpleGuavaDomainEventPublisher.getInstance().register(new Object() {
             @Subscribe
-            public void lister(UserEvent userEvent) {
-                System.out.println(userEvent.toString());
+            public void lister(UserEmailChangedEvent userEmailChangedEvent) {
+                System.out.println(userEmailChangedEvent.toString());
             }
         });
         repository.deleteAll();
@@ -148,6 +148,10 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     public void testDomainEvent() {
-        user.register();
+        user.changeEmail("yuanxuegui@126.com");
+        repository.save(user);
+        User u = repository.findOneByProperty("emailAddress", "yuanxuegui@126.com");
+        assertNotNull(u);
+        assertEquals("yuanxuegui@126.com", u.getEmailAddress());
     }
 }
