@@ -109,6 +109,9 @@ public interface UserRepository extends EbeanRepository<User, Long> {
     @Query("where emailAddress = :emailAddress order by id desc")
     User findUserByEmailAddressEqualsOql(@Param("emailAddress") String emailAddress);
 
+    /**
+     *  select fetch query细粒度控制查询字段
+     */
     @Query("select (firstname,lastname,address) fetch manager (lastname) where lastname = :lastname order by id desc")
     List<User> findByLastnameOql(@Param("lastname") String lastname);
 
@@ -130,6 +133,9 @@ public interface UserRepository extends EbeanRepository<User, Long> {
     @Modifying
     int deleteUserByEmailAddress(@Param("emailAddress") String emailAddress);
 
+    /**
+     * 命名ORM查询 
+     */
     @Query(name = "withManagerById")
     List<User> findByLastnameNamedOql(@Param("lastname") String lastname);
     
