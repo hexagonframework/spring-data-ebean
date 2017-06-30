@@ -247,3 +247,14 @@ public class UserRepositoryIntegrationTest {
     }
 }
 ```
+
+运行
+1、使用IntelliJ编译执行Test(推荐)
+
+执行前需要安装ebean enhancement的IntelliJ插件，安装完后要在Build菜单下勾选Enhance 10.x Enhancement。
+然后就可以运行Test
+
+2、使用MAVEN编译执行Test
+```
+mvn test
+```
