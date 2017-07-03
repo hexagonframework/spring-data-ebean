@@ -6,6 +6,7 @@
  
 [Maven cental link](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
 
+[QQ群: 635113788]
 
 [Spring Data](http://projects.spring.io/spring-data/)项目的主要目标是使构建使用DDD仓储接口与实现的Spring应用程序变得更加容易。此模块是基于[Ebean ORM](https://ebean-orm.github.io)（轻量级JPA）的仓储层实现。
 通过使用此模块，你可以在基于Ebean ORM下使用Spring Data模式带来的便利性。
