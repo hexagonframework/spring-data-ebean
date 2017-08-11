@@ -19,10 +19,9 @@ import io.ebean.annotation.CreatedTimestamp;
 import io.ebean.annotation.UpdatedTimestamp;
 import io.ebean.annotation.WhoCreated;
 import io.ebean.annotation.WhoModified;
+import javax.persistence.MappedSuperclass;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Auditable;
-
-import javax.persistence.MappedSuperclass;
 
 /**
  * Abstract base class for auditable entities. Stores the audition values in persistent fields.

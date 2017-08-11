@@ -15,13 +15,12 @@
  */
 package org.springframework.data.ebean.domain;
 
-import org.springframework.data.domain.Persistable;
-import org.springframework.util.ClassUtils;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import org.springframework.data.domain.Persistable;
+import org.springframework.util.ClassUtils;
 
 /**
  * Abstract base class for entities. Allows parameterization of id type, chooses auto-generation and implements
@@ -40,37 +39,23 @@ public abstract class AbstractEntity implements Persistable<Long> {
 
     /*
      * (non-Javadoc)
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        int hashCode = 17;
+
+        hashCode += null == getId() ? 0 : getId().hashCode() * 31;
+
+        return hashCode;
+    }    /*
+     * (non-Javadoc)
      * @see org.springframework.data.domain.Persistable#getId()
      */
     public Long getId() {
         return id;
-    }
-
-    /**
-     * Sets the id of the entity.
-     *
-     * @param id the id to set
-     */
-    protected void setId(final Long id) {
-        this.id = id;
-    }
-
-    /**
-     * @see org.springframework.data.domain.Persistable#isNew()
-     */
-    @Transient
-    public boolean isNew() {
-        return null == getId();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
     }
 
     /*
@@ -98,18 +83,32 @@ public abstract class AbstractEntity implements Persistable<Long> {
         return null == this.getId() ? false : this.getId().equals(that.getId());
     }
 
+    /**
+     * Sets the id of the entity.
+     *
+     * @param id the id to set
+     */
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
     /*
      * (non-Javadoc)
      *
-     * @see java.lang.Object#hashCode()
+     * @see java.lang.Object#toString()
      */
     @Override
-    public int hashCode() {
-
-        int hashCode = 17;
-
-        hashCode += null == getId() ? 0 : getId().hashCode() * 31;
-
-        return hashCode;
+    public String toString() {
+        return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
     }
+
+    /**
+     * @see org.springframework.data.domain.Persistable#isNew()
+     */
+    @Transient
+    public boolean isNew() {
+        return null == getId();
+    }
+
+
 }

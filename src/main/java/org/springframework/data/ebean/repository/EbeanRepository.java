@@ -15,17 +15,23 @@
  */
 package org.springframework.data.ebean.repository;
 
-import io.ebean.*;
+import io.ebean.EbeanServer;
+import io.ebean.ExampleExpression;
+import io.ebean.LikeType;
+import io.ebean.Query;
+import io.ebean.SqlQuery;
+import io.ebean.SqlUpdate;
+import io.ebean.UpdateQuery;
+import java.io.Serializable;
+import java.util.List;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * Ebean specific extension of {@link org.springframework.data.repository.Repository}.
@@ -33,7 +39,7 @@ import java.util.List;
  * @author Xuegui Yuan
  */
 @NoRepositoryBean
-public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T> {
+public interface EbeanRepository<T extends Persistable, ID extends Serializable> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T> {
 
     /**
      * Return the current EbeanServer.
@@ -117,11 +123,23 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
      */
     ExampleExpression exampleOf(Object example, boolean caseInsensitive, LikeType likeType);
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.CrudRepository#findAll()
+    /**
+     * update entity which is not loaded.
+     *
+     * @param s
+     * @param <S>
+     * @return
      */
-    List<T> findAll();
+    <S extends T> S update(S s);
+
+    /**
+     * update entities which is not loaded.
+     *
+     * @param entities
+     * @param <S>
+     * @return
+     */
+    <S extends T> List<S> update(Iterable<S> entities);
 
     /*
      * (non-Javadoc)
@@ -131,15 +149,21 @@ public interface EbeanRepository<T, ID extends Serializable> extends PagingAndSo
 
     /*
      * (non-Javadoc)
-     * @see org.springframework.data.repository.CrudRepository#findAll(java.lang.Iterable)
-     */
-    List<T> findAll(Iterable<ID> ids);
-
-    /*
-     * (non-Javadoc)
      * @see org.springframework.data.repository.CrudRepository#save(java.lang.Iterable)
      */
     <S extends T> List<S> save(Iterable<S> entities);
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.CrudRepository#findAll()
+     */
+    List<T> findAll();
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.CrudRepository#findAll(java.lang.Iterable)
+     */
+    List<T> findAll(Iterable<ID> ids);
 
     /**
      * Retrieves an entity by its id and select return entity properties with FetchPath string.

@@ -15,22 +15,28 @@
  */
 package org.springframework.data.ebean.repository.support;
 
-import io.ebean.*;
+import io.ebean.EbeanServer;
+import io.ebean.ExampleExpression;
+import io.ebean.LikeType;
+import io.ebean.Query;
+import io.ebean.SqlQuery;
+import io.ebean.SqlUpdate;
+import io.ebean.UpdateQuery;
 import io.ebean.text.PathProperties;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.ebean.convert.ExampleExpressionBuilder;
 import org.springframework.data.ebean.convert.PageListOrderConverter;
 import org.springframework.data.ebean.repository.EbeanRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Default implementation of the {@link org.springframework.data.repository.CrudRepository} interface. This will offer
@@ -42,7 +48,7 @@ import java.util.List;
  */
 @Repository
 @Transactional(readOnly = true)
-public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanRepository<T, ID> {
+public class SimpleEbeanRepository<T extends Persistable, ID extends Serializable> implements EbeanRepository<T, ID> {
 
     private static final String ID_MUST_NOT_BE_NULL = "The given id must not be null!";
 
@@ -60,6 +66,14 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     public SimpleEbeanRepository(Class<T> entityType, EbeanServer ebeanServer) {
         this.entityType = entityType;
         this.ebeanServer = ebeanServer;
+    }
+
+    @Override
+    public Page<T> findAll(Pageable pageable) {
+        return PageListOrderConverter.convertToSpringDataPage(db().find(getEntityType())
+            .setMaxRows(pageable.getPageSize()).setFirstRow(pageable.getOffset())
+            .setOrder(PageListOrderConverter.convertToEbeanOrder(pageable.getSort()))
+            .findPagedList(), pageable.getSort());
     }
 
     @Override
@@ -92,7 +106,6 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     public Query<T> namedQueryOf(String queryName) {
         return db().createNamedQuery(getEntityType(), queryName);
     }
-
     @Override
     public SqlQuery sqlQueryOf(String sql) {
         return db().createSqlQuery(sql);
@@ -102,7 +115,6 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     public UpdateQuery<T> updateQuery() {
         return db().update(getEntityType());
     }
-
     @Override
     public SqlUpdate sqlUpdateOf(String sql) {
         return db().createSqlUpdate(sql);
@@ -118,14 +130,30 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
         return db().getExpressionFactory().exampleLike(example, caseInsensitive, likeType);
     }
 
-    public Class<T> getEntityType() {
-        return entityType;
+    @Override
+    public <S extends T> S update(S s) {
+        db().update(s);
+        return s;
     }
 
     @Override
-    public <S extends T> S save(S s) {
-        db().save(s);
-        return s;
+    public <S extends T> List<S> update(Iterable<S> entities) {
+        List<S> result = new ArrayList<S>();
+
+        if (entities == null) {
+            return result;
+        }
+
+        for (S entity : entities) {
+            result.add(update(entity));
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<T> findAll(Sort sort) {
+        return db().find(getEntityType()).setOrder(PageListOrderConverter.convertToEbeanOrder(sort)).findList();
     }
 
     @Override
@@ -144,6 +172,16 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     }
 
     @Override
+    public <S extends T> S save(S s) {
+        if (s.isNew()) {
+            db().save(s);
+        } else {
+            db().update(s);
+        }
+        return s;
+    }
+
+    @Override
     public T findOne(ID id) {
         return db().find(getEntityType()).where().idEq(id).findUnique();
     }
@@ -151,16 +189,6 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     @Override
     public boolean exists(ID id) {
         return db().find(getEntityType()).where().idEq(id).findCount() > 0;
-    }
-
-    @Override
-    public List<T> findAll() {
-        return db().find(getEntityType()).where().findList();
-    }
-
-    @Override
-    public List<T> findAll(Iterable<ID> ids) {
-        return db().find(getEntityType()).where().idIn(ids).findList();
     }
 
     @Override
@@ -189,18 +217,14 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     }
 
     @Override
-    public List<T> findAll(Sort sort) {
-        return db().find(getEntityType()).setOrder(PageListOrderConverter.convertToEbeanOrder(sort)).findList();
+    public List<T> findAll() {
+        return db().find(getEntityType()).where().findList();
     }
 
     @Override
-    public Page<T> findAll(Pageable pageable) {
-        return PageListOrderConverter.convertToSpringDataPage(db().find(getEntityType())
-                .setMaxRows(pageable.getPageSize()).setFirstRow(pageable.getOffset())
-                .setOrder(PageListOrderConverter.convertToEbeanOrder(pageable.getSort()))
-                .findPagedList(), pageable.getSort());
+    public List<T> findAll(Iterable<ID> ids) {
+        return db().find(getEntityType()).where().idIn(ids).findList();
     }
-
 
     @Override
     public T findOne(ID id, String selects) {
@@ -243,12 +267,6 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
     }
 
     @Override
-    public <S extends T> S findOne(Example<S> example) {
-        return db().find(example.getProbeType())
-                .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findOne();
-    }
-
-    @Override
     public <S extends T> List<S> findAll(Example<S> example) {
         return db().find(example.getProbeType())
                 .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findList();
@@ -260,6 +278,16 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
                 .where(ExampleExpressionBuilder.exampleExpression(db(), example))
                 .setOrder(PageListOrderConverter.convertToEbeanOrder(sort))
                 .findList();
+    }
+
+    public Class<T> getEntityType() {
+        return entityType;
+    }
+
+    @Override
+    public <S extends T> S findOne(Example<S> example) {
+        return db().find(example.getProbeType())
+            .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findOne();
     }
 
     @Override
@@ -280,4 +308,6 @@ public class SimpleEbeanRepository<T, ID extends Serializable> implements EbeanR
         return db().find(example.getProbeType())
                 .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount() > 0;
     }
+
+
 }
