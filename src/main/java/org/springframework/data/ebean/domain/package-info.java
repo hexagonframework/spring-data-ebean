@@ -1,5 +1,5 @@
 /**
- * Ebean specific support classes to implement domain classes.
+ * Ebean specific impl classes to implement domain classes.
  */
 package org.springframework.data.ebean.domain;
 

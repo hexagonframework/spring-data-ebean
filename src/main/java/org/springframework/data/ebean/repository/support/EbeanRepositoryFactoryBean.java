@@ -16,14 +16,13 @@
 package org.springframework.data.ebean.repository.support;
 
 import io.ebean.EbeanServer;
+import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 import org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport;
 import org.springframework.util.Assert;
-
-import java.io.Serializable;
 
 /**
  * Special adapter for Springs {@link org.springframework.beans.factory.FactoryBean} interface to allow easy setup of
@@ -49,7 +48,7 @@ public class EbeanRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exten
 
     /*
      * (non-Javadoc)
-     * @see org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport#setMappingContext(org.springframework.data.mapping.context.MappingContext)
+     * @see org.springframework.data.repository.core.impl.RepositoryFactoryBeanSupport#setMappingContext(org.springframework.data.mapping.context.MappingContext)
      */
     @Override
     public void setMappingContext(MappingContext<?, ?> mappingContext) {
@@ -59,9 +58,21 @@ public class EbeanRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exten
     /*
      * (non-Javadoc)
      *
-     * @see org.springframework.data.repository.support.
-     * TransactionalRepositoryFactoryBeanSupport#doCreateRepositoryFactory()
+     * @see
+     * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
+    @Override
+    public void afterPropertiesSet() {
+      Assert.notNull(ebeanServer, "EbeanServer must not be null!");
+      super.afterPropertiesSet();
+    }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.springframework.data.repository.impl.
+   * TransactionalRepositoryFactoryBeanSupport#doCreateRepositoryFactory()
+   */
     @Override
     protected RepositoryFactorySupport doCreateRepositoryFactory() {
         return createRepositoryFactory(ebeanServer);
@@ -75,17 +86,5 @@ public class EbeanRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exten
      */
     protected RepositoryFactorySupport createRepositoryFactory(EbeanServer ebeanServer) {
         return new EbeanRepositoryFactory(ebeanServer);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-     */
-    @Override
-    public void afterPropertiesSet() {
-        Assert.notNull(ebeanServer, "EbeanServer must not be null!");
-        super.afterPropertiesSet();
     }
 }

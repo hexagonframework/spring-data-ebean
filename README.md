@@ -15,6 +15,7 @@ The primary goal of the [Spring Data](http://projects.spring.io/spring-data) pro
 
 * Ebean implementation of CRUD methods for JPA Entities
 * Dynamic query generation from query method names and annotation
+* Support query channel service
 * Transparent triggering of Ebean Query by query methods
 * Implementation domain base classes providing basic properties
 * Support for transparent auditing (created, last changed)

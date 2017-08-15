@@ -15,6 +15,12 @@
  */
 package org.springframework.data.ebean.repository.query;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
@@ -23,8 +29,6 @@ import org.springframework.data.repository.query.parser.Part.Type;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
-
-import java.util.*;
 
 /**
  * Helper class to allow easy creation of {@link ParameterMetadata}s.
@@ -38,7 +42,7 @@ class ParameterMetadataProvider {
 
     /**
      * Creates a new {@link ParameterMetadataProvider} from the given
-     * {@link ParametersParameterAccessor} with support for parameter value customizations.
+     * {@link ParametersParameterAccessor} with impl for parameter value customizations.
      *
      * @param accessor       must not be {@literal null}.
      */
@@ -84,21 +88,6 @@ class ParameterMetadataProvider {
     }
 
     /**
-     * Builds a new {@link ParameterMetadata} of the given {@link Part} and type. Forwards the underlying
-     * {@link Parameters} as well.
-     *
-     * @param <T>
-     * @param type must not be {@literal null}.
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public <T> ParameterMetadata<? extends T> next(Part part, Class<T> type) {
-        Parameter parameter = parameters.next();
-        Class<?> typeToUse = ClassUtils.isAssignable(type, parameter.getType()) ? parameter.getType() : type;
-        return (ParameterMetadata<? extends T>) next(part, typeToUse, parameter);
-    }
-
-    /**
      * Builds a new {@link ParameterMetadata} for the given type and name.
      *
      * @param <T>
@@ -116,6 +105,21 @@ class ParameterMetadataProvider {
 
         return value;
     }
+
+  /**
+   * Builds a new {@link ParameterMetadata} of the given {@link Part} and type. Forwards the underlying
+   * {@link Parameters} as well.
+   *
+   * @param <T>
+   * @param type must not be {@literal null}.
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public <T> ParameterMetadata<? extends T> next(Part part, Class<T> type) {
+    Parameter parameter = parameters.next();
+    Class<?> typeToUse = ClassUtils.isAssignable(type, parameter.getType()) ? parameter.getType() : type;
+    return (ParameterMetadata<? extends T>) next(part, typeToUse, parameter);
+  }
 
     /**
      * @param <T>
