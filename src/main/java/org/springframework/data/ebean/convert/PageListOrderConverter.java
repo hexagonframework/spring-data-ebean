@@ -2,14 +2,13 @@ package org.springframework.data.ebean.convert;
 
 import io.ebean.OrderBy;
 import io.ebean.PagedList;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Ebean PageList and Order convert to or from Spring data Page or Sort.
@@ -26,6 +25,9 @@ public class PageListOrderConverter {
      * @return
      */
     public static <T> OrderBy<T> convertToEbeanOrder(Sort sort) {
+        if (sort == null) {
+            return null;
+        }
         List<String> list = new ArrayList<>();
         while (sort.iterator().hasNext()) {
             Sort.Order so = sort.iterator().next();
