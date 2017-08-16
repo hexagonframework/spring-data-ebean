@@ -180,9 +180,18 @@ public class EbeanQueryChannelService {
     return expressionList;
   }
 
+  /**
+   * Return query specifying page.
+   *
+   * @param expressionList
+   * @param page           1-based index page
+   * @param pageSize
+   * @param <T>
+   * @return
+   */
   public static <T> Query<T> queryWithPage(ExpressionList<T> expressionList,
                                            int page,
-                                           int pageSize) {  // pageSize is 1-index
+                                           int pageSize) {
     Assert.notNull(expressionList, "expressionList must not null");
     return expressionList.setMaxRows(pageSize)
         .setFirstRow((page - 1) * pageSize);
