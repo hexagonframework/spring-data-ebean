@@ -8,6 +8,8 @@ import io.ebean.LikeType;
 import io.ebean.Query;
 import io.ebean.SqlQuery;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.ebean.convert.PageListOrderConverter;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -184,16 +186,14 @@ public class EbeanQueryChannelService {
    * Return query specifying page.
    *
    * @param expressionList
-   * @param page           1-based index page
-   * @param pageSize
+   * @param pageable  0-based index page
    * @param <T>
    * @return
    */
-  public static <T> Query<T> queryWithPage(ExpressionList<T> expressionList,
-                                           int page,
-                                           int pageSize) {
+  public static <T> Query<T> queryWithPage(ExpressionList<T> expressionList, Pageable pageable) {
     Assert.notNull(expressionList, "expressionList must not null");
-    return expressionList.setMaxRows(pageSize)
-        .setFirstRow((page - 1) * pageSize);
+    return expressionList.setMaxRows(pageable.getPageSize())
+        .setFirstRow(pageable.getOffset())
+        .setOrder(PageListOrderConverter.convertToEbeanOrder(pageable.getSort()));
   }
 }
