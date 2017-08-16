@@ -1,5 +1,6 @@
 package org.springframework.data.ebean.querychannel;
 
+import io.ebean.PagedList;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,6 +22,20 @@ public class DataPage<T> extends PageImpl<T> implements Page<T> {
    */
   public DataPage(List<T> content, Pageable pageable, long total) {
     super(content, pageable, total);
+  }
+
+  /**
+   * Return Page from ebean PagedList.
+   *
+   * @param pageable
+   * @param pagedList
+   * @param <T>
+   * @return
+   */
+  public static <T> Page<T> fromPageList(Pageable pageable, PagedList<T> pagedList) {
+    return new DataPage<T>(pagedList.getList(),
+        DataPage.pageRequest(pageable),
+        pagedList.getTotalCount());
   }
 
   /**
