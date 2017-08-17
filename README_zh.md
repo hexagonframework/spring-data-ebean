@@ -96,8 +96,9 @@ public class SampleConfig {
 }
 ```
 
-创建一个实体类:
+创建一个表格实体类或SQL实体类:
 
+表格实体
 ```java
 @Entity
 public class User {
@@ -114,8 +115,22 @@ public class User {
   // equals / hashcode
 }
 ```
+SQL实体(注意：这个是替代MyBatis的重要特性！！！)
+```java
+@Entity
+@Sql
+@Getter
+@Setter
+public class UserInfo {
+  private String firstName;
+  private String lastName;
+  private String emailAddress;
+}
+```
 
-创建一个仓储接口,使用包名 `org.springfraorg.springframework.data.ebean.sampleublic interface UserRepository extends EbeanRepository<User, Long> {
+创建一个仓储接口,使用包名 `org.springfraorg.springframework.data.ebean.sample`
+```
+public interface UserRepository extends EbeanRepository<User, Long> {
     @Query("where emailAddress = :emailAddress order by id desc")
     User findUserByEmailAddressEqualsOql(@Param("emailAddress") String emailAddress);
 
@@ -174,11 +189,26 @@ public class User {
             </query>
         </raw-sql>
     </entity>
+    <entity class="org.springframework.data.ebean.sample.domain.UserInfo">
+        <raw-sql name="userInfo">
+            <query>
+                select first_name, last_name, email_address from user
+            </query>
+        </raw-sql>
+        <raw-sql name="userInfoByEmail">
+            <query>
+                select first_name, last_name, email_address from user
+                where email_address = :emailAddress
+                order by id desc
+            </query>
+        </raw-sql>
+    </entity>
 </ebean>
 ```
 
 编写一个测试用例:
 
+`UserRepositoryIntegrationTest.java`
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SampleConfig.class)
@@ -255,6 +285,74 @@ public class UserRepositoryIntegrationTest {
                 .withStringMatcher(ExampleMatcher.StringMatcher.EXACT)));
         assertEquals(0, result2.size());
     }
+}
+```
+`EbeanQueryChannelServiceIntegrationTest.java`
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = SampleConfig.class)
+public class EbeanQueryChannelServiceIntegrationTest {
+  // Test fixture
+  User user;
+  @Autowired
+  private EbeanQueryChannelService ebeanQueryChannelService;
+  @Autowired
+  private UserRepository repository;
+
+  @Before
+  public void setUp() throws Exception {
+    user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
+    user.setAge(29);
+    user = repository.save(user);
+  }
+
+  @Test
+  public void createSqlQueryMappingColumns() {
+    String sql1 = "select first_name, last_name, email_address from user where last_name= :lastName";
+    String sql2 = "select first_name as firstName, last_name as lastName, email_address as emailAddress from user where last_name= :lastName";
+    Map<String, String> columnsMapping = Maps.newHashMap();
+    columnsMapping.put("first_name", "firstName");
+    columnsMapping.put("last_name", "lastName");
+
+    Query<UserInfo> query1 = ebeanQueryChannelService.createSqlQuery(UserInfo.class,
+        sql1);
+    Query<UserInfo> query2 = ebeanQueryChannelService.createSqlQuery(UserInfo.class,
+        sql2);
+    Query<UserInfo> query3 = ebeanQueryChannelService.createSqlQueryMappingColumns(UserInfo.class,
+        sql1, columnsMapping);
+
+    query1.setParameter("lastName", "Yuan");
+    query2.setParameter("lastName", "Yuan");
+    query3.setParameter("lastName", "Yuan");
+    UserInfo userInfo1 = query1.findOne();
+    UserInfo userInfo2 = query2.findOne();
+    UserInfo userInfo3 = query3.findOne();
+    assertEquals("Xuegui", userInfo1.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo1.getEmailAddress());
+    assertEquals("Xuegui", userInfo2.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo2.getEmailAddress());
+    assertEquals("Xuegui", userInfo3.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo3.getEmailAddress());
+  }
+
+  @Test
+  public void createNamedQuery() {
+    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+        "userInfoByEmail").setParameter("emailAddress",
+        "yuanxuegui@163.com").findUnique();
+    assertEquals("Xuegui", userInfo.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
+  }
+
+  @Test
+  public void createNamedQueryWhere() {
+    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+        "userInfo").where()
+        .eq("emailAddress", "yuanxuegui@163.com").findUnique();
+    assertEquals("Xuegui", userInfo.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
+  }
+
 }
 ```
 

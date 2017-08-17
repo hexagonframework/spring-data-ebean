@@ -93,8 +93,9 @@ public class SampleConfig {
 }
 ```
 
-Create an entity:
+Create an table entity or sql entity:
 
+Table entity
 ```java
 @Entity
 public class User {
@@ -111,7 +112,18 @@ public class User {
   // equals / hashcode
 }
 ```
-
+Sql entity(The feature to replace MyBatis)
+```java
+@Entity
+@Sql
+@Getter
+@Setter
+public class UserInfo {
+  private String firstName;
+  private String lastName;
+  private String emailAddress;
+}
+```
 Create a repository interface in `org.springframework.data.ebean.sample`:
 
 ```java
@@ -168,11 +180,26 @@ Create a named query config in `resources/ebean.xml`:
             </query>
         </raw-sql>
     </entity>
+    <entity class="org.springframework.data.ebean.sample.domain.UserInfo">
+        <raw-sql name="userInfo">
+            <query>
+                select first_name, last_name, email_address from user
+            </query>
+        </raw-sql>
+        <raw-sql name="userInfoByEmail">
+            <query>
+                select first_name, last_name, email_address from user
+                where email_address = :emailAddress
+                order by id desc
+            </query>
+        </raw-sql>
+    </entity>
 </ebean>
 ```
 
 Write a test client:
 
+`UserRepositoryIntegrationTest.java`
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SampleConfig.class)
@@ -181,58 +208,98 @@ public class UserRepositoryIntegrationTest {
     @Autowired
     UserRepository repository;
 
-    @Test
-    public void sampleTestCase() {
-        User user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
+    // Test fixture
+    User user;
+
+    @Before
+    public void setUp() throws Exception {
+        SimpleGuavaDomainEventPublisher.getInstance().register(new Object() {
+            @Subscribe
+            public void lister(UserEmailChangedEvent userEmailChangedEvent) {
+                System.out.println(userEmailChangedEvent.toString());
+            }
+        });
+        repository.deleteAll();
+        user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
         user.setAge(29);
         user = repository.save(user);
+    }
 
+    @Test
+    public void sampleTestCase() {
+        // test find all orm query
         List<User> result1 = (List<User>) repository.findAll();
         result1.forEach(it -> System.out.println(it));
         assertEquals(1, result1.size());
-        assertEquals("Yuan", result1.get(0).getLastname());
+        assertEquals("Yuan", result1.get(0).getFullName().getLastName());
         assertThat(result1, hasItem(user));
 
-        List<User> result2  = repository.findByLastnameOql("Yuan");
+        // test find list orm query
+        List<User> result2 = repository.findByLastnameOql("Yuan");
         assertEquals(1, result2.size());
-        assertEquals("Yuan", result2.get(0).getLastname());
+        assertEquals("Yuan", result2.get(0).getFullName().getLastName());
         assertThat(result2, hasItem(user));
 
-        List<User> result3 = repository.findUsersByLastnameEquals("Yuan");
+        // test find list sql query
+        List<User> result3 = repository.findUsersByLastNameEquals("Yuan");
         assertEquals(1, result3.size());
-        assertEquals("Yuan", result3.get(0).getLastname());
+        assertEquals("Yuan", result3.get(0).getFullName().getLastName());
 
+        // test find one orm query
         User result4 = repository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
         assertEquals("yuanxuegui@163.com", result4.getEmailAddress());
 
+        // test find one sql query
         User result5 = repository.findUserByEmailAddressEquals("yuanxuegui@163.com");
         assertEquals("yuanxuegui@163.com", result5.getEmailAddress());
 
+        // test update orm query
         int result6 = repository.changeUserEmailAddress("yuanxuegui@163.com", "yuanxuegui@126.com");
         assertEquals(1, result6);
 
-        List<User> result7  = repository.findByLastnameOql("Yuan");
+        // test find list orm query
+        List<User> result7 = repository.findByLastnameOql("Yuan");
         assertEquals("yuanxuegui@126.com", result7.get(0).getEmailAddress());
 
+        // test delete sql query
         int result8 = repository.deleteUserByEmailAddress("yuanxuegui@126.com");
         assertEquals(1, result8);
 
+        // test find one sql query
         User result9 = repository.findUserByEmailAddressEquals("yuanxuegui@126.com");
         assertNull(result9);
 
+        // test create
         user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
         user.setAge(29);
         user = repository.save(user);
 
-        User result10 = repository.findUserByEmailAddressEquals("yuanxuegui@163.com");
-        assertNotNull(result10);
+        // test find list named orm query
+        List<User> result10 = repository.findByLastNameNamedOql("Yuan");
+        assertEquals(1, result10.size());
+        assertEquals("Yuan", result10.get(0).getFullName().getLastName());
 
-        int result11 = repository.deleteUserByEmailAddressOql("yuanxuegui@163.com");
-        assertEquals(1, result11);
+        // test find one orm query
+        User result11 = repository.findUserByEmailAddressEquals("yuanxuegui@163.com");
+        assertNotNull(result11);
 
-        User result12 = repository.findUserByEmailAddressEquals("yuanxuegui@163.com");
-        assertNull(result12);
+        // test delete orm update
+        int result12 = repository.deleteUserByEmailAddressOql("yuanxuegui@163.com");
+        assertEquals(1, result12);
+
+        // test find one sql query
+        User result13 = repository.findUserByEmailAddressEquals("yuanxuegui@163.com");
+        assertNull(result13);
     }
+
+    @Test
+    public void testFindByMethodName() {
+        List<User> result1 = repository.findAllByEmailAddressAndFullNameLastName("yuanxuegui@163.com", "Yuan");
+        assertEquals(1, result1.size());
+        assertEquals("Yuan", result1.get(0).getFullName().getLastName());
+        assertThat(result1, hasItem(user));
+    }
+
     @Test
     public void testFindByExample() {
         User u = new User();
@@ -241,7 +308,7 @@ public class UserRepositoryIntegrationTest {
                 .withIgnoreCase(true)
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)));
         assertEquals(1, result1.size());
-        assertEquals("Yuan", result1.get(0).getLastname());
+        assertEquals("Yuan", result1.get(0).getFullName().getLastName());
         assertThat(result1, hasItem(user));
 
         List<User> result2 = repository.findAll(Example.of(u, ExampleMatcher.matchingAll()
@@ -249,5 +316,89 @@ public class UserRepositoryIntegrationTest {
                 .withStringMatcher(ExampleMatcher.StringMatcher.EXACT)));
         assertEquals(0, result2.size());
     }
+
+    @Test
+    public void testAuditable() {
+        User u = repository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
+        assertEquals("test", u.getCreatedBy());
+        assertEquals("test", u.getLastModifiedBy());
+    }
+
+    @Test
+    public void testDomainEvent() {
+        user.changeEmail("yuanxuegui@126.com");
+        repository.save(user);
+        User u = repository.findOneByProperty("emailAddress", "yuanxuegui@126.com");
+        assertNotNull(u);
+        assertEquals("yuanxuegui@126.com", u.getEmailAddress());
+    }
+}
+```
+`EbeanQueryChannelServiceIntegrationTest.java`
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = SampleConfig.class)
+public class EbeanQueryChannelServiceIntegrationTest {
+  // Test fixture
+  User user;
+  @Autowired
+  private EbeanQueryChannelService ebeanQueryChannelService;
+  @Autowired
+  private UserRepository repository;
+
+  @Before
+  public void setUp() throws Exception {
+    user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
+    user.setAge(29);
+    user = repository.save(user);
+  }
+
+  @Test
+  public void createSqlQueryMappingColumns() {
+    String sql1 = "select first_name, last_name, email_address from user where last_name= :lastName";
+    String sql2 = "select first_name as firstName, last_name as lastName, email_address as emailAddress from user where last_name= :lastName";
+    Map<String, String> columnsMapping = Maps.newHashMap();
+    columnsMapping.put("first_name", "firstName");
+    columnsMapping.put("last_name", "lastName");
+
+    Query<UserInfo> query1 = ebeanQueryChannelService.createSqlQuery(UserInfo.class,
+        sql1);
+    Query<UserInfo> query2 = ebeanQueryChannelService.createSqlQuery(UserInfo.class,
+        sql2);
+    Query<UserInfo> query3 = ebeanQueryChannelService.createSqlQueryMappingColumns(UserInfo.class,
+        sql1, columnsMapping);
+
+    query1.setParameter("lastName", "Yuan");
+    query2.setParameter("lastName", "Yuan");
+    query3.setParameter("lastName", "Yuan");
+    UserInfo userInfo1 = query1.findOne();
+    UserInfo userInfo2 = query2.findOne();
+    UserInfo userInfo3 = query3.findOne();
+    assertEquals("Xuegui", userInfo1.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo1.getEmailAddress());
+    assertEquals("Xuegui", userInfo2.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo2.getEmailAddress());
+    assertEquals("Xuegui", userInfo3.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo3.getEmailAddress());
+  }
+
+  @Test
+  public void createNamedQuery() {
+    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+        "userInfoByEmail").setParameter("emailAddress",
+        "yuanxuegui@163.com").findUnique();
+    assertEquals("Xuegui", userInfo.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
+  }
+
+  @Test
+  public void createNamedQueryWhere() {
+    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+        "userInfo").where()
+        .eq("emailAddress", "yuanxuegui@163.com").findUnique();
+    assertEquals("Xuegui", userInfo.getFirstName());
+    assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
+  }
+
 }
 ```
