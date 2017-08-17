@@ -128,7 +128,7 @@ public class UserInfo {
 }
 ```
 
-创建一个仓储接口,使用包名 `org.springfraorg.springframework.data.ebean.sample`
+创建一个仓储接口,使用包名 `org.springframework.data.ebean.sample`
 ```
 public interface UserRepository extends EbeanRepository<User, Long> {
     @Query("where emailAddress = :emailAddress order by id desc")
