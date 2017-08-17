@@ -44,43 +44,55 @@
 最简单的通过Java注解配置的Spring Data Ebean 配置如下所示：
 ```java
 @Configuration
-@EnableEbeanRepositories(oorg.springframework.data.ebean.samplensactionManagement
+@EnableEbeanRepositories(value = "org.springframework.data.ebean.sample")
+@EnableTransactionManagement
 public class SampleConfig {
     @Bean
-    public DataSource dataSource() {
-        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
-    }
-
-    @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+      return new DataSourceTransactionManager(dataSource);
     }
-
+    
+    @Bean
+    public EbeanQueryChannelService ebeanQueryChannelService(EbeanServer ebeanServer) {
+      return new EbeanQueryChannelService(ebeanServer);
+    }
+    
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Bean
     @Primary
     public ServerConfig defaultEbeanServerConfig() {
-        ServerConfig config = new ServerConfig();
-        
-        config.setDataSource(dataSource());
-        config.addPackage("org.springframework.data.ebean.domain.sample");
-        config.setExternalTransactionManager(new SpringJdbcTransactionManager());
-
-
-        config.loadFromProperties();
-        config.setDefaultServer(true);
-        config.setRegister(true);
-        config.setAutoCommitMode(false);
-        config.setExpressionNativeIlike(true);
-
-        return config;
-    }
-
-    @Bean
-    @Primary
-    public EbeanServer defaultEbeanServer(ServerConfig defaultEbeanServerConfig) {
-        return EbeanServerFactory.create(defaultEbeanServerConfig);
-    }
+      ServerConfig config = new ServerConfig();
+    
+      config.setDataSource(dataSource());
+      config.addPackage("org.springframework.data.ebean.sample.domain");
+      config.setExternalTransactionManager(new SpringJdbcTransactionManager());
+    
+      config.loadFromProperties();
+      config.setDefaultServer(true);
+      config.setRegister(true);
+      config.setAutoCommitMode(false);
+      config.setExpressionNativeIlike(true);
+    
+      config.setCurrentUserProvider(new CurrentUserProvider() {
+        @Override
+        public Object currentUser() {
+          return "test"; // just for test, can rewrite to get the currentUser from threadLocal
+        }
+      });
+    
+      return config;
+     }
+    
+     @Bean
+     public DataSource dataSource() {
+       return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+     }
+    
+     @Bean
+     @Primary
+     public EbeanServer defaultEbeanServer(ServerConfig defaultEbeanServerConfig) {
+       return EbeanServerFactory.create(defaultEbeanServerConfig);
+     }
 }
 ```
 

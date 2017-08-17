@@ -148,24 +148,7 @@ public class EbeanQueryChannelService {
    * @param <T> the type of entity.
    * @return the query specifying page.
    */
-  @Deprecated
   public static <T> Query<T> queryWithPage(ExpressionList<T> expressionList, Pageable pageable) {
-    Assert.notNull(expressionList, "expressionList must not null");
-    Assert.notNull(pageable, "pageable must not null");
-    return expressionList.setMaxRows(pageable.getPageSize())
-        .setFirstRow(pageable.getOffset())
-        .setOrder(PageListOrderConverter.convertToEbeanOrder(pageable.getSort()));
-  }
-
-  /**
-   * Return query specifying page.
-   *
-   * @param expressionList the ExpressionList to add contains expression
-   * @param pageable       0-based index page.
-   * @param <T> the type of entity.
-   * @return the query specifying page.
-   */
-  public static <T> Query<T> queryByPageable(ExpressionList<T> expressionList, Pageable pageable) {
     Assert.notNull(expressionList, "expressionList must not null");
     Assert.notNull(pageable, "pageable must not null");
     return expressionList.setMaxRows(pageable.getPageSize())
