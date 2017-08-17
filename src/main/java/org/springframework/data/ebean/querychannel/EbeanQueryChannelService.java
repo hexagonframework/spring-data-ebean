@@ -50,11 +50,11 @@ public class EbeanQueryChannelService {
   /**
    * Return a ExpressionList specifying propertyName contains value.
    *
-   * @param expressionList
-   * @param propertyName
-   * @param value
-   * @param <T>
-   * @return
+   * @param expressionList the ExpressionList to add contains expression
+   * @param propertyName the property name of entity bean.
+   * @param value contains value, like %value%.
+   * @param <T> the type of entity.
+   * @return a ExpressionList specifying propertyName contains value.
    */
   public static <T> ExpressionList<T> containsIfNoneBlank(ExpressionList<T> expressionList,
                                                           String propertyName,
@@ -70,11 +70,11 @@ public class EbeanQueryChannelService {
   /**
    * Return a ExpressionList specifying propertyName equals value.
    *
-   * @param expressionList
-   * @param propertyName
-   * @param value
-   * @param <T>
-   * @return
+   * @param expressionList the ExpressionList to add contains expression
+   * @param propertyName the property name of entity bean.
+   * @param value equals value
+   * @param <T> the type of entity.
+   * @return a ExpressionList specifying propertyName equals value.
    */
   public static <T> ExpressionList<T> eqIfNotNull(ExpressionList<T> expressionList,
                                                   String propertyName,
@@ -90,12 +90,12 @@ public class EbeanQueryChannelService {
   /**
    * Return a ExpressionList specifying propertyName between start and end.
    *
-   * @param expressionList
-   * @param propertyName
-   * @param start
-   * @param end
-   * @param <T>
-   * @return
+   * @param expressionList the ExpressionList to add contains expression
+   * @param propertyName the property name of entity bean.
+   * @param start start value.
+   * @param end end value.
+   * @param <T> the type of entity.
+   * @return a ExpressionList specifying propertyName between start and end.
    */
   public static <T> ExpressionList<T> betweenIfNotNull(ExpressionList<T> expressionList,
                                                        String propertyName,
@@ -112,11 +112,11 @@ public class EbeanQueryChannelService {
   /**
    * Return a ExpressionList specifying propertyNames contains value.
    *
-   * @param expressionList
-   * @param propertyNames
-   * @param value
-   * @param <T>
-   * @return
+   * @param expressionList the ExpressionList to add contains expression
+   * @param propertyNames the property name of entity bean.
+   * @param value contains value.
+   * @param <T> the type of entity.
+   * @return the ExpressionList specifying propertyNames contains value.
    */
   public static <T> ExpressionList<T> orContains(ExpressionList<T> expressionList,
                                                  List<String> propertyNames,
@@ -143,10 +143,10 @@ public class EbeanQueryChannelService {
   /**
    * Return query specifying page.
    *
-   * @param expressionList
-   * @param pageable       0-based index page
-   * @param <T>
-   * @return
+   * @param expressionList the ExpressionList to add contains expression
+   * @param pageable       0-based index page.
+   * @param <T> the type of entity.
+   * @return the query specifying page.
    */
   @Deprecated
   public static <T> Query<T> queryWithPage(ExpressionList<T> expressionList, Pageable pageable) {
@@ -160,10 +160,10 @@ public class EbeanQueryChannelService {
   /**
    * Return query specifying page.
    *
-   * @param expressionList
-   * @param pageable       0-based index page
-   * @param <T>
-   * @return
+   * @param expressionList the ExpressionList to add contains expression
+   * @param pageable       0-based index page.
+   * @param <T> the type of entity.
+   * @return the query specifying page.
    */
   public static <T> Query<T> queryByPageable(ExpressionList<T> expressionList, Pageable pageable) {
     Assert.notNull(expressionList, "expressionList must not null");
@@ -186,8 +186,8 @@ public class EbeanQueryChannelService {
   /**
    * Return a query using Ebean ORM query.
    *
-   * @param eql the Ebean ORM query
-   * @return the created Query using ORM query
+   * @param eql the Ebean ORM query.
+   * @return the created Query using ORM query.
    */
   public <T> Query<T> createQuery(Class<T> entityType, String eql) {
     Assert.notNull(entityType, "entityType must not null");
@@ -198,7 +198,7 @@ public class EbeanQueryChannelService {
   /**
    * Return an SqlQuery for performing native SQL queries that return SqlRow's.
    *
-   * @param sql the sql to create SqlQuery using native SQL
+   * @param sql the sql to create SqlQuery using native SQL.
    * @return the created SqlQuery.
    */
   public SqlQuery createSqlQuery(String sql) {
@@ -209,8 +209,8 @@ public class EbeanQueryChannelService {
   /**
    * Return a query using native SQL.
    *
-   * @param sql native SQL
-   * @return the created Query using native SQL
+   * @param sql native SQL.
+   * @return the created Query using native SQL.
    */
   public <T> Query<T> createSqlQuery(Class<T> entityType, String sql) {
     Assert.notNull(entityType, "entityType must not null");
@@ -223,8 +223,8 @@ public class EbeanQueryChannelService {
    * Return a query using native SQL and column mapping.
    *
    * @param sql           native SQL
-   * @param columnMapping column mapping,key is dbColumn, value is propertyName
-   * @return the created Query using native SQL and column mapping config
+   * @param columnMapping column mapping,key is dbColumn, value is propertyName.
+   * @return the created Query using native SQL and column mapping config.
    */
   public <T> Query<T> createSqlQueryMappingColumns(Class<T> entityType,
                                                    String sql,
@@ -243,7 +243,7 @@ public class EbeanQueryChannelService {
    * Return a query using native SQL and column mapping.
    *
    * @param sql               native SQL
-   * @param tableAliasMapping table alias mapping,key is tableAlias, value is propertyName
+   * @param tableAliasMapping table alias mapping,key is tableAlias, value is propertyName.
    * @return the created Query using native SQL and column mapping config
    */
   public <T> Query<T> createSqlQueryMappingTableAlias(Class<T> entityType,
@@ -262,8 +262,8 @@ public class EbeanQueryChannelService {
   /**
    * Return a query using query name.
    *
-   * @param queryName
-   * @return
+   * @param queryName the name of query defined in ebean.xml or Entity.
+   * @return the query using query name.
    */
   public <T> Query<T> createNamedQuery(Class<T> entityType, String queryName) {
     return ebeanServer.createNamedQuery(entityType, queryName);
@@ -281,7 +281,7 @@ public class EbeanQueryChannelService {
   /**
    * Return a ExampleExpression specifying more options.
    *
-   * @return the created ExampleExpression specifying more options
+   * @return the created ExampleExpression specifying more options.
    */
   public ExampleExpression exampleOf(Object example,
                                      boolean caseInsensitive,
