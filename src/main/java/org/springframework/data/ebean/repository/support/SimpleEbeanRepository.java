@@ -16,10 +16,6 @@
 package org.springframework.data.ebean.repository.support;
 
 import io.ebean.EbeanServer;
-import io.ebean.ExampleExpression;
-import io.ebean.LikeType;
-import io.ebean.Query;
-import io.ebean.SqlQuery;
 import io.ebean.SqlUpdate;
 import io.ebean.UpdateQuery;
 import io.ebean.text.PathProperties;
@@ -88,46 +84,12 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     }
 
     @Override
-    public Query<T> query() {
-        return db().find(getEntityType());
-    }
-
-    @Override
-    public Query<T> queryWithOql(String oql) {
-        return db().createQuery(getEntityType(), oql);
-    }
-
-    @Override
-    public Query<T> queryWithSql(String sql) {
-        return db().findNative(getEntityType(), sql);
-    }
-
-    @Override
-    public Query<T> namedQueryOf(String queryName) {
-        return db().createNamedQuery(getEntityType(), queryName);
-    }
-    @Override
-    public SqlQuery sqlQueryOf(String sql) {
-        return db().createSqlQuery(sql);
-    }
-
-    @Override
     public UpdateQuery<T> updateQuery() {
         return db().update(getEntityType());
     }
     @Override
     public SqlUpdate sqlUpdateOf(String sql) {
         return db().createSqlUpdate(sql);
-    }
-
-    @Override
-    public ExampleExpression exampleOf(Object example) {
-        return db().getExpressionFactory().exampleLike(example);
-    }
-
-    @Override
-    public ExampleExpression exampleOf(Object example, boolean caseInsensitive, LikeType likeType) {
-        return db().getExpressionFactory().exampleLike(example, caseInsensitive, likeType);
     }
 
     @Override
@@ -308,6 +270,5 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
         return db().find(example.getProbeType())
                 .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount() > 0;
     }
-
 
 }

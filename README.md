@@ -41,8 +41,7 @@ Download the jar through Maven:
 The simple Spring Data Ebean configuration with Java-Config looks like this: 
 ```java
 @Configuration
-@EnableEbeanRepositories("org.springframework.data.ebean.repository.sample")
-@EnableTransactionManagement
+@EnableEbeanRepositories(org.springframework.data.ebean.sampleansactionManagement
 public class SampleConfig {
     @Bean
     public DataSource dataSource() {
@@ -101,7 +100,7 @@ public class User {
 }
 ```
 
-Create a repository interface in `org.springframework.data.ebean.repository.sample`:
+Create a repository interface in `org.springframework.data.ebean.sample`:
 
 ```java
 public interface UserRepository extends EbeanRepository<User, Long> {
@@ -141,7 +140,7 @@ Create a named query config in `resources/ebean.xml`:
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ebean xmlns="http://ebean-orm.github.io/xml/ns/ebean">
-    <entity class="org.springframework.data.ebean.domain.sample.User">
+    <entity class="org.springframework.data.ebean.sample.domain.User">
         <named-query name="withManagerById">
             <query>
                 select (firstname,lastname,address)

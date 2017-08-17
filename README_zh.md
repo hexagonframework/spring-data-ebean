@@ -44,8 +44,7 @@
 最简单的通过Java注解配置的Spring Data Ebean 配置如下所示：
 ```java
 @Configuration
-@EnableEbeanRepositories("org.springframework.data.ebean.repository.sample")
-@EnableTransactionManagement
+@EnableEbeanRepositories(oorg.springframework.data.ebean.samplensactionManagement
 public class SampleConfig {
     @Bean
     public DataSource dataSource() {
@@ -104,10 +103,7 @@ public class User {
 }
 ```
 
-创建一个仓储接口,使用包名 `org.springframework.data.ebean.repository.sample`:
-
-```java
-public interface UserRepository extends EbeanRepository<User, Long> {
+创建一个仓储接口,使用包名 `org.springfraorg.springframework.data.ebean.sampleublic interface UserRepository extends EbeanRepository<User, Long> {
     @Query("where emailAddress = :emailAddress order by id desc")
     User findUserByEmailAddressEqualsOql(@Param("emailAddress") String emailAddress);
 
@@ -150,7 +146,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ebean xmlns="http://ebean-orm.github.io/xml/ns/ebean">
-    <entity class="org.springframework.data.ebean.domain.sample.User">
+    <entity class="org.springframework.data.ebean.sample.domain.User">
         <named-query name="withManagerById">
             <query>
                 select (firstname,lastname,address)

@@ -1,24 +1,26 @@
 package org.springframework.data.ebean.repository;
 
 import com.google.common.eventbus.Subscribe;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.ebean.domain.sample.User;
-import org.springframework.data.ebean.domain.sample.UserEmailChangedEvent;
 import org.springframework.data.ebean.eventbus.guava.SimpleGuavaDomainEventPublisher;
-import org.springframework.data.ebean.repository.sample.SampleConfig;
-import org.springframework.data.ebean.repository.sample.UserRepository;
+import org.springframework.data.ebean.sample.config.SampleConfig;
+import org.springframework.data.ebean.sample.domain.User;
+import org.springframework.data.ebean.sample.domain.UserEmailChangedEvent;
+import org.springframework.data.ebean.sample.domain.UserRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Xuegui Yuan

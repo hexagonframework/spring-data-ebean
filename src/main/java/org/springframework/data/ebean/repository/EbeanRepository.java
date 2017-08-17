@@ -16,10 +16,6 @@
 package org.springframework.data.ebean.repository;
 
 import io.ebean.EbeanServer;
-import io.ebean.ExampleExpression;
-import io.ebean.LikeType;
-import io.ebean.Query;
-import io.ebean.SqlQuery;
 import io.ebean.SqlUpdate;
 import io.ebean.UpdateQuery;
 import java.io.Serializable;
@@ -57,45 +53,6 @@ public interface EbeanRepository<T extends Persistable, ID extends Serializable>
     EbeanServer db(EbeanServer db);
 
     /**
-     * Return an object relational query for finding a List, Set, Map or single entity bean.
-     *
-     * @return the Query.
-     */
-    Query<T> query();
-
-    /**
-     * Return a query using OQL.
-     *
-     * @param oql the Ebean ORM query
-     * @return the created Query using ORM query
-     */
-    Query<T> queryWithOql(String oql);
-
-    /**
-     * Return a query using native SQL.
-     *
-     * @param sql native SQL
-     * @return the created Query using native SQL
-     */
-    Query<T> queryWithSql(String sql);
-
-    /**
-     * Return a query using query name.
-     *
-     * @param queryName
-     * @return
-     */
-    Query<T> namedQueryOf(String queryName);
-
-    /**
-     * Return an SqlQuery for performing native SQL queries that return SqlRow's.
-     *
-     * @param sql the sql to create SqlQuery using native SQL
-     * @return the created SqlQuery.
-     */
-    SqlQuery sqlQueryOf(String sql);
-
-    /**
      * Return an UpdateQuery to perform a bulk update of many rows that match the query.
      *
      * @return the created UpdateQuery.
@@ -108,20 +65,6 @@ public interface EbeanRepository<T extends Persistable, ID extends Serializable>
      * @return the created SqlUpdate using native SQL
      */
     SqlUpdate sqlUpdateOf(String sql);
-
-    /**
-     * Return a ExampleExpression using example.
-     *
-     * @return the created ExampleExpression using example
-     */
-    ExampleExpression exampleOf(Object example);
-
-    /**
-     * Return a ExampleExpression specifying more options.
-     *
-     * @return the created ExampleExpression specifying more options
-     */
-    ExampleExpression exampleOf(Object example, boolean caseInsensitive, LikeType likeType);
 
     /**
      * update entity which is not loaded.
