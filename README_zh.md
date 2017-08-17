@@ -115,7 +115,7 @@ public class User {
   // equals / hashcode
 }
 ```
-SQL实体(注意：这个是替代MyBatis的重要特性！！！)
+SQL实体（注意：这个是替代MyBatis的重要特性！！！)
 ```java
 @Entity
 @Sql
