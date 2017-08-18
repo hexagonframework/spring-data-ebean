@@ -74,13 +74,13 @@ public class EbeanQueryChannelServiceIntegrationTest {
     assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
   }
 
-  @Test
-  public void createNamedQueryWhere() {
-    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
-        "userInfo").where()
-        .eq("emailAddress", "yuanxuegui@163.com").findUnique();
-    assertEquals("Xuegui", userInfo.getFirstName());
-    assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
-  }
+//  @Test
+//  public void createNamedQueryWhere() {
+//    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+//        "userInfo").where()
+//        .eq("emailAddress", "yuanxuegui@163.com").findUnique();
+//    assertEquals("Xuegui", userInfo.getFirstName());
+//    assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
+//  }
 
 }
