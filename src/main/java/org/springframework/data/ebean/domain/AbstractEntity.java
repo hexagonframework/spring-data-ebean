@@ -15,7 +15,6 @@
  */
 package org.springframework.data.ebean.domain;
 
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -34,7 +33,6 @@ public abstract class AbstractEntity implements Persistable<Long> {
     private static final long serialVersionUID = -5554308939380869754L;
 
     @Id
-    @GeneratedValue
     protected Long id;
 
     /*
@@ -56,6 +54,23 @@ public abstract class AbstractEntity implements Persistable<Long> {
      */
     public Long getId() {
         return id;
+    }
+
+    /**
+     * Sets the id of the entity.
+     *
+     * @param id the id to set
+     */
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    /**
+     * @see org.springframework.data.domain.Persistable#isNew()
+     */
+    @Transient
+    public boolean isNew() {
+        return null == getId();
     }
 
     /*
@@ -83,15 +98,6 @@ public abstract class AbstractEntity implements Persistable<Long> {
         return null == this.getId() ? false : this.getId().equals(that.getId());
     }
 
-    /**
-     * Sets the id of the entity.
-     *
-     * @param id the id to set
-     */
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -100,14 +106,6 @@ public abstract class AbstractEntity implements Persistable<Long> {
     @Override
     public String toString() {
         return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
-    }
-
-    /**
-     * @see org.springframework.data.domain.Persistable#isNew()
-     */
-    @Transient
-    public boolean isNew() {
-        return null == getId();
     }
 
 

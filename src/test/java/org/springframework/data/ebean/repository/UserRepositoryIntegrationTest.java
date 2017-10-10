@@ -156,4 +156,14 @@ public class UserRepositoryIntegrationTest {
         assertNotNull(u);
         assertEquals("yuanxuegui@126.com", u.getEmailAddress());
     }
+
+    @Test
+    public void testDeleteUser() {
+        user.changeEmail("yuanxuegui@126.com");
+        repository.save(user);
+        User u = repository.findOneByProperty("emailAddress", "yuanxuegui@126.com");
+        assertNotNull(u);
+
+        repository.delete(u.getId());
+    }
 }

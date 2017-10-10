@@ -160,7 +160,7 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
 
     @Override
     public void delete(ID id) {
-        db().find(getEntityType()).where().idEq(id).delete();
+        db().delete(getEntityType(), id);
     }
 
     @Override

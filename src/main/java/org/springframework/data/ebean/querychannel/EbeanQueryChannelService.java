@@ -134,8 +134,10 @@ public class EbeanQueryChannelService {
           exp = exp.contains(propertyName, value);
         }
       }
-      exp.endOr();
-      return exp;
+      if (exp != null) {
+        exp.endOr();
+        return exp;
+      }
     }
     return expressionList;
   }

@@ -15,7 +15,14 @@
  */
 package org.springframework.data.ebean.repository.query;
 
-import io.ebean.*;
+import io.ebean.EbeanServer;
+import io.ebean.PagedList;
+import io.ebean.Query;
+import io.ebean.QueryIterator;
+import io.ebean.SqlQuery;
+import io.ebean.SqlUpdate;
+import io.ebean.Update;
+import java.util.List;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -27,8 +34,6 @@ import org.springframework.data.repository.query.ParametersParameterAccessor;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.util.Assert;
-
-import java.util.List;
 
 /**
  * Set of classes to contain query execution strategies. Depending (mostly) on the return type of a
@@ -129,7 +134,7 @@ public abstract class EbeanQueryExecution {
                 throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
             }
 
-            boolean hasNext = resultList.size() > pageSize;
+          boolean hasNext = resultList != null && resultList.size() > pageSize;
 
             return new SliceImpl<Object>(hasNext ? resultList.subList(0, pageSize) : resultList, pageable, hasNext);
         }
