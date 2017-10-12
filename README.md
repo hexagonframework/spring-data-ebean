@@ -28,6 +28,8 @@ The primary goal of the [Spring Data](http://projects.spring.io/spring-data) pro
 
 ## Quick Start ##
 
+Create maven project，recommend to use spring boot to build web project.
+
 Download the jar through Maven:
 
 ```xml
@@ -37,6 +39,29 @@ Download the jar through Maven:
   <version>{current version}</version>
 </dependency>
 ```
+
+If using maven to compile, package, run，should add:
+
+```xml
+<build>
+    <plugins>
+      <plugin>
+        <groupId>io.repaint.maven</groupId>
+        <artifactId>tiles-maven-plugin</artifactId>
+        <version>2.8</version>
+        <extensions>true</extensions>
+        <configuration>
+          <tiles>
+            <tile>org.avaje.tile:java-compile:1.1</tile>
+            <tile>io.ebean.tile:enhancement:2.4</tile>
+          </tiles>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+```
+
+If run with ide, should install, enable ebean enhancement plugin.
 
 The simple Spring Data Ebean configuration with Java-Config looks like this: 
 ```java

@@ -32,7 +32,10 @@
 
 ## 快速开始 ##
 
+建立maven项目，建议使用spring boot建立web项目
+
 通过Maven引入依赖包:
+
 ```xml
 <dependency>
   <groupId>io.github.hexagonframework.data</groupId>
@@ -41,7 +44,28 @@
 </dependency>
 ```
 
-最简单的通过Java注解配置的Spring Data Ebean 配置如下所示：
+如果使用Maven编译、打包、运行，需要在pom文件中加入如下插件对实体类进行字节码加强，如果直接通过IDE运行需要安装、开启ebean enhancement插件
+
+```xml
+<build>
+    <plugins>
+      <plugin>
+        <groupId>io.repaint.maven</groupId>
+        <artifactId>tiles-maven-plugin</artifactId>
+        <version>2.8</version>
+        <extensions>true</extensions>
+        <configuration>
+          <tiles>
+            <tile>org.avaje.tile:java-compile:1.1</tile>
+            <tile>io.ebean.tile:enhancement:2.4</tile>
+          </tiles>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+```
+
+增加配置，最简单的通过Java注解配置的Spring Data Ebean 配置如下所示：
 ```java
 @Configuration
 @EnableEbeanRepositories(value = "org.springframework.data.ebean.sample")
