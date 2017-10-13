@@ -27,7 +27,7 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SampleConfig.class)
-public class UserRepositoryIntegrationTest {
+public class UserRepositoryIntegrationTests {
 
     @Autowired
     UserRepository repository;

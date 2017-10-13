@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SampleConfig.class)
-public class EbeanQueryChannelServiceIntegrationTest {
+public class EbeanQueryChannelServiceIntegrationTests {
   // Test fixture
   User user;
   @Autowired
