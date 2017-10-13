@@ -3,7 +3,6 @@ package org.springframework.data.ebean.querychannel;
 import com.google.common.collect.Maps;
 import io.ebean.Query;
 import java.util.Map;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +28,11 @@ public class EbeanQueryChannelServiceIntegrationTest {
   @Autowired
   private UserRepository repository;
 
-  @Before
-  public void setUp() throws Exception {
+  @Test
+  public void createSqlQueryMappingColumns() {
     user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
     user.setAge(29);
     user = repository.save(user);
-  }
-
-  @Test
-  public void createSqlQueryMappingColumns() {
     String sql1 = "select first_name, last_name, email_address from user where last_name= :lastName";
     String sql2 = "select first_name as firstName, last_name as lastName, email_address as emailAddress from user where last_name= :lastName";
     Map<String, String> columnsMapping = Maps.newHashMap();
@@ -69,7 +64,7 @@ public class EbeanQueryChannelServiceIntegrationTest {
   public void createNamedQuery() {
     UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
         "userInfoByEmail").setParameter("emailAddress",
-        "yuanxuegui@163.com").findUnique();
+        "yuanxuegui@163.com").findOne();
     assertEquals("Xuegui", userInfo.getFirstName());
     assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
   }

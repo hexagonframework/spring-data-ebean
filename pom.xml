@@ -45,6 +45,7 @@
     </scm>
 
     <properties>
+        <bundlor.enabled>false</bundlor.enabled>
         <bundlor.failOnWarnings>false</bundlor.failOnWarnings>
         <springdata.commons>1.13.3.RELEASE</springdata.commons>
         <jpa>2.0.0</jpa>
@@ -224,6 +225,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
