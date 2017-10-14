@@ -73,7 +73,7 @@ public class EbeanQueryChannelServiceIntegrationTests {
   public void createNamedQueryWhere() {
     UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
         "userInfo").where()
-        .eq("emailAddress", "testquerychannel@163.com").findUnique();
+        .eq("emailAddress", "testquerychannel@163.com").findOne();
     assertEquals("QueryChannel", userInfo.getFirstName());
     assertEquals("testquerychannel@163.com", userInfo.getEmailAddress());
   }
