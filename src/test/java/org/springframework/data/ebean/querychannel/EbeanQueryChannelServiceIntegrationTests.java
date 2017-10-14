@@ -30,7 +30,7 @@ public class EbeanQueryChannelServiceIntegrationTests {
 
   @Test
   public void createSqlQueryMappingColumns() {
-    user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
+    user = new User("QueryChannel", "Test", "testquerychannel@163.com");
     user.setAge(29);
     user = repository.save(user);
     String sql1 = "select first_name, last_name, email_address from user where last_name= :lastName";
@@ -46,36 +46,36 @@ public class EbeanQueryChannelServiceIntegrationTests {
     Query<UserInfo> query3 = ebeanQueryChannelService.createSqlQueryMappingColumns(UserInfo.class,
         sql1, columnsMapping);
 
-    query1.setParameter("lastName", "Yuan");
-    query2.setParameter("lastName", "Yuan");
-    query3.setParameter("lastName", "Yuan");
+    query1.setParameter("lastName", "Test");
+    query2.setParameter("lastName", "Test");
+    query3.setParameter("lastName", "Test");
     UserInfo userInfo1 = query1.findOne();
     UserInfo userInfo2 = query2.findOne();
     UserInfo userInfo3 = query3.findOne();
-    assertEquals("Xuegui", userInfo1.getFirstName());
-    assertEquals("yuanxuegui@163.com", userInfo1.getEmailAddress());
-    assertEquals("Xuegui", userInfo2.getFirstName());
-    assertEquals("yuanxuegui@163.com", userInfo2.getEmailAddress());
-    assertEquals("Xuegui", userInfo3.getFirstName());
-    assertEquals("yuanxuegui@163.com", userInfo3.getEmailAddress());
+    assertEquals("QueryChannel", userInfo1.getFirstName());
+    assertEquals("testquerychannel@163.com", userInfo1.getEmailAddress());
+    assertEquals("QueryChannel", userInfo2.getFirstName());
+    assertEquals("testquerychannel@163.com", userInfo2.getEmailAddress());
+    assertEquals("QueryChannel", userInfo3.getFirstName());
+    assertEquals("testquerychannel@163.com", userInfo3.getEmailAddress());
   }
 
   @Test
   public void createNamedQuery() {
     UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
         "userInfoByEmail").setParameter("emailAddress",
-        "yuanxuegui@163.com").findOne();
-    assertEquals("Xuegui", userInfo.getFirstName());
-    assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
+        "testquerychannel@163.com").findOne();
+    assertEquals("QueryChannel", userInfo.getFirstName());
+    assertEquals("testquerychannel@163.com", userInfo.getEmailAddress());
   }
 
-//  @Test
-//  public void createNamedQueryWhere() {
-//    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
-//        "userInfo").where()
-//        .eq("emailAddress", "yuanxuegui@163.com").findUnique();
-//    assertEquals("Xuegui", userInfo.getFirstName());
-//    assertEquals("yuanxuegui@163.com", userInfo.getEmailAddress());
-//  }
+  @Test
+  public void createNamedQueryWhere() {
+    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+        "userInfo").where()
+        .eq("emailAddress", "testquerychannel@163.com").findUnique();
+    assertEquals("QueryChannel", userInfo.getFirstName());
+    assertEquals("testquerychannel@163.com", userInfo.getEmailAddress());
+  }
 
 }
