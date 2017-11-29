@@ -12,7 +12,7 @@ import io.ebean.SqlQuery;
 import java.util.List;
 import java.util.Map;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.ebean.convert.PageListOrderConverter;
+import org.springframework.data.ebean.util.Converters;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -155,7 +155,7 @@ public class EbeanQueryChannelService {
     Assert.notNull(pageable, "pageable must not null");
     return expressionList.setMaxRows(pageable.getPageSize())
         .setFirstRow(pageable.getOffset())
-        .setOrder(PageListOrderConverter.convertToEbeanOrder(pageable.getSort()));
+        .setOrder(Converters.convertToEbeanOrderBy(pageable.getSort()));
   }
 
   /**

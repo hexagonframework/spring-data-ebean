@@ -16,7 +16,8 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import org.springframework.data.ebean.annotations.Query;
+import java.lang.reflect.Method;
+import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -25,8 +26,6 @@ import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.util.Assert;
-
-import java.lang.reflect.Method;
 
 /**
  * Query lookup strategy to execute finders.

@@ -15,18 +15,17 @@
  */
 package org.springframework.data.ebean.repository.query;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.data.ebean.annotations.Modifying;
-import org.springframework.data.ebean.annotations.Query;
+import org.springframework.data.ebean.annotation.Modifying;
+import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 
 /**
  * Ebean specific extension of {@link QueryMethod}.
@@ -52,16 +51,6 @@ public class EbeanQueryMethod extends QueryMethod {
     }
 
     /**
-     * Returns whether the finder is a modifying one.
-     *
-     * @return
-     */
-    @Override
-    public boolean isModifyingQuery() {
-        return null != AnnotationUtils.findAnnotation(method, Modifying.class);
-    }
-
-    /**
      * Returns the actual return type of the method.
      *
      * @return
@@ -79,25 +68,6 @@ public class EbeanQueryMethod extends QueryMethod {
     String getAnnotatedQuery() {
         String query = getAnnotationValue("value", String.class);
         return StringUtils.hasText(query) ? query : null;
-    }
-
-    /**
-     * Returns whether the backing query is a native one.
-     *
-     * @return
-     */
-    boolean isNativeQuery() {
-        return getAnnotationValue("nativeQuery", Boolean.class).booleanValue();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.query.QueryMethod#getNamedQueryName()
-     */
-    @Override
-    public String getNamedQueryName() {
-        String annotatedName = getAnnotationValue("name", String.class);
-        return StringUtils.hasText(annotatedName) ? annotatedName : super.getNamedQueryName();
     }
 
     /**
@@ -120,5 +90,34 @@ public class EbeanQueryMethod extends QueryMethod {
         }
 
         return targetType.cast(AnnotationUtils.getValue(annotation, attribute));
+    }
+
+    /**
+     * Returns whether the backing query is a native one.
+     *
+     * @return
+     */
+    boolean isNativeQuery() {
+        return getAnnotationValue("nativeQuery", Boolean.class).booleanValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.query.QueryMethod#getNamedQueryName()
+     */
+    @Override
+    public String getNamedQueryName() {
+        String annotatedName = getAnnotationValue("name", String.class);
+        return StringUtils.hasText(annotatedName) ? annotatedName : super.getNamedQueryName();
+    }
+
+    /**
+     * Returns whether the finder is a modifying one.
+     *
+     * @return
+     */
+    @Override
+    public boolean isModifyingQuery() {
+        return null != AnnotationUtils.findAnnotation(method, Modifying.class);
     }
 }

@@ -1,8 +1,8 @@
 package org.springframework.data.ebean.sample.domain;
 
 import java.util.List;
-import org.springframework.data.ebean.annotations.Modifying;
-import org.springframework.data.ebean.annotations.Query;
+import org.springframework.data.ebean.annotation.Modifying;
+import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.ebean.repository.EbeanRepository;
 import org.springframework.data.repository.query.Param;
 

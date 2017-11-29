@@ -16,8 +16,12 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import org.springframework.data.ebean.annotations.Query;
-import org.springframework.data.repository.query.*;
+import org.springframework.data.ebean.annotation.Query;
+import org.springframework.data.repository.query.EvaluationContextProvider;
+import org.springframework.data.repository.query.Parameters;
+import org.springframework.data.repository.query.RepositoryQuery;
+import org.springframework.data.repository.query.ResultProcessor;
+import org.springframework.data.repository.query.ReturnedType;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**

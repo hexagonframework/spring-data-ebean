@@ -16,13 +16,12 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
+import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.ebean.annotations.Query;
+import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.RepositoryQuery;
-
-import javax.persistence.PersistenceException;
 
 /**
  * {@link RepositoryQuery} implementation that inspects a {@link QueryMethod}
