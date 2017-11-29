@@ -1,4 +1,4 @@
-package org.springframework.data.ebean.convert;
+package org.springframework.data.ebean.util;
 
 import io.ebean.OrderBy;
 import io.ebean.PagedList;
@@ -11,11 +11,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 
 /**
- * Ebean PageList and Order convert to or from Spring data Page or Sort.
+ * Ebean PageList and Order util to or from Spring data Page or Sort.
  *
  * @author Xuegui Yuan
  */
-public class PageListOrderConverter {
+public class Converters {
 
     /**
      * Convert spring data Sort to Ebean OrderBy.
@@ -24,7 +24,7 @@ public class PageListOrderConverter {
      * @param <T>
      * @return
      */
-    public static <T> OrderBy<T> convertToEbeanOrder(Sort sort) {
+    public static <T> OrderBy<T> convertToEbeanOrderBy(Sort sort) {
         if (sort == null) {
             return null;
         }
