@@ -232,11 +232,11 @@ public interface UserRepository extends EbeanRepository<User, Long> {
 
 编写一个测试用例:
 
-`UserRepositoryIntegrationTest.java`
+`UserRepositoryIntegrationTests.java`
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SampleConfig.class)
-public class UserRepositoryIntegrationTest {
+public class UserRepositoryIntegrationTests {
 
     @Autowired
     UserRepository repository;
@@ -311,11 +311,11 @@ public class UserRepositoryIntegrationTest {
     }
 }
 ```
-`EbeanQueryChannelServiceIntegrationTest.java`
+`EbeanQueryChannelServiceIntegrationTests.java`
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SampleConfig.class)
-public class EbeanQueryChannelServiceIntegrationTest {
+public class EbeanQueryChannelServiceIntegrationTests {
   // Test fixture
   User user;
   @Autowired

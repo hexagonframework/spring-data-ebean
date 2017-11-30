@@ -224,11 +224,11 @@ Create a named query config in `resources/ebean.xml`:
 
 Write a test client:
 
-`UserRepositoryIntegrationTest.java`
+`UserRepositoryIntegrationTests.java`
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SampleConfig.class)
-public class UserRepositoryIntegrationTest {
+public class UserRepositoryIntegrationTests {
 
     @Autowired
     UserRepository repository;
@@ -359,11 +359,11 @@ public class UserRepositoryIntegrationTest {
     }
 }
 ```
-`EbeanQueryChannelServiceIntegrationTest.java`
+`EbeanQueryChannelServiceIntegrationTests.java`
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SampleConfig.class)
-public class EbeanQueryChannelServiceIntegrationTest {
+public class EbeanQueryChannelServiceIntegrationTests {
   // Test fixture
   User user;
   @Autowired
