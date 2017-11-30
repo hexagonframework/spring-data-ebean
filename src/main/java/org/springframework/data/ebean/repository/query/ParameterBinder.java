@@ -19,12 +19,15 @@ import io.ebean.Query;
 import io.ebean.SqlQuery;
 import io.ebean.SqlUpdate;
 import io.ebean.Update;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.*;
+import org.springframework.data.repository.query.DefaultParameters;
+import org.springframework.data.repository.query.Parameter;
+import org.springframework.data.repository.query.ParameterAccessor;
+import org.springframework.data.repository.query.Parameters;
+import org.springframework.data.repository.query.ParametersParameterAccessor;
 import org.springframework.util.Assert;
-
-import java.util.Optional;
 
 /**
  * {@link ParameterBinder} is used to bind method parameters to a {@link Query}. This is usually done whenever an
@@ -37,6 +40,10 @@ public class ParameterBinder {
     private final DefaultParameters parameters;
     private final ParameterAccessor accessor;
     private final Object[] values;
+
+    ParameterBinder(DefaultParameters parameters) {
+        this(parameters, new Object[0]);
+    }
 
     /**
      * Creates a new {@link ParameterBinder}.
@@ -56,19 +63,6 @@ public class ParameterBinder {
         this.accessor = new ParametersParameterAccessor(parameters, this.values);
     }
 
-    ParameterBinder(DefaultParameters parameters) {
-        this(parameters, new Object[0]);
-    }
-
-    /**
-     * Returns the {@link Pageable} of the parameters, if available. Returns {@code null} otherwise.
-     *
-     * @return
-     */
-    public Pageable getPageable() {
-        return accessor.getPageable();
-    }
-
     /**
      * Returns the sort instance to be used for query creation. Will use a {@link Sort} parameter if available or the
      * {@link Sort} contained in a {@link Pageable} if available. Returns {@code null} if no {@link Sort} can be found.
@@ -77,88 +71,6 @@ public class ParameterBinder {
      */
     public Sort getSort() {
         return accessor.getSort();
-    }
-
-    /**
-     * Binds the parameters to the given {@link Query}.
-     *
-     * @param query must not be {@literal null}.
-     * @return
-     */
-    public Object bind(Object query) {
-
-        Assert.notNull(query, "Query must not be null!");
-
-        int bindableParameterIndex = 0;
-        int queryParameterPosition = 1;
-
-        for (Parameter parameter : parameters) {
-
-            if (canBindParameter(parameter)) {
-
-                Object value = accessor.getBindableValue(bindableParameterIndex);
-                bind(query, parameter, value, queryParameterPosition++);
-                bindableParameterIndex++;
-            }
-        }
-
-        return query;
-    }
-
-    /**
-     * Returns {@literal true} if the given parameter can be bound.
-     *
-     * @param parameter
-     * @return
-     */
-    protected boolean canBindParameter(Parameter parameter) {
-        return parameter.isBindable();
-    }
-
-    /**
-     * Perform the actual query parameter binding.
-     *
-     * @param query
-     * @param parameter
-     * @param value
-     * @param position
-     */
-    protected void bind(Object query, Parameter parameter, Object value, int position) {
-        if (parameter.isNamedParameter()) {
-            if (query instanceof Query) {
-                Query ormQuery = (Query) query;
-                ormQuery.setParameter(
-                        Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!")),
-                        value);
-            } else if (query instanceof Update) {
-                Update ormUpdate = (Update) query;
-                ormUpdate.setParameter(
-                        Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!")),
-                        value);
-            } else if (query instanceof SqlQuery) {
-                SqlQuery sqlQuery = (SqlQuery) query;
-                sqlQuery.setParameter(
-                        Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!")),
-                        value);
-            } else if (query instanceof SqlUpdate) {
-                SqlUpdate sqlUpdate = (SqlUpdate) query;
-                sqlUpdate.setParameter(
-                        Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!")),
-                        value);
-            } else {
-                throw new IllegalArgumentException("query not supported!");
-            }
-        } else {
-            if (query instanceof Query) {
-                Query ormQuery = (Query) query;
-                ormQuery.setParameter(position, value);
-            } else if (query instanceof SqlQuery) {
-                SqlQuery sqlQuery = (SqlQuery) query;
-                sqlQuery.setParameter(position, value);
-            } else {
-                throw new IllegalArgumentException("query not supported!");
-            }
-        }
     }
 
     /**
@@ -190,6 +102,105 @@ public class ParameterBinder {
         }
 
         return result;
+    }
+
+    /**
+     * Binds the parameters to the given {@link Query}.
+     *
+     * @param query must not be {@literal null}.
+     * @return
+     */
+    public Object bind(Object query) {
+
+        Assert.notNull(query, "Query must not be null!");
+
+        int bindableParameterIndex = 0;
+        int queryParameterPosition = 1;
+
+        for (Parameter parameter : parameters) {
+
+            if (canBindParameter(parameter)) {
+
+                Object value = accessor.getBindableValue(bindableParameterIndex);
+                bind(query, parameter, value, queryParameterPosition++);
+                bindableParameterIndex++;
+            }
+        }
+
+        return query;
+    }
+
+    /**
+     * Returns the {@link Pageable} of the parameters, if available. Returns {@code null} otherwise.
+     *
+     * @return
+     */
+    public Pageable getPageable() {
+        return accessor.getPageable();
+    }
+
+    /**
+     * Returns {@literal true} if the given parameter can be bound.
+     *
+     * @param parameter
+     * @return
+     */
+    protected boolean canBindParameter(Parameter parameter) {
+        return parameter.isBindable();
+    }
+
+    /**
+     * Perform the actual query parameter binding.
+     *
+     * @param query
+     * @param parameter
+     * @param value
+     * @param position
+     */
+    protected void bind(Object query, Parameter parameter, Object value, int position) {
+        if (parameter.isNamedParameter()) {
+            if (query instanceof Query) {
+                Query ormQuery = (Query) query;
+                ormQuery.setParameter(
+                    Optional.ofNullable(parameter.getName())
+                        .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
+                        .get(),
+                    value);
+            } else if (query instanceof Update) {
+                Update ormUpdate = (Update) query;
+                ormUpdate.setParameter(
+                    Optional.ofNullable(parameter.getName())
+                        .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
+                        .get(),
+                    value);
+            } else if (query instanceof SqlQuery) {
+                SqlQuery sqlQuery = (SqlQuery) query;
+                sqlQuery.setParameter(
+                    Optional.ofNullable(parameter.getName())
+                        .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
+                        .get(),
+                    value);
+            } else if (query instanceof SqlUpdate) {
+                SqlUpdate sqlUpdate = (SqlUpdate) query;
+                sqlUpdate.setParameter(
+                    Optional.ofNullable(parameter.getName())
+                        .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
+                        .get(),
+                    value);
+            } else {
+                throw new IllegalArgumentException("query not supported!");
+            }
+        } else {
+            if (query instanceof Query) {
+                Query ormQuery = (Query) query;
+                ormQuery.setParameter(position, value);
+            } else if (query instanceof SqlQuery) {
+                SqlQuery sqlQuery = (SqlQuery) query;
+                sqlQuery.setParameter(position, value);
+            } else {
+                throw new IllegalArgumentException("query not supported!");
+            }
+        }
     }
 
     /**

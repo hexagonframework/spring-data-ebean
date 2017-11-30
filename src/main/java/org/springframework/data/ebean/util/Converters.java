@@ -46,7 +46,7 @@ public class Converters {
      */
     public static <T> Page<T> convertToSpringDataPage(PagedList<T> pagedList, Sort sort) {
         return new PageImpl<T>(pagedList.getList(),
-                new PageRequest(pagedList.getPageIndex(), pagedList.getPageSize(), sort),
+            PageRequest.of(pagedList.getPageIndex(), pagedList.getPageSize(), sort),
                 pagedList.getTotalCount());
     }
 }

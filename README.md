@@ -53,7 +53,7 @@ If using maven to compile, package, run，should add:
         <configuration>
           <tiles>
             <tile>org.avaje.tile:java-compile:1.1</tile>
-            <tile>io.ebean.tile:enhancement:2.4</tile>
+            <tile>io.ebean.tile:enhancement:5.1</tile>
           </tiles>
         </configuration>
       </plugin>

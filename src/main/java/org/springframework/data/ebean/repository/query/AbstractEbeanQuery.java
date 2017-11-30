@@ -45,14 +45,6 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
         this.ebeanServer = ebeanServer;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.query.RepositoryQuery#getQueryMethod()
-     */
-    public EbeanQueryMethod getQueryMethod() {
-        return method;
-    }
-
     /**
      * Returns the {@link EbeanServer}.
      *
@@ -62,12 +54,14 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
         return ebeanServer;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.query.RepositoryQuery#execute(java.lang.Object[])
-     */
+    @Override
     public Object execute(Object[] parameters) {
         return doExecute(getExecution(), parameters);
+    }
+
+    @Override
+    public EbeanQueryMethod getQueryMethod() {
+        return method;
     }
 
     /**
@@ -75,24 +69,24 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
      * @param values
      * @return
      */
-    private Object doExecute(EbeanQueryExecution execution, Object[] values) {
+    private Object doExecute(AbstractEbeanQueryExecution execution, Object[] values) {
         Object result = execution.execute(this, values);
         return result;
     }
 
-    protected EbeanQueryExecution getExecution() {
+    protected AbstractEbeanQueryExecution getExecution() {
         if (method.isStreamQuery()) {
-            return new EbeanQueryExecution.StreamExecution();
+            return new AbstractEbeanQueryExecution.StreamExecutionAbstract();
         } else if (method.isCollectionQuery()) {
-            return new EbeanQueryExecution.CollectionExecution();
+            return new AbstractEbeanQueryExecution.CollectionExecutionAbstract();
         } else if (method.isSliceQuery()) {
-            return new EbeanQueryExecution.SlicedExecution(method.getParameters());
+            return new AbstractEbeanQueryExecution.SlicedExecutionAbstract(method.getParameters());
         } else if (method.isPageQuery()) {
-            return new EbeanQueryExecution.PagedExecution(method.getParameters());
+            return new AbstractEbeanQueryExecution.PagedExecutionAbstract(method.getParameters());
         } else if (method.isModifyingQuery()) {
-            return new EbeanQueryExecution.UpdateExecution(method, ebeanServer);
+            return new AbstractEbeanQueryExecution.UpdateExecutionAbstract(method, ebeanServer);
         } else {
-            return new EbeanQueryExecution.SingleEntityExecution();
+            return new AbstractEbeanQueryExecution.SingleEntityExecutionAbstract();
         }
     }
 

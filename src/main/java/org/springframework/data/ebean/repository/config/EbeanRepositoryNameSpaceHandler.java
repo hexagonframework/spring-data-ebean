@@ -26,11 +26,7 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
  */
 public class EbeanRepositoryNameSpaceHandler extends NamespaceHandlerSupport {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.springframework.beans.factory.xml.NamespaceHandler#init()
-     */
+  @Override
     public void init() {
 
         RepositoryConfigurationExtension extension = new EbeanRepositoryConfigExtension();

@@ -15,11 +15,6 @@
  */
 package org.springframework.data.ebean.repository.query;
 
-import org.springframework.data.repository.query.parser.Part.Type;
-import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +22,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.springframework.data.repository.query.parser.Part.Type;
+import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.springframework.util.ObjectUtils.nullSafeEquals;
@@ -128,7 +127,10 @@ class StringQuery {
      */
     public static enum ParameterBindingParser {
 
-        INSTANCE;
+      /**
+       * Instance
+       */
+      INSTANCE;
 
         static final String EXPRESSION_PARAMETER_PREFIX = "__$synthetic$__";
         private static final Pattern PARAMETER_BINDING_BY_INDEX = Pattern.compile("\\?(\\d+)");
@@ -148,33 +150,28 @@ class StringQuery {
 
             StringBuilder builder = new StringBuilder();
             builder.append("(");
-            builder.append(StringUtils.collectionToDelimitedString(keywords, "|")); // keywords
-            builder.append(")?");
-            builder.append("(?: )?"); // some whitespace
-            builder.append("\\(?"); // optional braces around parameters
-            builder.append("(");
-            builder.append("%?(\\?(\\d+))%?"); // position parameter and parameter index
-            builder.append("|"); // or
-            builder.append("%?(:([\\p{L}\\w]+))%?"); // named parameter and the parameter name
-            builder.append("|"); // or
-            builder.append("%?((:|\\?)#\\{([^}]+)\\})%?"); // expression parameter and expression
-            builder.append(")");
-            builder.append("\\)?"); // optional braces around parameters
+          // keywords
+          builder.append(StringUtils.collectionToDelimitedString(keywords, "|"));
+          builder.append(")?");
+          // some whitespace
+          builder.append("(?: )?");
+          // optional braces around parameters
+          builder.append("\\(?");
+          builder.append("(");
+          // position parameter and parameter index
+          builder.append("%?(\\?(\\d+))%?");
+          // or
+          builder.append("|");
+          // named parameter and the parameter name
+          builder.append("%?(:([\\p{L}\\w]+))%?");
+          builder.append("|"); // or
+          // expression parameter and expression
+          builder.append("%?((:|\\?)#\\{([^}]+)\\})%?");
+          builder.append(")");
+          // optional braces around parameters
+          builder.append("\\)?");
 
-            PARAMETER_BINDING_PATTERN = Pattern.compile(builder.toString(), CASE_INSENSITIVE);
-        }
-
-        private static void checkAndRegister(ParameterBinding binding, List<ParameterBinding> bindings) {
-
-            for (ParameterBinding existing : bindings) {
-                if (existing.hasName(binding.getName()) || existing.hasPosition(binding.getPosition())) {
-                    Assert.isTrue(existing.equals(binding), String.format(MESSAGE, existing, binding));
-                }
-            }
-
-            if (!bindings.contains(binding)) {
-                bindings.add(binding);
-            }
+          PARAMETER_BINDING_PATTERN = Pattern.compile(builder.toString(), CASE_INSENSITIVE);
         }
 
         /**
@@ -287,7 +284,20 @@ class StringQuery {
             return greatestParameterIndex;
         }
 
-        /**
+      private static void checkAndRegister(ParameterBinding binding, List<ParameterBinding> bindings) {
+
+        for (ParameterBinding existing : bindings) {
+          if (existing.hasName(binding.getName()) || existing.hasPosition(binding.getPosition())) {
+            Assert.isTrue(existing.equals(binding), String.format(MESSAGE, existing, binding));
+          }
+        }
+
+        if (!bindings.contains(binding)) {
+          bindings.add(binding);
+        }
+      }
+
+      /**
          * An enum for the different types of bindings.
          *
          * @author Xuegui Yuan
@@ -360,15 +370,6 @@ class StringQuery {
         }
 
         /**
-         * Creates a new {@link ParameterBinding} for the parameter with the given position.
-         *
-         * @param position must not be {@literal null}.
-         */
-        public ParameterBinding(Integer position) {
-            this(null, position, null);
-        }
-
-        /**
          * Creates a new {@link ParameterBinding} for the parameter with the given name, position and expression
          * information.
          *
@@ -391,7 +392,16 @@ class StringQuery {
             this.expression = expression;
         }
 
-        /**
+      /**
+       * Creates a new {@link ParameterBinding} for the parameter with the given position.
+       *
+       * @param position must not be {@literal null}.
+       */
+      public ParameterBinding(Integer position) {
+        this(null, position, null);
+      }
+
+      /**
          * Returns whether the binding has the given name. Will always be {@literal false} in case the
          * {@link ParameterBinding} has been set up from a position.
          *
@@ -411,20 +421,6 @@ class StringQuery {
          */
         public boolean hasPosition(Integer position) {
             return position != null && this.name == null && position.equals(this.position);
-        }
-
-        /**
-         * @return the name
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * @return the position
-         */
-        public Integer getPosition() {
-            return position;
         }
 
         /**
@@ -477,16 +473,30 @@ class StringQuery {
                     getExpression());
         }
 
-        /**
-         * @param valueToBind
+      /**
+       * @return the name
+       */
+      public String getName() {
+        return name;
+      }
+
+      /**
+       * @return the position
+       */
+      public Integer getPosition() {
+        return position;
+      }
+
+      public String getExpression() {
+        return expression;
+      }
+
+      /**
+       * @param valueToBind
          * @return
          */
         public Object prepare(Object valueToBind) {
             return valueToBind;
-        }
-
-        public String getExpression() {
-            return expression;
         }
     }
 
@@ -649,8 +659,47 @@ class StringQuery {
             return type;
         }
 
-        /**
-         * Prepares the given raw keyword according to the like type.
+      /*
+       * (non-Javadoc)
+       * @see java.lang.Object#hashCode()
+       */
+      @Override
+      public int hashCode() {
+
+        int result = super.hashCode();
+
+        result += nullSafeHashCode(this.type);
+
+        return result;
+      }
+
+      /*
+       * (non-Javadoc)
+       * @see java.lang.Object#equals(java.lang.Object)
+       */
+      @Override
+      public boolean equals(Object obj) {
+
+        if (!(obj instanceof LikeParameterBinding)) {
+          return false;
+        }
+
+        LikeParameterBinding that = (LikeParameterBinding) obj;
+
+        return super.equals(obj) && this.type.equals(that.type);
+      }
+
+      /*
+       * (non-Javadoc)
+       * @see java.lang.Object#toString()
+       */
+      @Override
+      public String toString() {
+        return String.format("LikeBinding [name: %s, position: %d, type: %s]", getName(), getPosition(), type);
+      }
+
+      /**
+       * Prepares the given raw keyword according to the like type.
          *
          * @param value
          */
@@ -672,45 +721,6 @@ class StringQuery {
                 default:
                     return value;
             }
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        @Override
-        public boolean equals(Object obj) {
-
-            if (!(obj instanceof LikeParameterBinding)) {
-                return false;
-            }
-
-            LikeParameterBinding that = (LikeParameterBinding) obj;
-
-            return super.equals(obj) && this.type.equals(that.type);
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
-        @Override
-        public int hashCode() {
-
-            int result = super.hashCode();
-
-            result += nullSafeHashCode(this.type);
-
-            return result;
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#toString()
-         */
-        @Override
-        public String toString() {
-            return String.format("LikeBinding [name: %s, position: %d, type: %s]", getName(), getPosition(), type);
         }
     }
 }

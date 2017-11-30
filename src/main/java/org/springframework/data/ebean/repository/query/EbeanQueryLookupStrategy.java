@@ -111,17 +111,21 @@ public final class EbeanQueryLookupStrategy {
             this.ebeanServer = ebeanServer;
         }
 
-        /*
-         * (non-Javadoc)
-         * @see org.springframework.data.repository.query.QueryLookupStrategy#resolveQuery(java.lang.reflect.Method, org.springframework.data.repository.core.RepositoryMetadata, org.springframework.data.projection.ProjectionFactory, org.springframework.data.repository.core.NamedQueries)
-         */
         @Override
         public final RepositoryQuery resolveQuery(Method method, RepositoryMetadata metadata, ProjectionFactory factory,
                                                   NamedQueries namedQueries) {
             return resolveQuery(new EbeanQueryMethod(method, metadata, factory), ebeanServer, namedQueries);
         }
 
-        protected abstract RepositoryQuery resolveQuery(EbeanQueryMethod method, EbeanServer ebeanServer, NamedQueries namedQueries);
+      /**
+       * Resolve query to return .RepositoryQuery
+       *
+       * @param method
+       * @param ebeanServer
+       * @param namedQueries
+       * @return RepositoryQuery
+       */
+      protected abstract RepositoryQuery resolveQuery(EbeanQueryMethod method, EbeanServer ebeanServer, NamedQueries namedQueries);
     }
 
     /**

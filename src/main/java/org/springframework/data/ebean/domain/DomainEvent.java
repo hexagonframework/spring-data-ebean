@@ -8,5 +8,10 @@ import java.util.Date;
  * @author Xuegui Yuan
  */
 public interface DomainEvent {
-    Date occurredOn();
+  /**
+   * Occurred date.
+   *
+   * @return Occurred date
+   */
+  Date occurredOn();
 }

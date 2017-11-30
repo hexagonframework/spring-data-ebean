@@ -53,27 +53,28 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
     }
 
     /*
-     * (non-Javadoc)
-     * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
-     */
-    @Override
-    public Object doCreateQuery(Object[] values) {
-        return queryPreparer.createQuery(values);
-    }
-    /*
 	 * (non-Javadoc)
 	 * @see org.springframework.data.jpa.repository.query.AbstractEbeanQuery#getExecution()
 	 */
     @Override
-    protected EbeanQueryExecution getExecution() {
+    protected AbstractEbeanQueryExecution getExecution() {
         if (this.tree.isDelete()) {
-            return new EbeanQueryExecution.DeleteExecution(getEbeanServer());
+          return new AbstractEbeanQueryExecution.DeleteExecutionAbstract(getEbeanServer());
         } else if (this.tree.isExistsProjection()) {
-            return new EbeanQueryExecution.ExistsExecution();
+          return new AbstractEbeanQueryExecution.ExistsExecutionAbstract();
         }
 
         return super.getExecution();
     }
+
+  /*
+   * (non-Javadoc)
+   * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
+   */
+  @Override
+  public Object doCreateQuery(Object[] values) {
+    return queryPreparer.createQuery(values);
+  }
 
     /**
      * Query preparer to create {@link Query} instances and potentially cache them.
@@ -99,6 +100,18 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
             EbeanQueryCreator ebeanQueryCreator = createCreator(accessor);
             return restrictMaxResultsIfNecessary((Query) invokeBinding(getBinder(values), ebeanQueryCreator.createQuery()));
         }
+
+      protected EbeanQueryCreator createCreator(ParametersParameterAccessor accessor) {
+        EbeanServer ebeanServer = getEbeanServer();
+        Query ebeanQuery = ebeanServer.createQuery(domainClass);
+        ExpressionList expressionList = ebeanQuery.where();
+
+        ParameterMetadataProvider provider = new ParameterMetadataProvider(accessor);
+
+        ResultProcessor processor = getQueryMethod().getResultProcessor();
+
+        return new EbeanQueryCreator(tree, processor.getReturnedType(), expressionList, provider);
+      }
 
         /**
          * Restricts the max results of the given {@link Query} if the current {@code tree} marks this {@code query} as
@@ -130,18 +143,6 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
             }
 
             return query;
-        }
-
-        protected EbeanQueryCreator createCreator(ParametersParameterAccessor accessor) {
-            EbeanServer ebeanServer = getEbeanServer();
-            Query ebeanQuery = ebeanServer.createQuery(domainClass);
-            ExpressionList expressionList = ebeanQuery.where();
-
-            ParameterMetadataProvider provider = new ParameterMetadataProvider(accessor);
-
-            ResultProcessor processor = getQueryMethod().getResultProcessor();
-
-            return new EbeanQueryCreator(tree, processor.getReturnedType(), expressionList, provider);
         }
 
         /**

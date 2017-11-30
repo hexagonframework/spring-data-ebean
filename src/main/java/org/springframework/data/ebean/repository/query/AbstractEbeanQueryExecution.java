@@ -42,7 +42,7 @@ import org.springframework.util.Assert;
  *
  * @author Xuegui Yuan
  */
-public abstract class EbeanQueryExecution {
+public abstract class AbstractEbeanQueryExecution {
 
     /**
      * Executes the given {@link AbstractStringBasedEbeanQuery} with the given {@link ParameterBinder}.
@@ -70,7 +70,7 @@ public abstract class EbeanQueryExecution {
     /**
      * Executes the query to return a simple collection of entities.
      */
-    static class CollectionExecution extends EbeanQueryExecution {
+    static class CollectionExecutionAbstract extends AbstractEbeanQueryExecution {
 
         @Override
         protected Object doExecute(AbstractEbeanQuery query, Object[] values) {
@@ -92,22 +92,22 @@ public abstract class EbeanQueryExecution {
      *
      * @author Xuegui Yuan
      */
-    static class SlicedExecution extends EbeanQueryExecution {
+    static class SlicedExecutionAbstract extends AbstractEbeanQueryExecution {
 
         private final Parameters<?, ?> parameters;
 
         /**
-         * Creates a new {@link SlicedExecution} using the given {@link Parameters}.
+         * Creates a new {@link SlicedExecutionAbstract} using the given {@link Parameters}.
          *
          * @param parameters must not be {@literal null}.
          */
-        public SlicedExecution(Parameters<?, ?> parameters) {
+        public SlicedExecutionAbstract(Parameters<?, ?> parameters) {
             this.parameters = parameters;
         }
 
         /*
          * (non-Javadoc)
-         * @see org.springframework.data.ebean.repository.query.EbeanQueryExecution#doExecute(org.springframework.data.ebean.repository.query.AbstractEbeanQuery, java.lang.Object[])
+         * @see org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution#doExecute(org.springframework.data.ebean.repository.query.AbstractEbeanQuery, java.lang.Object[])
          */
         @Override
         @SuppressWarnings("unchecked")
@@ -144,11 +144,11 @@ public abstract class EbeanQueryExecution {
      * Executes the {@link AbstractStringBasedEbeanQuery} to return a {@link org.springframework.data.domain.Page} of
      * entities.
      */
-    static class PagedExecution extends EbeanQueryExecution {
+    static class PagedExecutionAbstract extends AbstractEbeanQueryExecution {
 
         private final Parameters<?, ?> parameters;
 
-        public PagedExecution(Parameters<?, ?> parameters) {
+      public PagedExecutionAbstract(Parameters<?, ?> parameters) {
 
             this.parameters = parameters;
         }
@@ -165,7 +165,8 @@ public abstract class EbeanQueryExecution {
                 return PageableExecutionUtils.getPage(pagedList.getList(), accessor.getPageable(), () -> pagedList.getTotalCount());
             } else if (createQuery instanceof SqlQuery) {
                 SqlQuery sqlQuery = (SqlQuery) createQuery;
-                return sqlQuery.findList(); // TODO page
+              // TODO page
+              return sqlQuery.findList();
             } else {
                 throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
             }
@@ -176,7 +177,7 @@ public abstract class EbeanQueryExecution {
     /**
      * Executes a {@link AbstractStringBasedEbeanQuery} to return a single entity.
      */
-    static class SingleEntityExecution extends EbeanQueryExecution {
+    static class SingleEntityExecutionAbstract extends AbstractEbeanQueryExecution {
 
         @Override
         protected Object doExecute(AbstractEbeanQuery query, Object[] values) {
@@ -196,7 +197,7 @@ public abstract class EbeanQueryExecution {
     /**
      * Executes a update query such as an update, insert or delete.
      */
-    static class UpdateExecution extends EbeanQueryExecution {
+    static class UpdateExecutionAbstract extends AbstractEbeanQueryExecution {
 
         private final EbeanServer ebeanServer;
 
@@ -206,7 +207,7 @@ public abstract class EbeanQueryExecution {
          *
          * @param ebeanServer
          */
-        public UpdateExecution(EbeanQueryMethod method, EbeanServer ebeanServer) {
+        public UpdateExecutionAbstract(EbeanQueryMethod method, EbeanServer ebeanServer) {
 
             Class<?> returnType = method.getReturnType();
 
@@ -237,21 +238,21 @@ public abstract class EbeanQueryExecution {
     }
 
     /**
-     * {@link EbeanQueryExecution} removing entities matching the query.
+     * {@link AbstractEbeanQueryExecution} removing entities matching the query.
      *
      * @author Xuegui Yuan
      */
-    static class DeleteExecution extends EbeanQueryExecution {
+    static class DeleteExecutionAbstract extends AbstractEbeanQueryExecution {
 
         private final EbeanServer ebeanServer;
 
-        public DeleteExecution(EbeanServer ebeanServer) {
+      public DeleteExecutionAbstract(EbeanServer ebeanServer) {
             this.ebeanServer = ebeanServer;
         }
 
         /*
          * (non-Javadoc)
-         * @see org.springframework.data.ebean.repository.query.EbeanQueryExecution#doExecute(org.springframework.data.ebean.repository.query.AbstractEbeanQuery, java.lang.Object[])
+         * @see org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution#doExecute(org.springframework.data.ebean.repository.query.AbstractEbeanQuery, java.lang.Object[])
          */
         @Override
         protected Object doExecute(AbstractEbeanQuery ebeanQuery, Object[] values) {
@@ -268,11 +269,11 @@ public abstract class EbeanQueryExecution {
     }
 
     /**
-     * {@link EbeanQueryExecution} performing an exists check on the query.
+     * {@link AbstractEbeanQueryExecution} performing an exists check on the query.
      *
      * @author Xuegui Yuan
      */
-    static class ExistsExecution extends EbeanQueryExecution {
+    static class ExistsExecutionAbstract extends AbstractEbeanQueryExecution {
 
         @Override
         protected Object doExecute(AbstractEbeanQuery ebeanQuery, Object[] values) {
@@ -282,7 +283,8 @@ public abstract class EbeanQueryExecution {
                 return ormQuery.findCount() > 0;
             } else if (createQuery instanceof SqlQuery) {
                 SqlQuery sqlQuery = (SqlQuery) createQuery;
-                return sqlQuery.findOne().getLong("c") > 0; // TODO check
+              // TODO check
+              return sqlQuery.findOne().getLong("c") > 0;
             } else {
                 throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
             }
@@ -290,17 +292,17 @@ public abstract class EbeanQueryExecution {
     }
 
     /**
-     * {@link EbeanQueryExecution} executing a Java 8 Stream.
+     * {@link AbstractEbeanQueryExecution} executing a Java 8 Stream.
      *
      * @author Xuegui Yuan
      */
-    static class StreamExecution extends EbeanQueryExecution {
+    static class StreamExecutionAbstract extends AbstractEbeanQueryExecution {
 
         private static final String NO_SURROUNDING_TRANSACTION = "You're trying to execute a streaming query method without a surrounding transaction that keeps the connection open so that the Stream can actually be consumed. Make sure the code consuming the stream uses @Transactional or any other way of declaring a (read-only) transaction.";
 
         /*
          * (non-Javadoc)
-         * @see org.springframework.data.ebean.repository.query.EbeanQueryExecution#doExecute(org.springframework.data.ebean.repository.query.AbstractEbeanQuery, java.lang.Object[])
+         * @see org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution#doExecute(org.springframework.data.ebean.repository.query.AbstractEbeanQuery, java.lang.Object[])
          */
         @Override
         protected Object doExecute(final AbstractEbeanQuery ebeanQuery, Object[] values) {

@@ -56,7 +56,8 @@ final class OrmEbeanUpdate extends AbstractStringBasedEbeanQuery {
         super(method, ebeanServer, queryString, evaluationContextProvider, parser);
     }
 
-    protected Object createEbeanQuery(String queryString) {
-        return getEbeanServer().createUpdate(getQueryMethod().getEntityInformation().getJavaType(), queryString);
-    }
+  @Override
+  protected Object createEbeanQuery(String queryString) {
+    return getEbeanServer().createUpdate(getQueryMethod().getEntityInformation().getJavaType(), queryString);
+  }
 }

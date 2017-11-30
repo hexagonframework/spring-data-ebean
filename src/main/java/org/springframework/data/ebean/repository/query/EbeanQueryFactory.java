@@ -32,7 +32,10 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
  */
 enum EbeanQueryFactory {
 
-    INSTANCE;
+  /**
+   * Instance
+   */
+  INSTANCE;
 
     private static final SpelExpressionParser PARSER = new SpelExpressionParser();
     private static final Logger LOG = LoggerFactory.getLogger(EbeanQueryFactory.class);
@@ -68,8 +71,9 @@ enum EbeanQueryFactory {
         if (queryString == null) {
             return null;
         }
-        if (method.isNativeQuery()) { // native
-            if (method.isModifyingQuery()) {
+      // native
+      if (method.isNativeQuery()) {
+        if (method.isModifyingQuery()) {
                 return new NativeEbeanUpdate(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
             } else {
                 return new NativeEbeanQuery(method, ebeanServer, queryString, evaluationContextProvider, PARSER);

@@ -15,12 +15,11 @@
  */
 package org.springframework.data.ebean.repository.query;
 
+import java.util.Optional;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.util.Assert;
-
-import java.util.Optional;
 
 import static org.springframework.data.ebean.repository.query.StringQuery.LikeParameterBinding;
 import static org.springframework.data.ebean.repository.query.StringQuery.ParameterBinding;
@@ -76,13 +75,13 @@ public class StringQueryParameterBinder extends ParameterBinder {
 
         if (parameter.isNamedParameter()) {
             return query.getBindingFor(
-                    Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("Parameter needs to be named!")));
+                Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("Parameter needs to be named!")).get());
         }
 
         try {
             return query.getBindingFor(position);
 
-        } catch (IllegalArgumentException o_O) {
+        } catch (IllegalArgumentException ex) {
 
             // We should actually reject parameters unavailable, but as EclipseLink doesn't implement ….getParameter(int) for
             // native queries correctly we need to fall back to an indexed parameter

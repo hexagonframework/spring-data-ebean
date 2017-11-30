@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.data.build</groupId>
         <artifactId>spring-data-parent</artifactId>
-        <version>1.9.3.RELEASE</version>
+        <version>2.0.2.RELEASE</version>
     </parent>
 
     <groupId>io.github.hexagonframework.data</groupId>
@@ -47,12 +47,10 @@
     <properties>
         <bundlor.enabled>false</bundlor.enabled>
         <bundlor.failOnWarnings>false</bundlor.failOnWarnings>
-        <springdata.commons>1.13.3.RELEASE</springdata.commons>
-        <jpa>2.0.0</jpa>
+        <springdata.commons>2.0.2.RELEASE</springdata.commons>
         <ebean.version>11.6.1</ebean.version>
         <ebean-spring-txn.version>10.1.1</ebean-spring-txn.version>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <guava.verion>20.0</guava.verion>
     </properties>
 
     <profiles>
@@ -157,19 +155,6 @@
             <groupId>io.ebean</groupId>
             <artifactId>ebean-spring-txn</artifactId>
             <version>${ebean-spring-txn.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.verion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${jodatime}</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>

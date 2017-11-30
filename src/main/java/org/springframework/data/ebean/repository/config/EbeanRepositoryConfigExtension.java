@@ -43,16 +43,17 @@ public class EbeanRepositoryConfigExtension extends RepositoryConfigurationExten
 
     /*
      * (non-Javadoc)
-     * @see org.springframework.data.repository.config.RepositoryConfigurationExtension#getRepositoryFactoryClassName()
+     * @see org.springframework.data.repository.config.RepositoryConfigurationExtension#getRepositoryFactoryBeanClassName()
      */
     @Override
-    public String getRepositoryFactoryClassName() {
+    public String getRepositoryFactoryBeanClassName() {
         return EbeanRepositoryFactoryBean.class.getName();
-    }    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getModuleName()
-     */
+    }
 
+  /*
+   * (non-Javadoc)
+   * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getModuleName()
+   */
     @Override
     public String getModuleName() {
         return "Ebean";

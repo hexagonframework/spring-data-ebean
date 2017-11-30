@@ -48,10 +48,9 @@ public abstract class AbstractEntity implements Persistable<Long> {
         hashCode += null == getId() ? 0 : getId().hashCode() * 31;
 
         return hashCode;
-    }    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.domain.Persistable#getId()
-     */
+    }
+
+  @Override
     public Long getId() {
         return id;
     }
@@ -65,19 +64,12 @@ public abstract class AbstractEntity implements Persistable<Long> {
         this.id = id;
     }
 
-    /**
-     * @see org.springframework.data.domain.Persistable#isNew()
-     */
     @Transient
+    @Override
     public boolean isNew() {
         return null == getId();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
 

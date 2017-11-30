@@ -57,10 +57,11 @@ final class NativeEbeanQuery extends AbstractStringBasedEbeanQuery {
         }
     }
 
-    protected Object createEbeanQuery(String queryString) {
-        ResultProcessor resultFactory = getQueryMethod().getResultProcessor();
-        ReturnedType returnedType = resultFactory.getReturnedType();
+  @Override
+  protected Object createEbeanQuery(String queryString) {
+    ResultProcessor resultFactory = getQueryMethod().getResultProcessor();
+    ReturnedType returnedType = resultFactory.getReturnedType();
 
-        return getEbeanServer().findNative(returnedType.getReturnedType(), queryString);
-    }
+    return getEbeanServer().findNative(returnedType.getReturnedType(), queryString);
+  }
 }

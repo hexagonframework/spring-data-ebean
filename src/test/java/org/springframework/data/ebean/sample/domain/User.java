@@ -34,7 +34,6 @@ import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.ebean.domain.AbstractAuditableEntity;
-import org.springframework.data.ebean.eventbus.guava.SimpleGuavaDomainEventPublisher;
 
 /**
  * Domain class representing a person emphasizing the use of {@code AbstractEntity}. No declaration of an id is
@@ -103,8 +102,6 @@ public class User extends AbstractAuditableEntity {
 
     public void changeEmail(String emailAddress) {
         this.emailAddress = emailAddress;
-        SimpleGuavaDomainEventPublisher.getInstance()
-                .asyncPublish(new UserEmailChangedEvent(this.getId(), this.getEmailAddress(), new Date()));
     }
 
     /**
@@ -129,7 +126,6 @@ public class User extends AbstractAuditableEntity {
      * @param colleague
      */
     public void removeColleague(User colleague) {
-
         colleagues.remove(colleague);
         colleague.getColleagues().remove(this);
     }

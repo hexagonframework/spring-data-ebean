@@ -62,12 +62,13 @@ public interface EbeanRepository<T extends Persistable, ID extends Serializable>
     /**
      * Return a SqlUpdate for executing insert update or delete statements.
      *
+     * @param sql native SQL
      * @return the created SqlUpdate using native SQL
      */
     SqlUpdate sqlUpdateOf(String sql);
 
     /**
-     * update entity which is not loaded.
+     * Update entity which is not loaded.
      *
      * @param s
      * @param <S>
@@ -76,7 +77,7 @@ public interface EbeanRepository<T extends Persistable, ID extends Serializable>
     <S extends T> S update(S s);
 
     /**
-     * update entities which is not loaded.
+     * Update entities which is not loaded.
      *
      * @param entities
      * @param <S>
@@ -84,29 +85,28 @@ public interface EbeanRepository<T extends Persistable, ID extends Serializable>
      */
     <S extends T> List<S> update(Iterable<S> entities);
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.PagingAndSortingRepository#findAll(org.springframework.data.domain.Sort)
+  /**
+   * Find all order by sort config.
+   * @param sort Order by
+   * @return List
      */
+  @Override
     List<T> findAll(Sort sort);
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.CrudRepository#save(java.lang.Iterable)
+  /**
+   * Find All.
+   * @return List
      */
-    <S extends T> List<S> save(Iterable<S> entities);
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.CrudRepository#findAll()
-     */
+  @Override
     List<T> findAll();
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.CrudRepository#findAll(java.lang.Iterable)
+  /**
+   * Find all by id list.
+   * @param ids Id list
+   * @return List
      */
-    List<T> findAll(Iterable<ID> ids);
+  @Override
+  List<T> findAllById(Iterable<ID> ids);
 
     /**
      * Retrieves an entity by its id and select return entity properties with FetchPath string.
@@ -167,16 +167,23 @@ public interface EbeanRepository<T extends Persistable, ID extends Serializable>
      */
     Page<T> findAll(Pageable pageable, String selects);
 
-    /*
-     * (non-Javadoc)
-	 * @see org.springframework.data.repository.query.QueryByExampleExecutor#findAll(org.springframework.data.domain.Example)
-	 */
+  /**
+   * Returns all entities matching the given {@link Example}. In case no match could be found an empty {@link Iterable}
+   * is returned.
+   *
+   * @param example must not be {@literal null}.
+   * @return all entities matching the given {@link Example}.
+   */
     @Override
     <S extends T> List<S> findAll(Example<S> example);
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.query.QueryByExampleExecutor#findAll(org.springframework.data.domain.Example, org.springframework.data.domain.Sort)
+    /**
+     * Returns all entities matching the given {@link Example} applying the given {@link Sort}. In case no match could be
+     * found an empty {@link Iterable} is returned.
+     *
+     * @param example must not be {@literal null}.
+     * @param sort the {@link Sort} specification to sort the results by, must not be {@literal null}.
+     * @return all entities matching the given {@link Example}.
      */
     @Override
     <S extends T> List<S> findAll(Example<S> example, Sort sort);

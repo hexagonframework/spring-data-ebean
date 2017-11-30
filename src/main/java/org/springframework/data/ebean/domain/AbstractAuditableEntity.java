@@ -19,8 +19,9 @@ import io.ebean.annotation.CreatedTimestamp;
 import io.ebean.annotation.UpdatedTimestamp;
 import io.ebean.annotation.WhoCreated;
 import io.ebean.annotation.WhoModified;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import javax.persistence.MappedSuperclass;
-import org.joda.time.DateTime;
 import org.springframework.data.domain.Auditable;
 
 /**
@@ -30,7 +31,7 @@ import org.springframework.data.domain.Auditable;
  */
 @MappedSuperclass
 public abstract class AbstractAuditableEntity extends AbstractEntity
-        implements Auditable<String, Long> {
+    implements Auditable<String, Long, LocalDateTime> {
 
     private static final long serialVersionUID = 141481953116476081L;
 
@@ -38,83 +39,51 @@ public abstract class AbstractAuditableEntity extends AbstractEntity
     String createdBy;
 
     @CreatedTimestamp
-    DateTime createdDate;
+    LocalDateTime createdDate;
 
     @WhoModified
     String lastModifiedBy;
 
     @UpdatedTimestamp
-    DateTime lastModifiedDate;
+    LocalDateTime lastModifiedDate;
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.domain.Auditable#getCreatedBy()
-     */
     @Override
-    public String getCreatedBy() {
-        return createdBy;
+    public Optional<String> getCreatedBy() {
+        return Optional.ofNullable(createdBy);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.domain.Auditable#setCreatedBy(java.lang.Object)
-     */
     @Override
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.domain.Auditable#getCreatedDate()
-     */
     @Override
-    public DateTime getCreatedDate() {
-        return createdDate;
+    public Optional<LocalDateTime> getCreatedDate() {
+        return Optional.ofNullable(createdDate);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.domain.Auditable#setCreatedDate(org.joda.time.DateTime)
-     */
     @Override
-    public void setCreatedDate(DateTime createdDate) {
+    public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.domain.Auditable#getLastModifiedBy()
-     */
     @Override
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
+    public Optional<String> getLastModifiedBy() {
+        return Optional.ofNullable(lastModifiedBy);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.domain.Auditable#setLastModifiedBy(java.lang.Object)
-     */
     @Override
     public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.domain.Auditable#getLastModifiedDate()
-     */
     @Override
-    public DateTime getLastModifiedDate() {
-        return lastModifiedDate;
+    public Optional<LocalDateTime> getLastModifiedDate() {
+        return Optional.ofNullable(lastModifiedDate);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.domain.Auditable#setLastModifiedDate(org.joda.time.DateTime)
-     */
     @Override
-    public void setLastModifiedDate(DateTime lastModifiedDate) {
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 }

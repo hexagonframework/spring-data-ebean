@@ -1,6 +1,5 @@
 package org.springframework.data.ebean.repository;
 
-import com.google.common.eventbus.Subscribe;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,10 +7,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.ebean.eventbus.guava.SimpleGuavaDomainEventPublisher;
 import org.springframework.data.ebean.sample.config.SampleConfig;
 import org.springframework.data.ebean.sample.domain.User;
-import org.springframework.data.ebean.sample.domain.UserEmailChangedEvent;
 import org.springframework.data.ebean.sample.domain.UserRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -37,12 +34,7 @@ public class UserRepositoryIntegrationTests {
 
     @Before
     public void setUp() throws Exception {
-        SimpleGuavaDomainEventPublisher.getInstance().register(new Object() {
-            @Subscribe
-            public void lister(UserEmailChangedEvent userEmailChangedEvent) {
-                System.out.println(userEmailChangedEvent.toString());
-            }
-        });
+        ;
         repository.deleteAll();
         user = new User("Xuegui", "Yuan", "yuanxuegui@163.com");
         user.setAge(29);
@@ -144,8 +136,8 @@ public class UserRepositoryIntegrationTests {
     @Test
     public void testAuditable() {
         User u = repository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
-        assertEquals("test", u.getCreatedBy());
-        assertEquals("test", u.getLastModifiedBy());
+        assertEquals("test", u.getCreatedBy().get());
+        assertEquals("test", u.getLastModifiedBy().get());
     }
 
     @Test
@@ -164,6 +156,6 @@ public class UserRepositoryIntegrationTests {
         User u = repository.findOneByProperty("emailAddress", "yuanxuegui@126.com");
         assertNotNull(u);
 
-        repository.delete(u.getId());
+        repository.deleteById(u.getId());
     }
 }

@@ -19,6 +19,9 @@ import io.ebean.Expr;
 import io.ebean.Expression;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyPath;
 import org.springframework.data.repository.query.ReturnedType;
@@ -26,10 +29,6 @@ import org.springframework.data.repository.query.parser.AbstractQueryCreator;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.data.repository.query.parser.PartTree;
 import org.springframework.util.Assert;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Query creator to create a {@link io.ebean.Expression} from a {@link PartTree}.
@@ -153,7 +152,7 @@ public class EbeanQueryCreator extends AbstractQueryCreator<Query, Expression> {
 				case BETWEEN:
 					ParameterMetadataProvider.ParameterMetadata<Comparable> first = provider.next(part);
 					ParameterMetadataProvider.ParameterMetadata<Comparable> second = provider.next(part);
-					return Expr.between(property.toDotPath(), first.getParameterValue(), second.getParameterValue()); // property.toDotPath()
+					return Expr.between(property.toDotPath(), first.getParameterValue(), second.getParameterValue());
 				case AFTER:
 				case GREATER_THAN:
 					return Expr.gt(property.toDotPath(), provider.next(part).getParameterValue());

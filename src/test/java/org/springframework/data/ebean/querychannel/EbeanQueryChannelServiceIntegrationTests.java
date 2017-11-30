@@ -1,7 +1,7 @@
 package org.springframework.data.ebean.querychannel;
 
-import com.google.common.collect.Maps;
 import io.ebean.Query;
+import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,7 @@ public class EbeanQueryChannelServiceIntegrationTests {
     user = repository.save(user);
     String sql1 = "select first_name, last_name, email_address from user where last_name= :lastName";
     String sql2 = "select first_name as firstName, last_name as lastName, email_address as emailAddress from user where last_name= :lastName";
-    Map<String, String> columnsMapping = Maps.newHashMap();
+    Map<String, String> columnsMapping = new HashMap<>();
     columnsMapping.put("first_name", "firstName");
     columnsMapping.put("last_name", "lastName");
 

@@ -154,7 +154,7 @@ public class EbeanQueryChannelService {
     Assert.notNull(expressionList, "expressionList must not null");
     Assert.notNull(pageable, "pageable must not null");
     return expressionList.setMaxRows(pageable.getPageSize())
-        .setFirstRow(pageable.getOffset())
+        .setFirstRow((int) pageable.getOffset())
         .setOrder(Converters.convertToEbeanOrderBy(pageable.getSort()));
   }
 
