@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.repository.config;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
@@ -27,11 +28,11 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
 public class EbeanRepositoryNameSpaceHandler extends NamespaceHandlerSupport {
 
   @Override
-    public void init() {
+  public void init() {
 
-        RepositoryConfigurationExtension extension = new EbeanRepositoryConfigExtension();
-        RepositoryBeanDefinitionParser repositoryBeanDefinitionParser = new RepositoryBeanDefinitionParser(extension);
+    RepositoryConfigurationExtension extension = new EbeanRepositoryConfigExtension();
+    RepositoryBeanDefinitionParser repositoryBeanDefinitionParser = new RepositoryBeanDefinitionParser(extension);
 
-        registerBeanDefinitionParser("repositories", repositoryBeanDefinitionParser);
-    }
+    registerBeanDefinitionParser("repositories", repositoryBeanDefinitionParser);
+  }
 }

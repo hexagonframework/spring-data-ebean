@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.domain;
 
 import io.ebean.annotation.CreatedTimestamp;
@@ -33,57 +34,57 @@ import org.springframework.data.domain.Auditable;
 public abstract class AbstractAuditableEntity extends AbstractEntity
     implements Auditable<String, Long, LocalDateTime> {
 
-    private static final long serialVersionUID = 141481953116476081L;
+  private static final long serialVersionUID = 141481953116476081L;
 
-    @WhoCreated
-    String createdBy;
+  @WhoCreated
+  String createdBy;
 
-    @CreatedTimestamp
-    LocalDateTime createdDate;
+  @CreatedTimestamp
+  LocalDateTime createdDate;
 
-    @WhoModified
-    String lastModifiedBy;
+  @WhoModified
+  String lastModifiedBy;
 
-    @UpdatedTimestamp
-    LocalDateTime lastModifiedDate;
+  @UpdatedTimestamp
+  LocalDateTime lastModifiedDate;
 
-    @Override
-    public Optional<String> getCreatedBy() {
-        return Optional.ofNullable(createdBy);
-    }
+  @Override
+  public Optional<String> getCreatedBy() {
+    return Optional.ofNullable(createdBy);
+  }
 
-    @Override
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+  @Override
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
 
-    @Override
-    public Optional<LocalDateTime> getCreatedDate() {
-        return Optional.ofNullable(createdDate);
-    }
+  @Override
+  public Optional<LocalDateTime> getCreatedDate() {
+    return Optional.ofNullable(createdDate);
+  }
 
-    @Override
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
+  @Override
+  public void setCreatedDate(LocalDateTime createdDate) {
+    this.createdDate = createdDate;
+  }
 
-    @Override
-    public Optional<String> getLastModifiedBy() {
-        return Optional.ofNullable(lastModifiedBy);
-    }
+  @Override
+  public Optional<String> getLastModifiedBy() {
+    return Optional.ofNullable(lastModifiedBy);
+  }
 
-    @Override
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
+  @Override
+  public void setLastModifiedBy(String lastModifiedBy) {
+    this.lastModifiedBy = lastModifiedBy;
+  }
 
-    @Override
-    public Optional<LocalDateTime> getLastModifiedDate() {
-        return Optional.ofNullable(lastModifiedDate);
-    }
+  @Override
+  public Optional<LocalDateTime> getLastModifiedDate() {
+    return Optional.ofNullable(lastModifiedDate);
+  }
 
-    @Override
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
+  @Override
+  public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    this.lastModifiedDate = lastModifiedDate;
+  }
 }

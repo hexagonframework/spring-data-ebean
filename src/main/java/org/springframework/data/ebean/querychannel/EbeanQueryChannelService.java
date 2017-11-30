@@ -51,9 +51,9 @@ public class EbeanQueryChannelService {
    * Return a ExpressionList specifying propertyName contains value.
    *
    * @param expressionList the ExpressionList to add contains expression
-   * @param propertyName the property name of entity bean.
-   * @param value contains value, like %value%.
-   * @param <T> the type of entity.
+   * @param propertyName   the property name of entity bean.
+   * @param value          contains value, like %value%.
+   * @param <T>            the type of entity.
    * @return a ExpressionList specifying propertyName contains value.
    */
   public static <T> ExpressionList<T> containsIfNoneBlank(ExpressionList<T> expressionList,
@@ -71,9 +71,9 @@ public class EbeanQueryChannelService {
    * Return a ExpressionList specifying propertyName equals value.
    *
    * @param expressionList the ExpressionList to add contains expression
-   * @param propertyName the property name of entity bean.
-   * @param value equals value
-   * @param <T> the type of entity.
+   * @param propertyName   the property name of entity bean.
+   * @param value          equals value
+   * @param <T>            the type of entity.
    * @return a ExpressionList specifying propertyName equals value.
    */
   public static <T> ExpressionList<T> eqIfNotNull(ExpressionList<T> expressionList,
@@ -91,10 +91,10 @@ public class EbeanQueryChannelService {
    * Return a ExpressionList specifying propertyName between start and end.
    *
    * @param expressionList the ExpressionList to add contains expression
-   * @param propertyName the property name of entity bean.
-   * @param start start value.
-   * @param end end value.
-   * @param <T> the type of entity.
+   * @param propertyName   the property name of entity bean.
+   * @param start          start value.
+   * @param end            end value.
+   * @param <T>            the type of entity.
    * @return a ExpressionList specifying propertyName between start and end.
    */
   public static <T> ExpressionList<T> betweenIfNotNull(ExpressionList<T> expressionList,
@@ -113,9 +113,9 @@ public class EbeanQueryChannelService {
    * Return a ExpressionList specifying propertyNames contains value.
    *
    * @param expressionList the ExpressionList to add contains expression
-   * @param propertyNames the property name of entity bean.
-   * @param value contains value.
-   * @param <T> the type of entity.
+   * @param propertyNames  the property name of entity bean.
+   * @param value          contains value.
+   * @param <T>            the type of entity.
    * @return the ExpressionList specifying propertyNames contains value.
    */
   public static <T> ExpressionList<T> orContains(ExpressionList<T> expressionList,
@@ -147,7 +147,7 @@ public class EbeanQueryChannelService {
    *
    * @param expressionList the ExpressionList to add contains expression
    * @param pageable       0-based index page.
-   * @param <T> the type of entity.
+   * @param <T>            the type of entity.
    * @return the query specifying page.
    */
   public static <T> Query<T> queryWithPage(ExpressionList<T> expressionList, Pageable pageable) {

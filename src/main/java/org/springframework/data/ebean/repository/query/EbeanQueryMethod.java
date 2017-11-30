@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.repository.query;
 
 import java.lang.annotation.Annotation;
@@ -34,90 +35,90 @@ import org.springframework.util.StringUtils;
  */
 public class EbeanQueryMethod extends QueryMethod {
 
-    private final Method method;
+  private final Method method;
 
-    /**
-     * Creates a {@link EbeanQueryMethod}.
-     *
-     * @param method   must not be {@literal null}
-     * @param metadata must not be {@literal null}
-     */
-    public EbeanQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
-        super(method, metadata, factory);
+  /**
+   * Creates a {@link EbeanQueryMethod}.
+   *
+   * @param method   must not be {@literal null}
+   * @param metadata must not be {@literal null}
+   */
+  public EbeanQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
+    super(method, metadata, factory);
 
-        Assert.notNull(method, "Method must not be null!");
+    Assert.notNull(method, "Method must not be null!");
 
-        this.method = method;
+    this.method = method;
+  }
+
+  /**
+   * Returns the actual return type of the method.
+   *
+   * @return
+   */
+  Class<?> getReturnType() {
+    return method.getReturnType();
+  }
+
+  /**
+   * Returns the query string declared in a {@link Query} annotation or {@literal null} if neither the annotation found
+   * nor the attribute was specified.
+   *
+   * @return
+   */
+  String getAnnotatedQuery() {
+    String query = getAnnotationValue("value", String.class);
+    return StringUtils.hasText(query) ? query : null;
+  }
+
+  /**
+   * Returns the {@link Query} annotation's attribute casted to the given type or default value if no annotation
+   * available.
+   *
+   * @param attribute
+   * @param type
+   * @return
+   */
+  private <T> T getAnnotationValue(String attribute, Class<T> type) {
+    return getMergedOrDefaultAnnotationValue(attribute, Query.class, type);
+  }
+
+  @SuppressWarnings( {"rawtypes", "unchecked"})
+  private <T> T getMergedOrDefaultAnnotationValue(String attribute, Class annotationType, Class<T> targetType) {
+    Annotation annotation = AnnotatedElementUtils.findMergedAnnotation(method, annotationType);
+    if (annotation == null) {
+      return targetType.cast(AnnotationUtils.getDefaultValue(annotationType, attribute));
     }
 
-    /**
-     * Returns the actual return type of the method.
-     *
-     * @return
-     */
-    Class<?> getReturnType() {
-        return method.getReturnType();
-    }
+    return targetType.cast(AnnotationUtils.getValue(annotation, attribute));
+  }
 
-    /**
-     * Returns the query string declared in a {@link Query} annotation or {@literal null} if neither the annotation found
-     * nor the attribute was specified.
-     *
-     * @return
-     */
-    String getAnnotatedQuery() {
-        String query = getAnnotationValue("value", String.class);
-        return StringUtils.hasText(query) ? query : null;
-    }
+  /**
+   * Returns whether the backing query is a native one.
+   *
+   * @return
+   */
+  boolean isNativeQuery() {
+    return getAnnotationValue("nativeQuery", Boolean.class).booleanValue();
+  }
 
-    /**
-     * Returns the {@link Query} annotation's attribute casted to the given type or default value if no annotation
-     * available.
-     *
-     * @param attribute
-     * @param type
-     * @return
-     */
-    private <T> T getAnnotationValue(String attribute, Class<T> type) {
-        return getMergedOrDefaultAnnotationValue(attribute, Query.class, type);
-    }
+  /*
+   * (non-Javadoc)
+   * @see org.springframework.data.repository.query.QueryMethod#getNamedQueryName()
+   */
+  @Override
+  public String getNamedQueryName() {
+    String annotatedName = getAnnotationValue("name", String.class);
+    return StringUtils.hasText(annotatedName) ? annotatedName : super.getNamedQueryName();
+  }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private <T> T getMergedOrDefaultAnnotationValue(String attribute, Class annotationType, Class<T> targetType) {
-        Annotation annotation = AnnotatedElementUtils.findMergedAnnotation(method, annotationType);
-        if (annotation == null) {
-            return targetType.cast(AnnotationUtils.getDefaultValue(annotationType, attribute));
-        }
-
-        return targetType.cast(AnnotationUtils.getValue(annotation, attribute));
-    }
-
-    /**
-     * Returns whether the backing query is a native one.
-     *
-     * @return
-     */
-    boolean isNativeQuery() {
-        return getAnnotationValue("nativeQuery", Boolean.class).booleanValue();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.query.QueryMethod#getNamedQueryName()
-     */
-    @Override
-    public String getNamedQueryName() {
-        String annotatedName = getAnnotationValue("name", String.class);
-        return StringUtils.hasText(annotatedName) ? annotatedName : super.getNamedQueryName();
-    }
-
-    /**
-     * Returns whether the finder is a modifying one.
-     *
-     * @return
-     */
-    @Override
-    public boolean isModifyingQuery() {
-        return null != AnnotationUtils.findAnnotation(method, Modifying.class);
-    }
+  /**
+   * Returns whether the finder is a modifying one.
+   *
+   * @return
+   */
+  @Override
+  public boolean isModifyingQuery() {
+    return null != AnnotationUtils.findAnnotation(method, Modifying.class);
+  }
 }

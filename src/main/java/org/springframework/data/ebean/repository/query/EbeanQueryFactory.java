@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
@@ -37,54 +38,54 @@ enum EbeanQueryFactory {
    */
   INSTANCE;
 
-    private static final SpelExpressionParser PARSER = new SpelExpressionParser();
-    private static final Logger LOG = LoggerFactory.getLogger(EbeanQueryFactory.class);
+  private static final SpelExpressionParser PARSER = new SpelExpressionParser();
+  private static final Logger LOG = LoggerFactory.getLogger(EbeanQueryFactory.class);
 
-    /**
-     * Creates a {@link RepositoryQuery} from the given {@link QueryMethod} that is potentially annotated with
-     * {@link Query}.
-     *
-     * @param method                    must not be {@literal null}.
-     * @param ebeanServer               must not be {@literal null}.
-     * @param evaluationContextProvider
-     * @return the {@link RepositoryQuery} derived from the annotation or {@code null} if no annotation found.
-     */
-    AbstractEbeanQuery fromQueryAnnotation(EbeanQueryMethod method, EbeanServer ebeanServer,
-                                           EvaluationContextProvider evaluationContextProvider) {
+  /**
+   * Creates a {@link RepositoryQuery} from the given {@link QueryMethod} that is potentially annotated with
+   * {@link Query}.
+   *
+   * @param method                    must not be {@literal null}.
+   * @param ebeanServer               must not be {@literal null}.
+   * @param evaluationContextProvider
+   * @return the {@link RepositoryQuery} derived from the annotation or {@code null} if no annotation found.
+   */
+  AbstractEbeanQuery fromQueryAnnotation(EbeanQueryMethod method, EbeanServer ebeanServer,
+                                         EvaluationContextProvider evaluationContextProvider) {
 
-        LOG.debug("Looking up query for method {}", method.getName());
-        return fromMethodWithQueryString(method, ebeanServer, method.getAnnotatedQuery(), evaluationContextProvider);
+    LOG.debug("Looking up query for method {}", method.getName());
+    return fromMethodWithQueryString(method, ebeanServer, method.getAnnotatedQuery(), evaluationContextProvider);
+  }
+
+  /**
+   * Creates a {@link RepositoryQuery} from the given {@link String} query.
+   *
+   * @param method                    must not be {@literal null}.
+   * @param ebeanServer               must not be {@literal null}.
+   * @param queryString               must not be {@literal null} or empty.
+   * @param evaluationContextProvider
+   * @return
+   */
+  AbstractEbeanQuery fromMethodWithQueryString(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
+                                               EvaluationContextProvider evaluationContextProvider) {
+
+    if (queryString == null) {
+      return null;
     }
-
-    /**
-     * Creates a {@link RepositoryQuery} from the given {@link String} query.
-     *
-     * @param method                    must not be {@literal null}.
-     * @param ebeanServer               must not be {@literal null}.
-     * @param queryString               must not be {@literal null} or empty.
-     * @param evaluationContextProvider
-     * @return
-     */
-    AbstractEbeanQuery fromMethodWithQueryString(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
-                                                 EvaluationContextProvider evaluationContextProvider) {
-
-        if (queryString == null) {
-            return null;
-        }
-      // native
-      if (method.isNativeQuery()) {
-        if (method.isModifyingQuery()) {
-                return new NativeEbeanUpdate(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
-            } else {
-                return new NativeEbeanQuery(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
-            }
-        } else { // ORM
-            if (method.isModifyingQuery()) {
-                return new OrmEbeanUpdate(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
-            } else {
-                return new OrmEbeanQuery(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
-            }
-        }
+    // native
+    if (method.isNativeQuery()) {
+      if (method.isModifyingQuery()) {
+        return new NativeEbeanUpdate(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
+      } else {
+        return new NativeEbeanQuery(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
+      }
+    } else { // ORM
+      if (method.isModifyingQuery()) {
+        return new OrmEbeanUpdate(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
+      } else {
+        return new OrmEbeanQuery(method, ebeanServer, queryString, evaluationContextProvider, PARSER);
+      }
     }
+  }
 
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.repository.support;
 
 import io.ebean.EbeanServer;
@@ -88,6 +89,7 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     public UpdateQuery<T> updateQuery() {
         return db().update(getEntityType());
     }
+
     @Override
     public SqlUpdate sqlUpdateOf(String sql) {
         return db().createSqlUpdate(sql);
@@ -125,6 +127,16 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     }
 
     @Override
+    public List<T> findAllById(Iterable<ID> ids) {
+        return db().find(getEntityType()).where().idIn(ids).findList();
+    }
+
+    @Override
+    public T findOne(ID id, String selects) {
+        return db().find(getEntityType()).select(selects).where().idEq(id).findOne();
+    }
+
+    @Override
     public <S extends T> List<S> saveAll(Iterable<S> entities) {
         List<S> result = new ArrayList<S>();
 
@@ -140,8 +152,19 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     }
 
     @Override
-    public List<T> findAllById(Iterable<ID> ids) {
-        return db().find(getEntityType()).where().idIn(ids).findList();
+    public T findOneByProperty(String propertyName, Object propertyValue) {
+        return db().find(getEntityType()).where().eq(propertyName, propertyValue).findOne();
+    }
+
+    @Override
+    public T findOneByProperty(String propertyName, Object propertyValue, String selects) {
+        return db().find(getEntityType()).apply(PathProperties.parse(selects)).where()
+            .eq(propertyName, propertyValue).findOne();
+    }
+
+    @Override
+    public List<T> findAll(String selects) {
+        return db().find(getEntityType()).select(selects).findList();
     }
 
     @Override
@@ -155,64 +178,13 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     }
 
     @Override
-    public T findOne(ID id, String selects) {
-        return db().find(getEntityType()).select(selects).where().idEq(id).findOne();
-    }
-
-    @Override
-    public Optional<T> findById(ID id) {
-        return db().find(getEntityType()).where().idEq(id).findOneOrEmpty();
-    }
-
-    @Override
-    public T findOneByProperty(String propertyName, Object propertyValue) {
-        return db().find(getEntityType()).where().eq(propertyName, propertyValue).findOne();
-    }
-
-    @Override
-    public boolean existsById(ID id) {
-        return db().find(getEntityType()).where().idEq(id).findCount() > 0;
-    }
-
-    @Override
-    public T findOneByProperty(String propertyName, Object propertyValue, String selects) {
-        return db().find(getEntityType()).apply(PathProperties.parse(selects)).where()
-            .eq(propertyName, propertyValue).findOne();
-    }
-
-    @Override
-    public long count() {
-        return db().find(getEntityType()).findCount();
-    }
-
-    @Override
-    public List<T> findAll(String selects) {
-        return db().find(getEntityType()).select(selects).findList();
-    }
-
-    @Override
-    public void deleteById(ID id) {
-        db().delete(getEntityType(), id);
-    }
-
-    @Override
     public List<T> findAll(Iterable<ID> ids, String selects) {
         return db().find(getEntityType()).select(selects).where().idIn(ids).findList();
     }
 
     @Override
-    public void delete(T t) {
-        db().delete(t);
-    }
-
-    @Override
     public List<T> findAll(Sort sort, String selects) {
         return db().find(getEntityType()).select(selects).setOrder(Converters.convertToEbeanOrderBy(sort)).findList();
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends T> iterable) {
-        db().deleteAll((Collection<?>) iterable);
     }
 
     @Override
@@ -225,26 +197,31 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     }
 
     @Override
-    public void deleteAll() {
-        db().find(getEntityType()).delete();
+    public Optional<T> findById(ID id) {
+        return db().find(getEntityType()).where().idEq(id).findOneOrEmpty();
     }
 
     @Override
     public <S extends T> List<S> findAll(Example<S> example) {
         return db().find(example.getProbeType())
-                .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findList();
+            .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findList();
     }
 
     @Override
     public <S extends T> List<S> findAll(Example<S> example, Sort sort) {
         return db().find(example.getProbeType())
-                .where(ExampleExpressionBuilder.exampleExpression(db(), example))
+            .where(ExampleExpressionBuilder.exampleExpression(db(), example))
             .setOrder(Converters.convertToEbeanOrderBy(sort))
-                .findList();
+            .findList();
     }
 
     public Class<T> getEntityType() {
         return entityType;
+    }
+
+    @Override
+    public boolean existsById(ID id) {
+        return db().find(getEntityType()).where().idEq(id).findCount() > 0;
     }
 
     @Override
@@ -256,21 +233,63 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     @Override
     public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
         return Converters.convertToSpringDataPage(db().find(example.getProbeType())
-                .where(ExampleExpressionBuilder.exampleExpression(db(), example))
-                .findPagedList(), pageable.getSort());
+            .where(ExampleExpressionBuilder.exampleExpression(db(), example))
+            .findPagedList(), pageable.getSort());
     }
 
     @Override
     public <S extends T> long count(Example<S> example) {
         return db().find(example.getProbeType())
-                .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount();
+            .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount();
+    }
+
+    @Override
+    public long count() {
+        return db().find(getEntityType()).findCount();
     }
 
     @Override
     public <S extends T> boolean exists(Example<S> example) {
         return db().find(example.getProbeType())
-                .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount() > 0;
+            .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount() > 0;
     }
+
+    @Override
+    public void deleteById(ID id) {
+        db().delete(getEntityType(), id);
+    }
+
+
+    @Override
+    public void delete(T t) {
+        db().delete(t);
+    }
+
+
+    @Override
+    public void deleteAll(Iterable<? extends T> iterable) {
+        db().deleteAll((Collection<?>) iterable);
+    }
+
+
+    @Override
+    public void deleteAll() {
+        db().find(getEntityType()).delete();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

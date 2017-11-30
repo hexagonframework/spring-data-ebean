@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
@@ -27,82 +28,82 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractEbeanQuery implements RepositoryQuery {
 
-    private final EbeanQueryMethod method;
-    private final EbeanServer ebeanServer;
+  private final EbeanQueryMethod method;
+  private final EbeanServer ebeanServer;
 
-    /**
-     * Creates a new {@link AbstractEbeanQuery} from the given {@link EbeanQueryMethod}.
-     *
-     * @param method
-     * @param ebeanServer
-     */
-    public AbstractEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer) {
+  /**
+   * Creates a new {@link AbstractEbeanQuery} from the given {@link EbeanQueryMethod}.
+   *
+   * @param method
+   * @param ebeanServer
+   */
+  public AbstractEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer) {
 
-        Assert.notNull(method, "EbeanQueryMethod must not be null!");
-        Assert.notNull(ebeanServer, "EbeanServer must not be null!");
+    Assert.notNull(method, "EbeanQueryMethod must not be null!");
+    Assert.notNull(ebeanServer, "EbeanServer must not be null!");
 
-        this.method = method;
-        this.ebeanServer = ebeanServer;
+    this.method = method;
+    this.ebeanServer = ebeanServer;
+  }
+
+  /**
+   * Returns the {@link EbeanServer}.
+   *
+   * @return will never be {@literal null}.
+   */
+  protected EbeanServer getEbeanServer() {
+    return ebeanServer;
+  }
+
+  @Override
+  public Object execute(Object[] parameters) {
+    return doExecute(getExecution(), parameters);
+  }
+
+  @Override
+  public EbeanQueryMethod getQueryMethod() {
+    return method;
+  }
+
+  /**
+   * @param execution
+   * @param values
+   * @return
+   */
+  private Object doExecute(AbstractEbeanQueryExecution execution, Object[] values) {
+    Object result = execution.execute(this, values);
+    return result;
+  }
+
+  protected AbstractEbeanQueryExecution getExecution() {
+    if (method.isStreamQuery()) {
+      return new AbstractEbeanQueryExecution.StreamExecutionAbstract();
+    } else if (method.isCollectionQuery()) {
+      return new AbstractEbeanQueryExecution.CollectionExecutionAbstract();
+    } else if (method.isSliceQuery()) {
+      return new AbstractEbeanQueryExecution.SlicedExecutionAbstract(method.getParameters());
+    } else if (method.isPageQuery()) {
+      return new AbstractEbeanQueryExecution.PagedExecutionAbstract(method.getParameters());
+    } else if (method.isModifyingQuery()) {
+      return new AbstractEbeanQueryExecution.UpdateExecutionAbstract(method, ebeanServer);
+    } else {
+      return new AbstractEbeanQueryExecution.SingleEntityExecutionAbstract();
     }
+  }
 
-    /**
-     * Returns the {@link EbeanServer}.
-     *
-     * @return will never be {@literal null}.
-     */
-    protected EbeanServer getEbeanServer() {
-        return ebeanServer;
-    }
+  protected ParameterBinder createBinder(Object[] values) {
+    return new ParameterBinder((DefaultParameters) getQueryMethod().getParameters(), values);
+  }
 
-    @Override
-    public Object execute(Object[] parameters) {
-        return doExecute(getExecution(), parameters);
-    }
+  protected Object createQuery(Object[] values) {
+    return doCreateQuery(values);
+  }
 
-    @Override
-    public EbeanQueryMethod getQueryMethod() {
-        return method;
-    }
-
-    /**
-     * @param execution
-     * @param values
-     * @return
-     */
-    private Object doExecute(AbstractEbeanQueryExecution execution, Object[] values) {
-        Object result = execution.execute(this, values);
-        return result;
-    }
-
-    protected AbstractEbeanQueryExecution getExecution() {
-        if (method.isStreamQuery()) {
-            return new AbstractEbeanQueryExecution.StreamExecutionAbstract();
-        } else if (method.isCollectionQuery()) {
-            return new AbstractEbeanQueryExecution.CollectionExecutionAbstract();
-        } else if (method.isSliceQuery()) {
-            return new AbstractEbeanQueryExecution.SlicedExecutionAbstract(method.getParameters());
-        } else if (method.isPageQuery()) {
-            return new AbstractEbeanQueryExecution.PagedExecutionAbstract(method.getParameters());
-        } else if (method.isModifyingQuery()) {
-            return new AbstractEbeanQueryExecution.UpdateExecutionAbstract(method, ebeanServer);
-        } else {
-            return new AbstractEbeanQueryExecution.SingleEntityExecutionAbstract();
-        }
-    }
-
-    protected ParameterBinder createBinder(Object[] values) {
-        return new ParameterBinder((DefaultParameters) getQueryMethod().getParameters(), values);
-    }
-
-    protected Object createQuery(Object[] values) {
-        return doCreateQuery(values);
-    }
-
-    /**
-     * Creates a {@link io.ebean.Query} or {@link io.ebean.SqlQuery} instance for the given values.
-     *
-     * @param values must not be {@literal null}.
-     * @return
-     */
-    protected abstract Object doCreateQuery(Object[] values);
+  /**
+   * Creates a {@link io.ebean.Query} or {@link io.ebean.SqlQuery} instance for the given values.
+   *
+   * @param values must not be {@literal null}.
+   * @return
+   */
+  protected abstract Object doCreateQuery(Object[] values);
 }

@@ -29,28 +29,28 @@ import org.springframework.data.annotation.QueryAnnotation;
  * @author Xuegui Yuan
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+@Target( {ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @QueryAnnotation
 @Documented
 public @interface Procedure {
 
-    /**
-     * The name of the procedure in the database, defaults to {@code ""}. Short form for {@link #procedureName()}.
-     */
-    String value() default "";
+  /**
+   * The name of the procedure in the database, defaults to {@code ""}. Short form for {@link #procedureName()}.
+   */
+  String value() default "";
 
-    /**
-     * The name of the procedure in the database, defaults to {@code ""}.
-     */
-    String procedureName() default "";
+  /**
+   * The name of the procedure in the database, defaults to {@code ""}.
+   */
+  String procedureName() default "";
 
-    /**
-     * The name of the procedure in the EntityManager - defaults to {@code ""}.
-     */
-    String name() default "";
+  /**
+   * The name of the procedure in the EntityManager - defaults to {@code ""}.
+   */
+  String name() default "";
 
-    /**
-     * The name of the outputParameter, defaults to {@code ""}.
-     */
-    String outputParameterName() default "";
+  /**
+   * The name of the outputParameter, defaults to {@code ""}.
+   */
+  String outputParameterName() default "";
 }

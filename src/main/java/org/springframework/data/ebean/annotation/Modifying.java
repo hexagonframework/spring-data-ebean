@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * @author Xuegui Yuan
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+@Target( {ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 public @interface Modifying {
 }

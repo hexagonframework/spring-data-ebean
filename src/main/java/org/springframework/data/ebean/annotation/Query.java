@@ -29,31 +29,31 @@ import org.springframework.data.annotation.QueryAnnotation;
  * @author Xuegui Yuan
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+@Target( {ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @QueryAnnotation
 @Documented
 public @interface Query {
 
-    /**
-     * Defines the Ebean query to be executed when the annotated method is called.
-     */
-    String value() default "";
+  /**
+   * Defines the Ebean query to be executed when the annotated method is called.
+   */
+  String value() default "";
 
-    /**
-     * Configures whether the given query is a SqlQuery. Defaults to {@literal false}.
-     */
-    boolean nativeQuery() default false;
+  /**
+   * Configures whether the given query is a SqlQuery. Defaults to {@literal false}.
+   */
+  boolean nativeQuery() default false;
 
-    /**
-     * The named query to be used. If not defined, a {@link javax.persistence.NamedQuery} with name of
-     * {@code $ domainClass}.${queryMethodName}} will be used.
-     */
-    String name() default "";
+  /**
+   * The named query to be used. If not defined, a {@link javax.persistence.NamedQuery} with name of
+   * {@code $ domainClass}.${queryMethodName}} will be used.
+   */
+  String name() default "";
 
-    /**
-     * Parse the string to return a FetchPath,
-     * format like (a,b,c(d,e),f(g)) where "c" is a path containing "d" and "e" and "f" is a
-     * path containing "g" and the root path contains "a","b","c" and "f".
-     */
-    String fetchPath() default "";
+  /**
+   * Parse the string to return a FetchPath,
+   * format like (a,b,c(d,e),f(g)) where "c" is a path containing "d" and "e" and "f" is a
+   * path containing "g" and the root path contains "a","b","c" and "f".
+   */
+  String fetchPath() default "";
 }

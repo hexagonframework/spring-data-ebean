@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.repository.config;
 
 import java.lang.annotation.Annotation;
@@ -38,52 +39,52 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
  */
 public class EbeanRepositoryConfigExtension extends RepositoryConfigurationExtensionSupport {
 
-    private static final String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = "transactionManager";
-    private static final String ENABLE_DEFAULT_TRANSACTIONS_ATTRIBUTE = "enableDefaultTransactions";
+  private static final String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = "transactionManager";
+  private static final String ENABLE_DEFAULT_TRANSACTIONS_ATTRIBUTE = "enableDefaultTransactions";
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.config.RepositoryConfigurationExtension#getRepositoryFactoryBeanClassName()
-     */
-    @Override
-    public String getRepositoryFactoryBeanClassName() {
-        return EbeanRepositoryFactoryBean.class.getName();
-    }
+  /*
+   * (non-Javadoc)
+   * @see org.springframework.data.repository.config.RepositoryConfigurationExtension#getRepositoryFactoryBeanClassName()
+   */
+  @Override
+  public String getRepositoryFactoryBeanClassName() {
+    return EbeanRepositoryFactoryBean.class.getName();
+  }
 
   /*
    * (non-Javadoc)
    * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getModuleName()
    */
-    @Override
-    public String getModuleName() {
-        return "Ebean";
-    }
+  @Override
+  public String getModuleName() {
+    return "Ebean";
+  }
 
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.config14.RepositoryConfigurationExtensionSupport#getModulePrefix()
-     */
-    @Override
-    protected String getModulePrefix() {
-        return getModuleName().toLowerCase(Locale.US);
-    }
+  /*
+   * (non-Javadoc)
+   * @see org.springframework.data.repository.config14.RepositoryConfigurationExtensionSupport#getModulePrefix()
+   */
+  @Override
+  protected String getModulePrefix() {
+    return getModuleName().toLowerCase(Locale.US);
+  }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getIdentifyingAnnotations()
-     */
-    @Override
-    protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
-        return Arrays.asList(Entity.class, MappedSuperclass.class);
-    }
+  /*
+   * (non-Javadoc)
+   * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getIdentifyingAnnotations()
+   */
+  @Override
+  protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
+    return Arrays.asList(Entity.class, MappedSuperclass.class);
+  }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getIdentifyingTypes()
-     */
-    @Override
-    protected Collection<Class<?>> getIdentifyingTypes() {
-        return Collections.<Class<?>>singleton(EbeanRepository.class);
-    }
+  /*
+   * (non-Javadoc)
+   * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getIdentifyingTypes()
+   */
+  @Override
+  protected Collection<Class<?>> getIdentifyingTypes() {
+    return Collections.<Class<?>>singleton(EbeanRepository.class);
+  }
 }

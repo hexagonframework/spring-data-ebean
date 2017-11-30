@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.repository.query;
 
 /**
@@ -22,14 +23,14 @@ package org.springframework.data.ebean.repository.query;
  */
 public class InvalidEbeanQueryMethodException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    /**
-     * Creates a new {@link InvalidEbeanQueryMethodException} with the given message.
-     *
-     * @param message must not be {@literal null} or empty.
-     */
-    public InvalidEbeanQueryMethodException(String message) {
-        super(message);
-    }
+  /**
+   * Creates a new {@link InvalidEbeanQueryMethodException} with the given message.
+   *
+   * @param message must not be {@literal null} or empty.
+   */
+  public InvalidEbeanQueryMethodException(String message) {
+    super(message);
+  }
 }

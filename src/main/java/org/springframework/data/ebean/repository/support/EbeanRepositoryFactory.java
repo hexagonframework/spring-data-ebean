@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.repository.support;
 
 import io.ebean.EbeanServer;
@@ -81,7 +82,7 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
      * @return
      */
     protected <T, ID extends Serializable> SimpleEbeanRepository<?, ?> getTargetRepository(
-            RepositoryInformation information, EbeanServer ebeanServer) {
+        RepositoryInformation information, EbeanServer ebeanServer) {
 
         return getTargetRepositoryViaReflection(information, information.getDomainType(), ebeanServer);
     }
@@ -97,12 +98,12 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
 
     /*
      * (non-Javadoc)
-	 * @see org.springframework.data.repository.core.impl.RepositoryFactorySupport#getQueryLookupStrategy(org.springframework.data.repository.query.QueryLookupStrategy.Key, org.springframework.data.repository.query.EvaluationContextProvider)
-	 */
+     * @see org.springframework.data.repository.core.impl.RepositoryFactorySupport#getQueryLookupStrategy(org.springframework.data.repository.query.QueryLookupStrategy.Key, org.springframework.data.repository.query.EvaluationContextProvider)
+     */
     @Override
     protected Optional<QueryLookupStrategy> getQueryLookupStrategy(QueryLookupStrategy.Key key,
                                                                    EvaluationContextProvider evaluationContextProvider) {
-      return Optional.ofNullable(EbeanQueryLookupStrategy.create(ebeanServer, key, evaluationContextProvider));
+        return Optional.ofNullable(EbeanQueryLookupStrategy.create(ebeanServer, key, evaluationContextProvider));
     }
 
   /**

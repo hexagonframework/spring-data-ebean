@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.data.ebean.domain;
 
 import javax.persistence.Id;
@@ -30,75 +31,75 @@ import org.springframework.util.ClassUtils;
 @MappedSuperclass
 public abstract class AbstractEntity implements Persistable<Long> {
 
-    private static final long serialVersionUID = -5554308939380869754L;
+  private static final long serialVersionUID = -5554308939380869754L;
 
-    @Id
-    protected Long id;
+  @Id
+  protected Long id;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
 
-        int hashCode = 17;
+    int hashCode = 17;
 
-        hashCode += null == getId() ? 0 : getId().hashCode() * 31;
+    hashCode += null == getId() ? 0 : getId().hashCode() * 31;
 
-        return hashCode;
-    }
+    return hashCode;
+  }
 
   @Override
-    public Long getId() {
-        return id;
+  public Long getId() {
+    return id;
+  }
+
+  /**
+   * Sets the id of the entity.
+   *
+   * @param id the id to set
+   */
+  public void setId(final Long id) {
+    this.id = id;
+  }
+
+  @Transient
+  @Override
+  public boolean isNew() {
+    return null == getId();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+
+    if (null == obj) {
+      return false;
     }
 
-    /**
-     * Sets the id of the entity.
-     *
-     * @param id the id to set
-     */
-    public void setId(final Long id) {
-        this.id = id;
+    if (this == obj) {
+      return true;
     }
 
-    @Transient
-    @Override
-    public boolean isNew() {
-        return null == getId();
+    if (!getClass().equals(ClassUtils.getUserClass(obj))) {
+      return false;
     }
 
-    @Override
-    public boolean equals(Object obj) {
+    AbstractEntity that = (AbstractEntity) obj;
 
-        if (null == obj) {
-            return false;
-        }
+    return null == this.getId() ? false : this.getId().equals(that.getId());
+  }
 
-        if (this == obj) {
-            return true;
-        }
-
-        if (!getClass().equals(ClassUtils.getUserClass(obj))) {
-            return false;
-        }
-
-        AbstractEntity that = (AbstractEntity) obj;
-
-        return null == this.getId() ? false : this.getId().equals(that.getId());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
-    }
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
+  }
 
 
 }
