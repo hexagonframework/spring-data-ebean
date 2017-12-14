@@ -1,17 +1,15 @@
 package org.springframework.data.ebean.domain;
 
-import java.util.Date;
+import org.springframework.context.ApplicationEvent;
 
 /**
- * DomainEvent interface.
- *
+ * Domain event.
  * @author Xuegui Yuan
  */
-public interface DomainEvent {
-  /**
-   * Occurred date.
-   *
-   * @return Occurred date
-   */
-  Date occurredOn();
+public class DomainEvent extends ApplicationEvent {
+
+  public DomainEvent(Object source) {
+    super(source);
+  }
+
 }

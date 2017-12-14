@@ -34,6 +34,7 @@ import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.ebean.domain.AbstractAuditableEntity;
+import org.springframework.data.ebean.domain.AggregateRoot;
 
 /**
  * Domain class representing a person emphasizing the use of {@code AbstractEntity}. No declaration of an id is
@@ -41,6 +42,7 @@ import org.springframework.data.ebean.domain.AbstractAuditableEntity;
  *
  * @author Xuegui Yuan
  */
+@AggregateRoot
 @Entity
 @Table(name = "user")
 @Getter
@@ -102,6 +104,8 @@ public class User extends AbstractAuditableEntity {
 
     public void changeEmail(String emailAddress) {
         this.emailAddress = emailAddress;
+        UserEmailChangedEvent emailChangedEvent = new UserEmailChangedEvent(this);
+        this.registerEvent(emailChangedEvent);
     }
 
     /**

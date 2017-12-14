@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.ebean.querychannel.EbeanQueryChannelService;
 import org.springframework.data.ebean.repository.config.EnableEbeanRepositories;
+import org.springframework.data.ebean.sample.domain.UserDomainService;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -69,5 +70,10 @@ public class SampleConfig {
   @Primary
   public EbeanServer defaultEbeanServer(ServerConfig defaultEbeanServerConfig) {
     return EbeanServerFactory.create(defaultEbeanServerConfig);
+  }
+
+  @Bean
+  public UserDomainService userDomainService() {
+    return new UserDomainService();
   }
 }

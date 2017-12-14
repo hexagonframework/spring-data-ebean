@@ -19,5 +19,5 @@ public @interface AggregateRoot {
    * Get the String representation of the aggregate's type. Optional. This defaults to the simple name of the
    * annotated class.
    */
-  String type() default "";
+  String value() default "";
 }
