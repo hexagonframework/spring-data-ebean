@@ -53,7 +53,7 @@ abstract class AbstractStringBasedEbeanQuery extends AbstractEbeanQuery {
 
     super(method, ebeanServer);
 
-    Assert.hasText(queryString, "Query string must not be null or empty!");
+    Assert.hasText(queryString, "EbeanQueryWrapper string must not be null or empty!");
     Assert.notNull(evaluationContextProvider, "ExpressionEvaluationContextProvider must not be null!");
     Assert.notNull(parser, "Parser must not be null or empty!");
 
@@ -67,15 +67,17 @@ abstract class AbstractStringBasedEbeanQuery extends AbstractEbeanQuery {
    */
   public StringQuery getQuery() {
     return query;
-  }  /*
+  }
+
+  /*
    * (non-Javadoc)
    * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
    */
-
   @Override
-  public Object doCreateQuery(Object[] values) {
+  public EbeanQueryWrapper doCreateQuery(Object[] values) {
     ParameterAccessor accessor = new ParametersParameterAccessor(getQueryMethod().getParameters(), values);
-    Object query = createEbeanQuery(this.query.getQueryString());
+
+    EbeanQueryWrapper query = createEbeanQuery(this.query.getQueryString());
 
     return createBinder(values).bindAndPrepare(query);
   }
@@ -90,7 +92,6 @@ abstract class AbstractStringBasedEbeanQuery extends AbstractEbeanQuery {
         evaluationContextProvider, parser);
   }
 
-
   /**
    * Creates an appropriate Ebean query from an {@link EbeanServer} according to the current {@link AbstractEbeanQuery}
    * type.
@@ -98,12 +99,12 @@ abstract class AbstractStringBasedEbeanQuery extends AbstractEbeanQuery {
    * @param queryString
    * @return
    */
-  protected Object createEbeanQuery(String queryString) {
+  protected EbeanQueryWrapper createEbeanQuery(String queryString) {
     EbeanServer ebeanServer = getEbeanServer();
 
     ResultProcessor resultFactory = getQueryMethod().getResultProcessor();
     ReturnedType returnedType = resultFactory.getReturnedType();
 
-    return ebeanServer.createQuery(returnedType.getReturnedType(), queryString);
+    return EbeanQueryWrapper.ofEbeanQuery(ebeanServer.createQuery(returnedType.getReturnedType(), queryString));
   }
 }

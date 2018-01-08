@@ -95,7 +95,7 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
     return new ParameterBinder((DefaultParameters) getQueryMethod().getParameters(), values);
   }
 
-  protected Object createQuery(Object[] values) {
+  protected EbeanQueryWrapper createQuery(Object[] values) {
     return doCreateQuery(values);
   }
 
@@ -105,5 +105,6 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
    * @param values must not be {@literal null}.
    * @return
    */
-  protected abstract Object doCreateQuery(Object[] values);
+  protected abstract EbeanQueryWrapper doCreateQuery(Object[] values);
+
 }

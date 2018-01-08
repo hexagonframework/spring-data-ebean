@@ -58,7 +58,7 @@ final class NativeEbeanUpdate extends AbstractStringBasedEbeanQuery {
   }
 
   @Override
-  protected Object createEbeanQuery(String queryString) {
-    return getEbeanServer().createSqlUpdate(queryString);
+  protected EbeanQueryWrapper createEbeanQuery(String queryString) {
+    return EbeanQueryWrapper.ofEbeanQuery(getEbeanServer().createSqlUpdate(queryString));
   }
 }

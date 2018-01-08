@@ -5,10 +5,12 @@ import org.springframework.data.ebean.annotation.Modifying;
 import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.ebean.repository.EbeanRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Xuegui Yuan
  */
+@Repository
 public interface UserRepository extends EbeanRepository<User, Long> {
     @Query("where emailAddress = :emailAddress order by id desc")
     User findUserByEmailAddressEqualsOql(@Param("emailAddress") String emailAddress);

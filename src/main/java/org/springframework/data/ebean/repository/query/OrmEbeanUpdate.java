@@ -58,7 +58,7 @@ final class OrmEbeanUpdate extends AbstractStringBasedEbeanQuery {
   }
 
   @Override
-  protected Object createEbeanQuery(String queryString) {
-    return getEbeanServer().createUpdate(getQueryMethod().getEntityInformation().getJavaType(), queryString);
+  protected EbeanQueryWrapper createEbeanQuery(String queryString) {
+    return EbeanQueryWrapper.ofEbeanQuery(getEbeanServer().createUpdate(getQueryMethod().getEntityInformation().getJavaType(), queryString));
   }
 }

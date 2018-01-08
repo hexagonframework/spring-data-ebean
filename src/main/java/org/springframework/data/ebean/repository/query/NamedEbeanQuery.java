@@ -73,7 +73,7 @@ final class NamedEbeanQuery extends AbstractEbeanQuery {
    * @see org.springframework.data.ebean.repository.query.AbstractJpaQuery#doCreateQuery(java.lang.Object[])
    */
   @Override
-  protected Object doCreateQuery(Object[] values) {
-    return createBinder(values).bindAndPrepare(query);
+  protected EbeanQueryWrapper doCreateQuery(Object[] values) {
+    return createBinder(values).bindAndPrepare(EbeanQueryWrapper.ofEbeanQuery(query));
   }
 }

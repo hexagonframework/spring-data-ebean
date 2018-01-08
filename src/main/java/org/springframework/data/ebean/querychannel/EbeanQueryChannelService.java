@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * Query channel service class.
+ * EbeanQueryWrapper channel service class.
  *
  * @author Xuegui Yuan
  */
@@ -40,7 +40,7 @@ public class EbeanQueryChannelService {
   /**
    * Return an object relational query for finding a List, Set, Map or single entity bean.
    *
-   * @return the Query.
+   * @return the EbeanQueryWrapper.
    */
   public static <T> Query<T> query(Class<T> entityType) {
     Assert.notNull(entityType, "entityType must not null");
@@ -161,7 +161,7 @@ public class EbeanQueryChannelService {
   /**
    * Return an object relational query for finding a List, Set, Map or single entity bean.
    *
-   * @return the Query.
+   * @return the EbeanQueryWrapper.
    */
   public <T> Query<T> createQuery(Class<T> entityType) {
     Assert.notNull(entityType, "entityType must not null");
@@ -172,7 +172,7 @@ public class EbeanQueryChannelService {
    * Return a query using Ebean ORM query.
    *
    * @param eql the Ebean ORM query.
-   * @return the created Query using ORM query.
+   * @return the created EbeanQueryWrapper using ORM query.
    */
   public <T> Query<T> createQuery(Class<T> entityType, String eql) {
     Assert.notNull(entityType, "entityType must not null");
@@ -195,7 +195,7 @@ public class EbeanQueryChannelService {
    * Return a query using native SQL.
    *
    * @param sql native SQL.
-   * @return the created Query using native SQL.
+   * @return the created EbeanQueryWrapper using native SQL.
    */
   public <T> Query<T> createSqlQuery(Class<T> entityType, String sql) {
     Assert.notNull(entityType, "entityType must not null");
@@ -209,7 +209,7 @@ public class EbeanQueryChannelService {
    *
    * @param sql           native SQL
    * @param columnMapping column mapping,key is dbColumn, value is propertyName.
-   * @return the created Query using native SQL and column mapping config.
+   * @return the created EbeanQueryWrapper using native SQL and column mapping config.
    */
   public <T> Query<T> createSqlQueryMappingColumns(Class<T> entityType,
                                                    String sql,
@@ -229,7 +229,7 @@ public class EbeanQueryChannelService {
    *
    * @param sql               native SQL
    * @param tableAliasMapping table alias mapping,key is tableAlias, value is propertyName.
-   * @return the created Query using native SQL and column mapping config
+   * @return the created EbeanQueryWrapper using native SQL and column mapping config
    */
   public <T> Query<T> createSqlQueryMappingTableAlias(Class<T> entityType,
                                                       String sql,

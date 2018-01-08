@@ -45,13 +45,13 @@ class StringQuery {
   private final List<ParameterBinding> bindings;
 
   /**
-   * Creates a new {@link StringQuery} from the given JPQL query.
+   * Creates a new {@link StringQuery} from the given QL query.
    *
    * @param query must not be {@literal null} or empty.
    */
   public StringQuery(String query) {
 
-    Assert.hasText(query, "Query must not be null or empty!");
+    Assert.hasText(query, "EbeanQueryWrapper must not be null or empty!");
 
     this.bindings = new ArrayList<ParameterBinding>();
     this.query = ParameterBindingParser.INSTANCE.parseParameterBindingsOfQueryIntoBindingsAndReturnCleanedQuery(query,

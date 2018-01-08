@@ -16,8 +16,6 @@
 
 package org.springframework.data.ebean.repository.query;
 
-import io.ebean.Query;
-import io.ebean.SqlQuery;
 import java.util.List;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.EvaluationContextProvider;
@@ -62,10 +60,10 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
 
   /*
    * (non-Javadoc)
-   * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.Query)
+   * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.EbeanQueryWrapper)
    */
   @Override
-  public Object bind(Object ebeanQuery) {
+  public EbeanQueryWrapper bind(EbeanQueryWrapper ebeanQuery) {
     return potentiallyBindExpressionParameters(super.bind(ebeanQuery));
   }
 
@@ -73,7 +71,7 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
    * @param ebeanQuery must not be {@literal null}
    * @return
    */
-  private Object potentiallyBindExpressionParameters(Object ebeanQuery) {
+  private EbeanQueryWrapper potentiallyBindExpressionParameters(EbeanQueryWrapper ebeanQuery) {
     for (StringQuery.ParameterBinding binding : query.getParameterBindings()) {
 
       if (binding.isExpression()) {
@@ -84,26 +82,9 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
 
         try {
           if (binding.getName() != null) {
-            if (ebeanQuery instanceof Query) {
-              Query ormQuery = (Query) ebeanQuery;
-              ormQuery.setParameter(binding.getName(), binding.prepare(value));
-            } else if (ebeanQuery instanceof SqlQuery) {
-              SqlQuery sqlQuery = (SqlQuery) ebeanQuery;
-              sqlQuery.setParameter(binding.getName(), binding.prepare(value));
-            } else {
-              throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-            }
-
+            ebeanQuery.setParameter(binding.getName(), binding.prepare(value));
           } else {
-            if (ebeanQuery instanceof Query) {
-              Query ormQuery = (Query) ebeanQuery;
-              ormQuery.setParameter(binding.getPosition(), binding.prepare(value));
-            } else if (ebeanQuery instanceof SqlQuery) {
-              SqlQuery sqlQuery = (SqlQuery) ebeanQuery;
-              sqlQuery.setParameter(binding.getPosition(), binding.prepare(value));
-            } else {
-              throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-            }
+            ebeanQuery.setParameter(binding.getPosition(), binding.prepare(value));
           }
         } catch (IllegalArgumentException iae) {
 

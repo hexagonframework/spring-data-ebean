@@ -17,23 +17,12 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import io.ebean.PagedList;
-import io.ebean.Query;
-import io.ebean.QueryIterator;
-import io.ebean.SqlQuery;
-import io.ebean.SqlUpdate;
-import io.ebean.Update;
-import java.util.List;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.repository.core.support.SurroundingTransactionDetectorMethodInterceptor;
 import org.springframework.data.repository.query.ParameterAccessor;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
-import org.springframework.data.repository.support.PageableExecutionUtils;
-import org.springframework.data.util.StreamUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -74,17 +63,9 @@ public abstract class AbstractEbeanQueryExecution {
   static class CollectionExecutionAbstract extends AbstractEbeanQueryExecution {
 
     @Override
-    protected Object doExecute(AbstractEbeanQuery query, Object[] values) {
-      Object q = query.createQuery(values);
-      if (q instanceof Query) {
-        Query ormQuery = (Query) q;
-        return ormQuery.findList();
-      } else if (q instanceof SqlQuery) {
-        SqlQuery sqlQuery = (SqlQuery) q;
-        return sqlQuery.findList();
-      } else {
-        throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-      }
+    protected Object doExecute(AbstractEbeanQuery repositoryQuery, Object[] values) {
+      EbeanQueryWrapper createQuery = repositoryQuery.createQuery(values);
+      return createQuery.findList();
     }
   }
 
@@ -113,31 +94,9 @@ public abstract class AbstractEbeanQueryExecution {
     @Override
     @SuppressWarnings("unchecked")
     protected Object doExecute(AbstractEbeanQuery query, Object[] values) {
-
       ParametersParameterAccessor accessor = new ParametersParameterAccessor(parameters, values);
-      Pageable pageable = accessor.getPageable();
-
-      Object createQuery = query.createQuery(values);
-      List<Object> resultList = null;
-      int pageSize = pageable.getPageSize();
-      if (createQuery instanceof Query) {
-        Query ormQuery = (Query) createQuery;
-        ormQuery.setMaxRows(pageSize + 1);
-
-        ormQuery.findList();
-      } else if (createQuery instanceof SqlQuery) {
-        SqlQuery sqlQuery = (SqlQuery) createQuery;
-
-        sqlQuery.setMaxRows(pageSize + 1);
-
-        sqlQuery.findList();
-      } else {
-        throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-      }
-
-      boolean hasNext = resultList != null && resultList.size() > pageSize;
-
-      return new SliceImpl<Object>(hasNext ? resultList.subList(0, pageSize) : resultList, pageable, hasNext);
+      EbeanQueryWrapper createQuery = query.createQuery(values);
+      return createQuery.findSlice(accessor.getPageable());
     }
   }
 
@@ -158,19 +117,8 @@ public abstract class AbstractEbeanQueryExecution {
     @SuppressWarnings("unchecked")
     protected Object doExecute(final AbstractEbeanQuery repositoryQuery, final Object[] values) {
       ParameterAccessor accessor = new ParametersParameterAccessor(parameters, values);
-      Object createQuery = repositoryQuery.createQuery(values);
-
-      if (createQuery instanceof Query) {
-        Query ormQuery = (Query) createQuery;
-        PagedList pagedList = ormQuery.findPagedList();
-        return PageableExecutionUtils.getPage(pagedList.getList(), accessor.getPageable(), () -> pagedList.getTotalCount());
-      } else if (createQuery instanceof SqlQuery) {
-        SqlQuery sqlQuery = (SqlQuery) createQuery;
-        // TODO page
-        return sqlQuery.findList();
-      } else {
-        throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-      }
+      EbeanQueryWrapper createQuery = repositoryQuery.createQuery(values);
+      return createQuery.findPage(accessor.getPageable());
     }
   }
 
@@ -182,16 +130,8 @@ public abstract class AbstractEbeanQueryExecution {
 
     @Override
     protected Object doExecute(AbstractEbeanQuery query, Object[] values) {
-      Object createQuery = query.createQuery(values);
-      if (createQuery instanceof Query) {
-        Query ormQuery = (Query) createQuery;
-        return ormQuery.findOne();
-      } else if (createQuery instanceof SqlQuery) {
-        SqlQuery sqlQuery = (SqlQuery) createQuery;
-        return sqlQuery.findOne();
-      } else {
-        throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-      }
+      EbeanQueryWrapper createQuery = query.createQuery(values);
+      return createQuery.findOne();
     }
   }
 
@@ -222,19 +162,8 @@ public abstract class AbstractEbeanQueryExecution {
 
     @Override
     protected Object doExecute(AbstractEbeanQuery query, Object[] values) {
-      Object createQuery = query.createQuery(values);
-      if (createQuery instanceof Query) {
-        Query ormQuery = (Query) createQuery;
-        return ormQuery.update();
-      } else if (createQuery instanceof SqlUpdate) {
-        SqlUpdate sqlUpdate = (SqlUpdate) createQuery;
-        return sqlUpdate.execute();
-      } else if (createQuery instanceof Update) {
-        Update update = (Update) createQuery;
-        return update.execute();
-      } else {
-        throw new InvalidEbeanQueryMethodException("query not supported");
-      }
+      EbeanQueryWrapper createQuery = query.createQuery(values);
+      return createQuery.update();
     }
   }
 
@@ -257,15 +186,8 @@ public abstract class AbstractEbeanQueryExecution {
      */
     @Override
     protected Object doExecute(AbstractEbeanQuery ebeanQuery, Object[] values) {
-      Object createQuery = ebeanQuery.createQuery(values);
-      if (createQuery instanceof Query) {
-        Query ormQuery = (Query) createQuery;
-        ormQuery.delete();
-
-        return ormQuery.delete();
-      } else {
-        throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-      }
+      EbeanQueryWrapper createQuery = ebeanQuery.createQuery(values);
+      return createQuery.delete();
     }
   }
 
@@ -278,17 +200,8 @@ public abstract class AbstractEbeanQueryExecution {
 
     @Override
     protected Object doExecute(AbstractEbeanQuery ebeanQuery, Object[] values) {
-      Object createQuery = ebeanQuery.createQuery(values);
-      if (createQuery instanceof Query) {
-        Query ormQuery = (Query) createQuery;
-        return ormQuery.findCount() > 0;
-      } else if (createQuery instanceof SqlQuery) {
-        SqlQuery sqlQuery = (SqlQuery) createQuery;
-        // TODO check
-        return sqlQuery.findOne().getLong("c") > 0;
-      } else {
-        throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-      }
+      EbeanQueryWrapper createQuery = ebeanQuery.createQuery(values);
+      return createQuery.isExists();
     }
   }
 
@@ -311,17 +224,8 @@ public abstract class AbstractEbeanQueryExecution {
         throw new InvalidDataAccessApiUsageException(NO_SURROUNDING_TRANSACTION);
       }
 
-      Object createQuery = ebeanQuery.createQuery(values);
-      if (createQuery instanceof Query) {
-        Query ormQuery = (Query) createQuery;
-        QueryIterator<Object> iter = ormQuery.findIterate();
-
-        return StreamUtils.createStreamFromIterator(iter);
-      } else if (createQuery instanceof SqlQuery) {
-        throw new InvalidEbeanQueryMethodException("query must be Query");
-      } else {
-        throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-      }
+      EbeanQueryWrapper createQuery = ebeanQuery.createQuery(values);
+      return createQuery.findStream();
     }
   }
 }

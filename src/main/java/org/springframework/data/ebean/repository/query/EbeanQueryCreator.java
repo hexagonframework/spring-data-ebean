@@ -32,7 +32,7 @@ import org.springframework.data.repository.query.parser.PartTree;
 import org.springframework.util.Assert;
 
 /**
- * Query creator to create a {@link io.ebean.Expression} from a {@link PartTree}.
+ * EbeanQueryWrapper creator to create a {@link io.ebean.Expression} from a {@link PartTree}.
  *
  * @author Xuegui Yuan
  */

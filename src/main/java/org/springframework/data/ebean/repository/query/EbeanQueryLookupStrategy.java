@@ -29,7 +29,7 @@ import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.util.Assert;
 
 /**
- * Query lookup strategy to execute finders.
+ * EbeanQueryWrapper lookup strategy to execute finders.
  *
  * @author Xuegui Yuan
  */
