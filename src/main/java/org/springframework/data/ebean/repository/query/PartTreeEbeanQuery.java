@@ -60,9 +60,9 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
   @Override
   protected AbstractEbeanQueryExecution getExecution() {
     if (this.tree.isDelete()) {
-      return new AbstractEbeanQueryExecution.DeleteExecutionAbstract(getEbeanServer());
+      return new AbstractEbeanQueryExecution.DeleteExecution(getEbeanServer());
     } else if (this.tree.isExistsProjection()) {
-      return new AbstractEbeanQueryExecution.ExistsExecutionAbstract();
+      return new AbstractEbeanQueryExecution.ExistsExecution();
     }
 
     return super.getExecution();

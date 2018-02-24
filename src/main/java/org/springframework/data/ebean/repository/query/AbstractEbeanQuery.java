@@ -21,6 +21,8 @@ import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.util.Assert;
 
+import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.*;
+
 /**
  * Abstract base class to implement {@link RepositoryQuery}.
  *
@@ -77,17 +79,17 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
 
   protected AbstractEbeanQueryExecution getExecution() {
     if (method.isStreamQuery()) {
-      return new AbstractEbeanQueryExecution.StreamExecutionAbstract();
+        return new StreamExecution();
     } else if (method.isCollectionQuery()) {
-      return new AbstractEbeanQueryExecution.CollectionExecutionAbstract();
+        return new AbstractEbeanQueryExecution.CollectionExecution();
     } else if (method.isSliceQuery()) {
-      return new AbstractEbeanQueryExecution.SlicedExecutionAbstract(method.getParameters());
+        return new SlicedExecution(method.getParameters());
     } else if (method.isPageQuery()) {
-      return new AbstractEbeanQueryExecution.PagedExecutionAbstract(method.getParameters());
+        return new PagedExecution(method.getParameters());
     } else if (method.isModifyingQuery()) {
-      return new AbstractEbeanQueryExecution.UpdateExecutionAbstract(method, ebeanServer);
+        return new UpdateExecution(method, ebeanServer);
     } else {
-      return new AbstractEbeanQueryExecution.SingleEntityExecutionAbstract();
+        return new SingleEntityExecution();
     }
   }
 
