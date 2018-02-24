@@ -199,10 +199,10 @@ public class EbeanQueryCreator extends AbstractQueryCreator<Query, Expression> {
           ParameterMetadataProvider.ParameterMetadata<Object> pmNot = provider.next(part);
           return pmNot.isIsNullParameter() ? Expr.isNull(property.toDotPath())
               : Expr.ne(property.toDotPath(), pmNot.getParameterValue());
-//				case IS_EMPTY:
-//					return root.isEmpty(part.getProperty().getSegment());
-//				case IS_NOT_EMPTY:
-//					return root.isEmpty(part.getProperty().getSegment());
+        case IS_EMPTY:
+          return Expr.isEmpty(property.toDotPath());
+        case IS_NOT_EMPTY:
+          return Expr.isNotEmpty(property.toDotPath());
         default:
           throw new IllegalArgumentException("Unsupported keyword " + type);
       }
