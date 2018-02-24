@@ -130,12 +130,12 @@ public class UserRepositoryIntegrationTests {
         assertEquals(0, result2.size());
     }
 
-//    @Test
-//    public void testAuditable() {
-//        User u = userRepository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
-//        assertEquals("test", u.getCreatedBy().get());
-//        assertEquals("test", u.getLastModifiedBy().get());
-//    }
+    @Test
+    public void testAuditable() {
+        User u = userRepository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
+        assertEquals("test", u.getCreatedBy().get());
+        assertEquals("test", u.getLastModifiedBy().get());
+    }
 
     @Test
     public void testDomainEvent() {
