@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,12 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.Query;
-import io.ebean.SqlQuery;
-import io.ebean.SqlUpdate;
-import io.ebean.Update;
-import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.DefaultParameters;
-import org.springframework.data.repository.query.Parameter;
-import org.springframework.data.repository.query.ParameterAccessor;
-import org.springframework.data.repository.query.Parameters;
-import org.springframework.data.repository.query.ParametersParameterAccessor;
+import org.springframework.data.repository.query.*;
 import org.springframework.util.Assert;
+
+import java.util.Optional;
 
 /**
  * {@link ParameterBinder} is used to bind method parameters to a {@link Query}. This is usually done whenever an
@@ -80,27 +74,20 @@ public class ParameterBinder {
      * @param query must not be {@literal null}.
      * @return
      */
-    public Object bindAndPrepare(Object query) {
+    public EbeanQueryWrapper bindAndPrepare(EbeanQueryWrapper query) {
         Assert.notNull(query, "query must not be null!");
         return bindAndPrepare(query, parameters);
     }
 
-    private Object bindAndPrepare(Object query, Parameters<?, ?> parameters) {
+  private EbeanQueryWrapper bindAndPrepare(EbeanQueryWrapper query, Parameters<?, ?> parameters) {
+    EbeanQueryWrapper result = bind(query);
 
-        Object result = bind(query);
-
-        if (!parameters.hasPageableParameter()) {
+    if (!parameters.hasPageableParameter() || accessor.getPageable().isUnpaged()) {
             return result;
         }
-        if (query instanceof Query) {
-            Query ormQuery = (Query) query;
-            ormQuery.setFirstRow((int) getPageable().getOffset());
-            ormQuery.setMaxRows(getPageable().getPageSize());
-        } else if (query instanceof SqlQuery) {
-            SqlQuery sqlQuery = (SqlQuery) query;
-            sqlQuery.setFirstRow((int) getPageable().getOffset());
-            sqlQuery.setMaxRows(getPageable().getPageSize());
-        }
+
+    result.setFirstRow((int) getPageable().getOffset());
+    result.setMaxRows(getPageable().getPageSize());
 
         return result;
     }
@@ -111,9 +98,9 @@ public class ParameterBinder {
      * @param query must not be {@literal null}.
      * @return
      */
-    public Object bind(Object query) {
+    public EbeanQueryWrapper bind(EbeanQueryWrapper query) {
 
-        Assert.notNull(query, "Query must not be null!");
+      Assert.notNull(query, "EbeanQueryWrapper must not be null!");
 
         int bindableParameterIndex = 0;
         int queryParameterPosition = 1;
@@ -158,49 +145,15 @@ public class ParameterBinder {
      * @param value
      * @param position
      */
-    protected void bind(Object query, Parameter parameter, Object value, int position) {
+    protected void bind(EbeanQueryWrapper query, Parameter parameter, Object value, int position) {
         if (parameter.isNamedParameter()) {
-            if (query instanceof Query) {
-                Query ormQuery = (Query) query;
-                ormQuery.setParameter(
-                    Optional.ofNullable(parameter.getName())
-                        .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
-                        .get(),
-                    value);
-            } else if (query instanceof Update) {
-                Update ormUpdate = (Update) query;
-                ormUpdate.setParameter(
-                    Optional.ofNullable(parameter.getName())
-                        .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
-                        .get(),
-                    value);
-            } else if (query instanceof SqlQuery) {
-                SqlQuery sqlQuery = (SqlQuery) query;
-                sqlQuery.setParameter(
-                    Optional.ofNullable(parameter.getName())
-                        .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
-                        .get(),
-                    value);
-            } else if (query instanceof SqlUpdate) {
-                SqlUpdate sqlUpdate = (SqlUpdate) query;
-                sqlUpdate.setParameter(
-                    Optional.ofNullable(parameter.getName())
-                        .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
-                        .get(),
-                    value);
-            } else {
-                throw new IllegalArgumentException("query not supported!");
-            }
+          query.setParameter(
+              Optional.ofNullable(parameter.getName())
+                  .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
+                  .get(),
+              value);
         } else {
-            if (query instanceof Query) {
-                Query ormQuery = (Query) query;
-                ormQuery.setParameter(position, value);
-            } else if (query instanceof SqlQuery) {
-                SqlQuery sqlQuery = (SqlQuery) query;
-                sqlQuery.setParameter(position, value);
-            } else {
-                throw new IllegalArgumentException("query not supported!");
-            }
+          query.setParameter(position, value);
         }
     }
 

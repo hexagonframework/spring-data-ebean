@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import io.ebean.EbeanServer;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.util.Assert;
+
+import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.*;
 
 /**
  * Abstract base class to implement {@link RepositoryQuery}.
@@ -77,17 +79,17 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
 
   protected AbstractEbeanQueryExecution getExecution() {
     if (method.isStreamQuery()) {
-      return new AbstractEbeanQueryExecution.StreamExecutionAbstract();
+        return new StreamExecution();
     } else if (method.isCollectionQuery()) {
-      return new AbstractEbeanQueryExecution.CollectionExecutionAbstract();
+        return new AbstractEbeanQueryExecution.CollectionExecution();
     } else if (method.isSliceQuery()) {
-      return new AbstractEbeanQueryExecution.SlicedExecutionAbstract(method.getParameters());
+        return new SlicedExecution(method.getParameters());
     } else if (method.isPageQuery()) {
-      return new AbstractEbeanQueryExecution.PagedExecutionAbstract(method.getParameters());
+        return new PagedExecution(method.getParameters());
     } else if (method.isModifyingQuery()) {
-      return new AbstractEbeanQueryExecution.UpdateExecutionAbstract(method, ebeanServer);
+        return new UpdateExecution(method, ebeanServer);
     } else {
-      return new AbstractEbeanQueryExecution.SingleEntityExecutionAbstract();
+        return new SingleEntityExecution();
     }
   }
 
@@ -95,7 +97,7 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
     return new ParameterBinder((DefaultParameters) getQueryMethod().getParameters(), values);
   }
 
-  protected Object createQuery(Object[] values) {
+  protected EbeanQueryWrapper createQuery(Object[] values) {
     return doCreateQuery(values);
   }
 
@@ -105,5 +107,6 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
    * @param values must not be {@literal null}.
    * @return
    */
-  protected abstract Object doCreateQuery(Object[] values);
+  protected abstract EbeanQueryWrapper doCreateQuery(Object[] values);
+
 }

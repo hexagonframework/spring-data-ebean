@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,6 @@
 
 package org.springframework.data.ebean.repository.query;
 
-import io.ebean.Query;
-import io.ebean.SqlQuery;
-import java.util.List;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.Parameter;
@@ -27,6 +24,8 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 /**
  * A {@link StringQueryParameterBinder} that is able to bind synthetic query parameters.
@@ -62,10 +61,10 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
 
   /*
    * (non-Javadoc)
-   * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.Query)
+   * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.EbeanQueryWrapper)
    */
   @Override
-  public Object bind(Object ebeanQuery) {
+  public EbeanQueryWrapper bind(EbeanQueryWrapper ebeanQuery) {
     return potentiallyBindExpressionParameters(super.bind(ebeanQuery));
   }
 
@@ -73,7 +72,7 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
    * @param ebeanQuery must not be {@literal null}
    * @return
    */
-  private Object potentiallyBindExpressionParameters(Object ebeanQuery) {
+  private EbeanQueryWrapper potentiallyBindExpressionParameters(EbeanQueryWrapper ebeanQuery) {
     for (StringQuery.ParameterBinding binding : query.getParameterBindings()) {
 
       if (binding.isExpression()) {
@@ -84,26 +83,9 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
 
         try {
           if (binding.getName() != null) {
-            if (ebeanQuery instanceof Query) {
-              Query ormQuery = (Query) ebeanQuery;
-              ormQuery.setParameter(binding.getName(), binding.prepare(value));
-            } else if (ebeanQuery instanceof SqlQuery) {
-              SqlQuery sqlQuery = (SqlQuery) ebeanQuery;
-              sqlQuery.setParameter(binding.getName(), binding.prepare(value));
-            } else {
-              throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-            }
-
+            ebeanQuery.setParameter(binding.getName(), binding.prepare(value));
           } else {
-            if (ebeanQuery instanceof Query) {
-              Query ormQuery = (Query) ebeanQuery;
-              ormQuery.setParameter(binding.getPosition(), binding.prepare(value));
-            } else if (ebeanQuery instanceof SqlQuery) {
-              SqlQuery sqlQuery = (SqlQuery) ebeanQuery;
-              sqlQuery.setParameter(binding.getPosition(), binding.prepare(value));
-            } else {
-              throw new InvalidEbeanQueryMethodException("query must be Query or SqlQuery");
-            }
+            ebeanQuery.setParameter(binding.getPosition(), binding.prepare(value));
           }
         } catch (IllegalArgumentException iae) {
 

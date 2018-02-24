@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,9 +60,9 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
   @Override
   protected AbstractEbeanQueryExecution getExecution() {
     if (this.tree.isDelete()) {
-      return new AbstractEbeanQueryExecution.DeleteExecutionAbstract(getEbeanServer());
+      return new AbstractEbeanQueryExecution.DeleteExecution(getEbeanServer());
     } else if (this.tree.isExistsProjection()) {
-      return new AbstractEbeanQueryExecution.ExistsExecutionAbstract();
+      return new AbstractEbeanQueryExecution.ExistsExecution();
     }
 
     return super.getExecution();
@@ -73,12 +73,12 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
    * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
    */
   @Override
-  public Object doCreateQuery(Object[] values) {
+  public EbeanQueryWrapper doCreateQuery(Object[] values) {
     return queryPreparer.createQuery(values);
   }
 
   /**
-   * Query preparer to create {@link Query} instances and potentially cache them.
+   * EbeanQueryWrapper preparer to create {@link Query} instances and potentially cache them.
    *
    * @author Xuegui Yuan
    */
@@ -96,10 +96,13 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
      * @param values
      * @return
      */
-    public Object createQuery(Object[] values) {
+    public EbeanQueryWrapper createQuery(Object[] values) {
       ParametersParameterAccessor accessor = new ParametersParameterAccessor(parameters, values);
       EbeanQueryCreator ebeanQueryCreator = createCreator(accessor);
-      return restrictMaxResultsIfNecessary((Query) invokeBinding(getBinder(values), ebeanQueryCreator.createQuery()));
+      return
+          restrictMaxResultsIfNecessary(
+              invokeBinding(getBinder(values),
+                  EbeanQueryWrapper.ofEbeanQuery(ebeanQueryCreator.createQuery())));
     }
 
     protected EbeanQueryCreator createCreator(ParametersParameterAccessor accessor) {
@@ -121,7 +124,7 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
      * @param query
      * @return
      */
-    private Query restrictMaxResultsIfNecessary(Query query) {
+    private EbeanQueryWrapper restrictMaxResultsIfNecessary(EbeanQueryWrapper query) {
       if (tree.isLimiting()) {
 
         if (query.getMaxRows() != Integer.MAX_VALUE) {
@@ -153,7 +156,7 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
      * @param query
      * @return
      */
-    protected Object invokeBinding(ParameterBinder binder, Query query) {
+    protected EbeanQueryWrapper invokeBinding(ParameterBinder binder, EbeanQueryWrapper query) {
       return binder.bindAndPrepare(query);
     }
 

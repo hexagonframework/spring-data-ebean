@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 package org.springframework.data.ebean.repository.support;
 
 import io.ebean.EbeanServer;
-import java.io.Serializable;
-import java.util.Optional;
 import org.springframework.data.ebean.repository.EbeanRepository;
 import org.springframework.data.ebean.repository.query.EbeanQueryLookupStrategy;
 import org.springframework.data.repository.core.EntityInformation;
@@ -29,6 +27,9 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * Ebean specific generic repository factory.

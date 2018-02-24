@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package org.springframework.data.ebean.repository.query;
 
-import java.util.Optional;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.util.Assert;
+
+import java.util.Optional;
 
 import static org.springframework.data.ebean.repository.query.StringQuery.LikeParameterBinding;
 import static org.springframework.data.ebean.repository.query.StringQuery.ParameterBinding;
@@ -52,10 +53,10 @@ public class StringQueryParameterBinder extends ParameterBinder {
 
   /*
    * (non-Javadoc)
-   * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.Query, org.springframework.data.repository.query.Parameter, java.lang.Object, int)
+   * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.EbeanQueryWrapper, org.springframework.data.repository.query.Parameter, java.lang.Object, int)
    */
   @Override
-  protected void bind(Object ebeanQuery, Parameter methodParameter, Object value, int position) {
+  protected void bind(EbeanQueryWrapper ebeanQuery, Parameter methodParameter, Object value, int position) {
 
     ParameterBinding binding = getBindingFor(ebeanQuery, position, methodParameter);
     super.bind(ebeanQuery, methodParameter, binding.prepare(value), position);
@@ -71,7 +72,7 @@ public class StringQueryParameterBinder extends ParameterBinder {
    */
   private ParameterBinding getBindingFor(Object ebeanQuery, int position, Parameter parameter) {
 
-    Assert.notNull(ebeanQuery, "Query must not be null!");
+    Assert.notNull(ebeanQuery, "EbeanQueryWrapper must not be null!");
     Assert.notNull(parameter, "Parameter must not be null!");
 
     if (parameter.isNamedParameter()) {

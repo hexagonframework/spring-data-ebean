@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2016 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,13 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.RepositoryQuery;
+
+import javax.persistence.PersistenceException;
 
 /**
  * {@link RepositoryQuery} implementation that inspects a {@link QueryMethod}
@@ -73,7 +74,7 @@ final class NamedEbeanQuery extends AbstractEbeanQuery {
    * @see org.springframework.data.ebean.repository.query.AbstractJpaQuery#doCreateQuery(java.lang.Object[])
    */
   @Override
-  protected Object doCreateQuery(Object[] values) {
-    return createBinder(values).bindAndPrepare(query);
+  protected EbeanQueryWrapper doCreateQuery(Object[] values) {
+    return createBinder(values).bindAndPrepare(EbeanQueryWrapper.ofEbeanQuery(query));
   }
 }
