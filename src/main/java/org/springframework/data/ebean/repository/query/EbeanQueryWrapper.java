@@ -1,17 +1,30 @@
+/*
+ * Copyright 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.data.ebean.repository.query;
 
-import io.ebean.PagedList;
-import io.ebean.Query;
-import io.ebean.SqlQuery;
-import io.ebean.SqlUpdate;
-import io.ebean.Update;
-import java.util.List;
-import java.util.stream.Stream;
+import io.ebean.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.data.util.StreamUtils;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Ebean query wrapper, wrap Query、 SqlQuery、Update、SqlUpdate.
@@ -93,7 +106,10 @@ public class EbeanQueryWrapper<T> {
   public Page findPage(Pageable pageable) {
     switch (queryType) {
       case ORM_QUERY:
-        PagedList pagedList = ((Query) queryInstance).findPagedList();
+        PagedList pagedList = ((Query) queryInstance)
+                .setFirstRow(pageable.getOffset())
+                .setMaxRows(pageable.getPageSize())
+                .findPagedList();
         return PageableExecutionUtils.getPage(pagedList.getList(), pageable, () -> pagedList.getTotalCount());
       default:
         throw new IllegalArgumentException("query must be Query!");
@@ -156,12 +172,13 @@ public class EbeanQueryWrapper<T> {
   public Object findSlice(Pageable pageable) {
     List resultList = null;
     int pageSize = pageable.getPageSize();
+    int offset = pageable.getOffset();
     switch (queryType) {
       case ORM_QUERY:
-        resultList = ((Query) queryInstance).setMaxRows(pageSize).findList();
+        resultList = ((Query) queryInstance).setFirstRow(offset).setMaxRows(pageSize + 1).findList();
         break;
       case SQL_QUERY:
-        resultList = ((SqlQuery) queryInstance).setMaxRows(pageSize).findList();
+        resultList = ((SqlQuery) queryInstance).setFirstRow(offset).setMaxRows(pageSize + 1).findList();
         break;
       default:
         throw new IllegalArgumentException("query must be Query or SqlQuery!");
