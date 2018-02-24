@@ -49,7 +49,7 @@
         <bundlor.failOnWarnings>false</bundlor.failOnWarnings>
         <springdata.commons>2.0.4.RELEASE</springdata.commons>
         <ebean.version>11.10.6</ebean.version>
-        <ebean-spring-txn.version>10.1.1</ebean-spring-txn.version>
+        <ebean-spring-txn.version>11.10.3</ebean-spring-txn.version>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     </properties>
 
