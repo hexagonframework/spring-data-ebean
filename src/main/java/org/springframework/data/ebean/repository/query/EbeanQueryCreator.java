@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,6 @@ import io.ebean.Expr;
 import io.ebean.Expression;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyPath;
 import org.springframework.data.repository.query.ReturnedType;
@@ -30,6 +27,10 @@ import org.springframework.data.repository.query.parser.AbstractQueryCreator;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.data.repository.query.parser.PartTree;
 import org.springframework.util.Assert;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * EbeanQueryWrapper creator to create a {@link io.ebean.Expression} from a {@link PartTree}.

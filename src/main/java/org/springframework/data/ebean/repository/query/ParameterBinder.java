@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,12 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.Query;
-import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.DefaultParameters;
-import org.springframework.data.repository.query.Parameter;
-import org.springframework.data.repository.query.ParameterAccessor;
-import org.springframework.data.repository.query.Parameters;
-import org.springframework.data.repository.query.ParametersParameterAccessor;
+import org.springframework.data.repository.query.*;
 import org.springframework.util.Assert;
+
+import java.util.Optional;
 
 /**
  * {@link ParameterBinder} is used to bind method parameters to a {@link Query}. This is usually done whenever an

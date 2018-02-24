@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,11 @@ import io.ebean.annotation.CreatedTimestamp;
 import io.ebean.annotation.UpdatedTimestamp;
 import io.ebean.annotation.WhoCreated;
 import io.ebean.annotation.WhoModified;
+import org.springframework.data.domain.Auditable;
+
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import javax.persistence.MappedSuperclass;
-import org.springframework.data.domain.Auditable;
 
 /**
  * Abstract base class for auditable entities. Stores the audition values in persistent fields.

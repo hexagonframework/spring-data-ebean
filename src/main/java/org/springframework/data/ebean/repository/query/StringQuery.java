@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,11 @@
 
 package org.springframework.data.ebean.repository.query;
 
+import org.springframework.data.repository.query.parser.Part.Type;
+import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,10 +28,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.springframework.data.repository.query.parser.Part.Type;
-import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.springframework.util.ObjectUtils.nullSafeEquals;
@@ -175,6 +176,19 @@ class StringQuery {
       PARAMETER_BINDING_PATTERN = Pattern.compile(builder.toString(), CASE_INSENSITIVE);
     }
 
+    private static void checkAndRegister(ParameterBinding binding, List<ParameterBinding> bindings) {
+
+      for (ParameterBinding existing : bindings) {
+        if (existing.hasName(binding.getName()) || existing.hasPosition(binding.getPosition())) {
+          Assert.isTrue(existing.equals(binding), String.format(MESSAGE, existing, binding));
+        }
+      }
+
+      if (!bindings.contains(binding)) {
+        bindings.add(binding);
+      }
+    }
+
     /**
      * Parses {@link ParameterBinding} instances from the given query and adds them to the registered bindings. Returns
      * the cleaned up query.
@@ -283,19 +297,6 @@ class StringQuery {
       }
 
       return greatestParameterIndex;
-    }
-
-    private static void checkAndRegister(ParameterBinding binding, List<ParameterBinding> bindings) {
-
-      for (ParameterBinding existing : bindings) {
-        if (existing.hasName(binding.getName()) || existing.hasPosition(binding.getPosition())) {
-          Assert.isTrue(existing.equals(binding), String.format(MESSAGE, existing, binding));
-        }
-      }
-
-      if (!bindings.contains(binding)) {
-        bindings.add(binding);
-      }
     }
 
     /**
