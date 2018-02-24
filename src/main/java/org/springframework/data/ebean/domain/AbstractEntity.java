@@ -16,19 +16,12 @@
 
 package org.springframework.data.ebean.domain;
 
-import org.springframework.data.domain.AfterDomainEventPublication;
-import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.domain.Persistable;
-import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Abstract base class for entities. Allows parameterization of id type, chooses auto-generation and implements
@@ -40,42 +33,9 @@ import java.util.List;
 public abstract class AbstractEntity implements Persistable<Long> {
 
   private static final long serialVersionUID = -5554308939380869754L;
-  @Transient
-  private transient final @org.springframework.data.annotation.Transient
-  List<Object> domainEvents = new ArrayList<>();
-  @Id
+
+    @Id
   protected Long id;
-
-  /**
-   * Registers the given event object for publication on a call to a Spring Data repository's save methods.
-   *
-   * @param event must not be {@literal null}.
-   * @return the event that has been added.
-   */
-  protected <T> T registerEvent(T event) {
-
-    Assert.notNull(event, "Domain event must not be null!");
-
-    this.domainEvents.add(event);
-    return event;
-  }
-
-  /**
-   * Clears all domain events currently held. Usually invoked by the infrastructure in place in Spring Data
-   * repositories.
-   */
-  @AfterDomainEventPublication
-  protected void clearDomainEvents() {
-    this.domainEvents.clear();
-  }
-
-  /**
-   * All domain events currently captured by the aggregate.
-   */
-  @DomainEvents
-  protected Collection<Object> domainEvents() {
-    return Collections.unmodifiableList(domainEvents);
-  }
 
   /*
    * (non-Javadoc)

@@ -18,8 +18,7 @@ package org.springframework.data.ebean.sample.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.ebean.domain.AbstractAuditableEntity;
-import org.springframework.data.ebean.domain.AggregateRoot;
+import org.springframework.data.ebean.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -33,12 +32,11 @@ import java.util.Set;
  *
  * @author Xuegui Yuan
  */
-@AggregateRoot
 @Entity
 @Table(name = "user")
 @Getter
 @Setter
-public class User extends AbstractAuditableEntity {
+public class User extends AbstractAggregateRoot {
 
     @Embedded
     private FullName fullName;
