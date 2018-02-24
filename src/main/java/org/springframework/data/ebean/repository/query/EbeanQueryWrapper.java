@@ -107,7 +107,7 @@ public class EbeanQueryWrapper<T> {
     switch (queryType) {
       case ORM_QUERY:
         PagedList pagedList = ((Query) queryInstance)
-                .setFirstRow(pageable.getOffset())
+                .setFirstRow((int)pageable.getOffset())
                 .setMaxRows(pageable.getPageSize())
                 .findPagedList();
         return PageableExecutionUtils.getPage(pagedList.getList(), pageable, () -> pagedList.getTotalCount());
@@ -172,7 +172,7 @@ public class EbeanQueryWrapper<T> {
   public Object findSlice(Pageable pageable) {
     List resultList = null;
     int pageSize = pageable.getPageSize();
-    int offset = pageable.getOffset();
+    int offset = (int)pageable.getOffset();
     switch (queryType) {
       case ORM_QUERY:
         resultList = ((Query) queryInstance).setFirstRow(offset).setMaxRows(pageSize + 1).findList();
