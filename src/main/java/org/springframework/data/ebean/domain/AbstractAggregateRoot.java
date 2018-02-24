@@ -36,7 +36,7 @@ import java.util.List;
 @MappedSuperclass
 public abstract class AbstractAggregateRoot extends AbstractEntity {
     @Transient
-    private transient final List<Object> domainEvents = new ArrayList<>();
+    private transient final List<DomainEvent> domainEvents = new ArrayList<>();
 
     /**
      * Registers the given event object for publication on a call to a Spring Data repository's save methods.
@@ -44,7 +44,7 @@ public abstract class AbstractAggregateRoot extends AbstractEntity {
      * @param event must not be {@literal null}.
      * @return the event that has been added.
      */
-    protected <T> T registerEvent(T event) {
+    protected <T extends DomainEvent> T registerEvent(T event) {
         Assert.notNull(event, "Domain event must not be null!");
 
         this.domainEvents.add(event);
@@ -64,7 +64,7 @@ public abstract class AbstractAggregateRoot extends AbstractEntity {
      * All domain events currently captured by the aggregate.
      */
     @DomainEvents
-    protected Collection<Object> domainEvents() {
+    protected Collection<DomainEvent> domainEvents() {
         return Collections.unmodifiableList(domainEvents);
     }
 
