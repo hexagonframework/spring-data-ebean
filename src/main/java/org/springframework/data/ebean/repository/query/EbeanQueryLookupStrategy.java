@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2016 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import java.lang.reflect.Method;
 import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
@@ -28,8 +27,10 @@ import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.util.Assert;
 
+import java.lang.reflect.Method;
+
 /**
- * Query lookup strategy to execute finders.
+ * EbeanQueryWrapper lookup strategy to execute finders.
  *
  * @author Xuegui Yuan
  */

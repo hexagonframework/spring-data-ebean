@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,15 @@
 
 package org.springframework.data.ebean.sample.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.ebean.domain.AbstractAggregateRoot;
+
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.ebean.domain.AbstractAuditableEntity;
-import org.springframework.data.ebean.domain.AggregateRoot;
 
 /**
  * Domain class representing a person emphasizing the use of {@code AbstractEntity}. No declaration of an id is
@@ -42,12 +32,11 @@ import org.springframework.data.ebean.domain.AggregateRoot;
  *
  * @author Xuegui Yuan
  */
-@AggregateRoot
 @Entity
 @Table(name = "user")
 @Getter
 @Setter
-public class User extends AbstractAuditableEntity {
+public class User extends AbstractAggregateRoot {
 
     @Embedded
     private FullName fullName;

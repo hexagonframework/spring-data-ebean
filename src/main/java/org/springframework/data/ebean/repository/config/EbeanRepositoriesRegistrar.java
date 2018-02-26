@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,11 @@
 
 package org.springframework.data.ebean.repository.config;
 
-import java.lang.annotation.Annotation;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.data.repository.config.RepositoryBeanDefinitionRegistrarSupport;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
+
+import java.lang.annotation.Annotation;
 
 /**
  * {@link ImportBeanDefinitionRegistrar} to enable {@link EnableEbeanRepositories} annotation.

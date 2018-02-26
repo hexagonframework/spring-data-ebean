@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,6 @@ import io.ebean.Expr;
 import io.ebean.Expression;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyPath;
 import org.springframework.data.repository.query.ReturnedType;
@@ -31,8 +28,12 @@ import org.springframework.data.repository.query.parser.Part;
 import org.springframework.data.repository.query.parser.PartTree;
 import org.springframework.util.Assert;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 /**
- * Query creator to create a {@link io.ebean.Expression} from a {@link PartTree}.
+ * EbeanQueryWrapper creator to create a {@link io.ebean.Expression} from a {@link PartTree}.
  *
  * @author Xuegui Yuan
  */
@@ -198,10 +199,10 @@ public class EbeanQueryCreator extends AbstractQueryCreator<Query, Expression> {
           ParameterMetadataProvider.ParameterMetadata<Object> pmNot = provider.next(part);
           return pmNot.isIsNullParameter() ? Expr.isNull(property.toDotPath())
               : Expr.ne(property.toDotPath(), pmNot.getParameterValue());
-//				case IS_EMPTY:
-//					return root.isEmpty(part.getProperty().getSegment());
-//				case IS_NOT_EMPTY:
-//					return root.isEmpty(part.getProperty().getSegment());
+        case IS_EMPTY:
+          return Expr.isEmpty(property.toDotPath());
+        case IS_NOT_EMPTY:
+          return Expr.isNotEmpty(property.toDotPath());
         default:
           throw new IllegalArgumentException("Unsupported keyword " + type);
       }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2016 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,13 @@ package org.springframework.data.ebean.repository;
 import io.ebean.EbeanServer;
 import io.ebean.SqlUpdate;
 import io.ebean.UpdateQuery;
-import java.io.Serializable;
-import java.util.List;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Ebean specific extension of {@link org.springframework.data.repository.Repository}.
