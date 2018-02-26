@@ -21,8 +21,6 @@ import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
-
 import static org.springframework.data.ebean.repository.query.StringQuery.LikeParameterBinding;
 import static org.springframework.data.ebean.repository.query.StringQuery.ParameterBinding;
 
@@ -76,8 +74,7 @@ public class StringQueryParameterBinder extends ParameterBinder {
     Assert.notNull(parameter, "Parameter must not be null!");
 
     if (parameter.isNamedParameter()) {
-      return query.getBindingFor(
-          Optional.ofNullable(parameter.getName()).orElseThrow(() -> new IllegalArgumentException("Parameter needs to be named!")).get());
+      return query.getBindingFor(parameter.getName());
     }
 
     try {

@@ -20,15 +20,14 @@ import io.ebean.annotation.CreatedTimestamp;
 import io.ebean.annotation.UpdatedTimestamp;
 import io.ebean.annotation.WhoCreated;
 import io.ebean.annotation.WhoModified;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Auditable;
 import org.springframework.data.domain.Persistable;
 import org.springframework.util.ClassUtils;
 
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * Abstract base class for entities.
@@ -37,7 +36,7 @@ import java.util.Optional;
  * @author Xuegui Yuan
  */
 @MappedSuperclass
-public abstract class AbstractEntity implements Persistable<Long>, Auditable<String, Long, LocalDateTime> {
+public abstract class AbstractEntity implements Persistable<Long>, Auditable<String, Long> {
 
     private static final long serialVersionUID = -5554308939380869754L;
 
@@ -48,17 +47,27 @@ public abstract class AbstractEntity implements Persistable<Long>, Auditable<Str
     String createdBy;
 
     @CreatedTimestamp
-    LocalDateTime createdDate;
+    DateTime createdDate;
 
     @WhoModified
     String lastModifiedBy;
 
     @UpdatedTimestamp
-    LocalDateTime lastModifiedDate;
+    DateTime lastModifiedDate;
+
+    @Override
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
     @Override
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     /**
@@ -70,6 +79,11 @@ public abstract class AbstractEntity implements Persistable<Long>, Auditable<Str
         this.id = id;
     }
 
+    @Override
+    public DateTime getCreatedDate() {
+        return createdDate;
+    }
+
     @Transient
     @Override
     public boolean isNew() {
@@ -77,28 +91,13 @@ public abstract class AbstractEntity implements Persistable<Long>, Auditable<Str
     }
 
     @Override
-    public Optional<String> getCreatedBy() {
-        return Optional.ofNullable(createdBy);
-    }
-
-    @Override
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    @Override
-    public Optional<LocalDateTime> getCreatedDate() {
-        return Optional.ofNullable(createdDate);
-    }
-
-    @Override
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(DateTime createdDate) {
         this.createdDate = createdDate;
     }
 
     @Override
-    public Optional<String> getLastModifiedBy() {
-        return Optional.ofNullable(lastModifiedBy);
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
     }
 
     @Override
@@ -107,21 +106,15 @@ public abstract class AbstractEntity implements Persistable<Long>, Auditable<Str
     }
 
     @Override
-    public Optional<LocalDateTime> getLastModifiedDate() {
-        return Optional.ofNullable(lastModifiedDate);
+    public DateTime getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
     @Override
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(DateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         int hashCode = 17;

@@ -1,5 +1,6 @@
 package org.springframework.data.ebean.repository;
 
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,10 +13,11 @@ import org.springframework.data.ebean.sample.domain.UserRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Xuegui Yuan
@@ -133,8 +135,8 @@ public class UserRepositoryIntegrationTests {
     @Test
     public void testAuditable() {
         User u = userRepository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
-        assertEquals("test", u.getCreatedBy().get());
-        assertEquals("test", u.getLastModifiedBy().get());
+        assertEquals("test", u.getCreatedBy());
+        assertEquals("test", u.getLastModifiedBy());
     }
 
     @Test
@@ -153,6 +155,6 @@ public class UserRepositoryIntegrationTests {
         User u = userRepository.findOneByProperty("emailAddress", "yuanxuegui@126.com");
         assertNotNull(u);
 
-        userRepository.deleteById(u.getId());
+        userRepository.delete(u.getId());
     }
 }

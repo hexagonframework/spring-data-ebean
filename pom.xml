@@ -47,7 +47,7 @@
     <properties>
         <bundlor.enabled>false</bundlor.enabled>
         <bundlor.failOnWarnings>false</bundlor.failOnWarnings>
-        <springdata.commons>2.0.4.RELEASE</springdata.commons>
+        <springdata.commons>1.13.10.RELEASE</springdata.commons>
         <ebean.version>11.10.6</ebean.version>
         <ebean-spring-txn.version>11.10.3</ebean-spring-txn.version>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -188,6 +188,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.9.7</version>
         </dependency>
 
 
