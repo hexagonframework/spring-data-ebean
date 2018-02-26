@@ -100,7 +100,7 @@ class ParameterMetadataProvider {
   private <T> ParameterMetadata<T> next(Part part, Class<T> type, Parameter parameter) {
     Assert.notNull(type, "Type must not be null!");
 
-    ParameterMetadata<T> value = new ParameterMetadata<T>(type, parameter.getName().get(), part.getType(),
+    ParameterMetadata<T> value = new ParameterMetadata<T>(type, parameter.getName(), part.getType(),
         bindableParameterValues == null ? ParameterMetadata.PLACEHOLDER : bindableParameterValues.next());
     expressions.add(value);
 

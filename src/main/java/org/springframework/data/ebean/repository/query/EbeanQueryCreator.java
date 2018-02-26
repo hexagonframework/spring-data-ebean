@@ -20,6 +20,9 @@ import io.ebean.Expr;
 import io.ebean.Expression;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyPath;
 import org.springframework.data.repository.query.ReturnedType;
@@ -27,10 +30,6 @@ import org.springframework.data.repository.query.parser.AbstractQueryCreator;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.data.repository.query.parser.PartTree;
 import org.springframework.util.Assert;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * EbeanQueryWrapper creator to create a {@link io.ebean.Expression} from a {@link PartTree}.
@@ -199,10 +198,10 @@ public class EbeanQueryCreator extends AbstractQueryCreator<Query, Expression> {
           ParameterMetadataProvider.ParameterMetadata<Object> pmNot = provider.next(part);
           return pmNot.isIsNullParameter() ? Expr.isNull(property.toDotPath())
               : Expr.ne(property.toDotPath(), pmNot.getParameterValue());
-        case IS_EMPTY:
-          return Expr.isEmpty(property.toDotPath());
-        case IS_NOT_EMPTY:
-          return Expr.isNotEmpty(property.toDotPath());
+//        case IS_EMPTY:
+//          return Expr.isEmpty(property.toDotPath());
+//        case IS_NOT_EMPTY:
+//          return Expr.isNotEmpty(property.toDotPath());
         default:
           throw new IllegalArgumentException("Unsupported keyword " + type);
       }

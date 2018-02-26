@@ -19,10 +19,12 @@ package org.springframework.data.ebean.repository.query;
 import io.ebean.Query;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.*;
+import org.springframework.data.repository.query.DefaultParameters;
+import org.springframework.data.repository.query.Parameter;
+import org.springframework.data.repository.query.ParameterAccessor;
+import org.springframework.data.repository.query.Parameters;
+import org.springframework.data.repository.query.ParametersParameterAccessor;
 import org.springframework.util.Assert;
-
-import java.util.Optional;
 
 /**
  * {@link ParameterBinder} is used to bind method parameters to a {@link Query}. This is usually done whenever an
@@ -32,141 +34,137 @@ import java.util.Optional;
  */
 public class ParameterBinder {
 
-    private final DefaultParameters parameters;
-    private final ParameterAccessor accessor;
-    private final Object[] values;
+  private final DefaultParameters parameters;
+  private final ParameterAccessor accessor;
+  private final Object[] values;
 
-    ParameterBinder(DefaultParameters parameters) {
-        this(parameters, new Object[0]);
-    }
+  ParameterBinder(DefaultParameters parameters) {
+    this(parameters, new Object[0]);
+  }
 
-    /**
-     * Creates a new {@link ParameterBinder}.
-     *
-     * @param parameters must not be {@literal null}.
-     * @param values     must not be {@literal null}.
-     */
-    public ParameterBinder(DefaultParameters parameters, Object[] values) {
+  /**
+   * Creates a new {@link ParameterBinder}.
+   *
+   * @param parameters must not be {@literal null}.
+   * @param values     must not be {@literal null}.
+   */
+  public ParameterBinder(DefaultParameters parameters, Object[] values) {
 
-        Assert.notNull(parameters, "Parameters must not be null!");
-        Assert.notNull(values, "Values must not be null!");
+    Assert.notNull(parameters, "Parameters must not be null!");
+    Assert.notNull(values, "Values must not be null!");
 
-        Assert.isTrue(parameters.getNumberOfParameters() == values.length, "Invalid number of parameters given!");
+    Assert.isTrue(parameters.getNumberOfParameters() == values.length, "Invalid number of parameters given!");
 
-        this.parameters = parameters;
-        this.values = values.clone();
-        this.accessor = new ParametersParameterAccessor(parameters, this.values);
-    }
+    this.parameters = parameters;
+    this.values = values.clone();
+    this.accessor = new ParametersParameterAccessor(parameters, this.values);
+  }
 
-    /**
-     * Returns the sort instance to be used for query creation. Will use a {@link Sort} parameter if available or the
-     * {@link Sort} contained in a {@link Pageable} if available. Returns {@code null} if no {@link Sort} can be found.
-     *
-     * @return
-     */
-    public Sort getSort() {
-        return accessor.getSort();
-    }
+  /**
+   * Returns the sort instance to be used for query creation. Will use a {@link Sort} parameter if available or the
+   * {@link Sort} contained in a {@link Pageable} if available. Returns {@code null} if no {@link Sort} can be found.
+   *
+   * @return
+   */
+  public Sort getSort() {
+    return accessor.getSort();
+  }
 
-    /**
-     * Binds the parameters to the given query and applies special parameter types (e.g. pagination).
-     *
-     * @param query must not be {@literal null}.
-     * @return
-     */
-    public EbeanQueryWrapper bindAndPrepare(EbeanQueryWrapper query) {
-        Assert.notNull(query, "query must not be null!");
-        return bindAndPrepare(query, parameters);
-    }
+  /**
+   * Binds the parameters to the given query and applies special parameter types (e.g. pagination).
+   *
+   * @param query must not be {@literal null}.
+   * @return
+   */
+  public EbeanQueryWrapper bindAndPrepare(EbeanQueryWrapper query) {
+    Assert.notNull(query, "query must not be null!");
+    return bindAndPrepare(query, parameters);
+  }
 
   private EbeanQueryWrapper bindAndPrepare(EbeanQueryWrapper query, Parameters<?, ?> parameters) {
     EbeanQueryWrapper result = bind(query);
 
-    if (!parameters.hasPageableParameter() || accessor.getPageable().isUnpaged()) {
-            return result;
-        }
+    if (!parameters.hasPageableParameter()) {
+      return result;
+    }
 
     result.setFirstRow((int) getPageable().getOffset());
     result.setMaxRows(getPageable().getPageSize());
 
-        return result;
+    return result;
+  }
+
+  /**
+   * Binds the parameters to the given {@link Query}.
+   *
+   * @param query must not be {@literal null}.
+   * @return
+   */
+  public EbeanQueryWrapper bind(EbeanQueryWrapper query) {
+
+    Assert.notNull(query, "EbeanQueryWrapper must not be null!");
+
+    int bindableParameterIndex = 0;
+    int queryParameterPosition = 1;
+
+    for (Parameter parameter : parameters) {
+
+      if (canBindParameter(parameter)) {
+
+        Object value = accessor.getBindableValue(bindableParameterIndex);
+        bind(query, parameter, value, queryParameterPosition++);
+        bindableParameterIndex++;
+      }
     }
 
-    /**
-     * Binds the parameters to the given {@link Query}.
-     *
-     * @param query must not be {@literal null}.
-     * @return
-     */
-    public EbeanQueryWrapper bind(EbeanQueryWrapper query) {
+    return query;
+  }
 
-      Assert.notNull(query, "EbeanQueryWrapper must not be null!");
+  /**
+   * Returns the {@link Pageable} of the parameters, if available. Returns {@code null} otherwise.
+   *
+   * @return
+   */
+  public Pageable getPageable() {
+    return accessor.getPageable();
+  }
 
-        int bindableParameterIndex = 0;
-        int queryParameterPosition = 1;
+  /**
+   * Returns {@literal true} if the given parameter can be bound.
+   *
+   * @param parameter
+   * @return
+   */
+  protected boolean canBindParameter(Parameter parameter) {
+    return parameter.isBindable();
+  }
 
-        for (Parameter parameter : parameters) {
-
-            if (canBindParameter(parameter)) {
-
-                Object value = accessor.getBindableValue(bindableParameterIndex);
-                bind(query, parameter, value, queryParameterPosition++);
-                bindableParameterIndex++;
-            }
-        }
-
-        return query;
+  /**
+   * Perform the actual query parameter binding.
+   *
+   * @param query
+   * @param parameter
+   * @param value
+   * @param position
+   */
+  protected void bind(EbeanQueryWrapper query, Parameter parameter, Object value, int position) {
+    if (parameter.isNamedParameter()) {
+      query.setParameter(parameter.getName(), value);
+    } else {
+      query.setParameter(position, value);
     }
+  }
 
-    /**
-     * Returns the {@link Pageable} of the parameters, if available. Returns {@code null} otherwise.
-     *
-     * @return
-     */
-    public Pageable getPageable() {
-        return accessor.getPageable();
-    }
+  /**
+   * Returns the parameters.
+   *
+   * @return
+   */
+  Parameters getParameters() {
+    return parameters;
+  }
 
-    /**
-     * Returns {@literal true} if the given parameter can be bound.
-     *
-     * @param parameter
-     * @return
-     */
-    protected boolean canBindParameter(Parameter parameter) {
-        return parameter.isBindable();
-    }
-
-    /**
-     * Perform the actual query parameter binding.
-     *
-     * @param query
-     * @param parameter
-     * @param value
-     * @param position
-     */
-    protected void bind(EbeanQueryWrapper query, Parameter parameter, Object value, int position) {
-        if (parameter.isNamedParameter()) {
-          query.setParameter(
-              Optional.ofNullable(parameter.getName())
-                  .orElseThrow(() -> new IllegalArgumentException("o_O paraneter needs to have a name!"))
-                  .get(),
-              value);
-        } else {
-          query.setParameter(position, value);
-        }
-    }
-
-    /**
-     * Returns the parameters.
-     *
-     * @return
-     */
-    Parameters getParameters() {
-        return parameters;
-    }
-
-    protected Object[] getValues() {
-        return values;
-    }
+  protected Object[] getValues() {
+    return values;
+  }
 }

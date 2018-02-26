@@ -16,19 +16,18 @@
 
 package org.springframework.data.ebean.repository.config;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.data.ebean.repository.EbeanRepository;
-import org.springframework.data.ebean.repository.support.EbeanRepositoryFactoryBean;
-import org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport;
-
-import javax.persistence.Entity;
-import javax.persistence.MappedSuperclass;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
+import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.ebean.repository.EbeanRepository;
+import org.springframework.data.ebean.repository.support.EbeanRepositoryFactoryBean;
+import org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport;
 
 /**
  * Ebean specific configuration extension parsing custom attributes from the XML namespace and
@@ -47,8 +46,12 @@ public class EbeanRepositoryConfigExtension extends RepositoryConfigurationExten
    * (non-Javadoc)
    * @see org.springframework.data.repository.config.RepositoryConfigurationExtension#getRepositoryFactoryBeanClassName()
    */
+//  public String getRepositoryFactoryBeanClassName() {
+//    return EbeanRepositoryFactoryBean.class.getName();
+//  }
+
   @Override
-  public String getRepositoryFactoryBeanClassName() {
+  public String getRepositoryFactoryClassName() {
     return EbeanRepositoryFactoryBean.class.getName();
   }
 

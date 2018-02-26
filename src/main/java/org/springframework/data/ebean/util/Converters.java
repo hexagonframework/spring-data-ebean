@@ -18,14 +18,13 @@ package org.springframework.data.ebean.util;
 
 import io.ebean.OrderBy;
 import io.ebean.PagedList;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Ebean PageList and Order util to or from Spring data Page or Sort.
@@ -63,7 +62,8 @@ public class Converters {
    */
   public static <T> Page<T> convertToSpringDataPage(PagedList<T> pagedList, Sort sort) {
     return new PageImpl<T>(pagedList.getList(),
-            PageRequest.of(pagedList.getPageIndex(), pagedList.getPageSize(), sort),
+        new PageRequest(pagedList.getPageIndex(), pagedList.getPageSize(), sort),
+        // PageRequest.of(pagedList.getPageIndex(), pagedList.getPageSize(), sort),
             pagedList.getTotalCount());
   }
 }
