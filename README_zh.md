@@ -37,6 +37,7 @@
 使用spring-boot-starter-data-ebean,参考[spring-boot-data-ebean-samples](https://github.com/hexagonframework/spring-boot-data-ebean-samples)
 
 如果不使用spring-boot-starter-data-ebean，步骤如下:
+
 通过Maven引入依赖包:
 
 ```xml
