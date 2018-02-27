@@ -47,6 +47,7 @@
     <properties>
         <bundlor.enabled>false</bundlor.enabled>
         <bundlor.failOnWarnings>false</bundlor.failOnWarnings>
+        <spring>4.3.14.RELEASE</spring>
         <springdata.commons>1.13.10.RELEASE</springdata.commons>
         <ebean.version>11.10.6</ebean.version>
         <ebean-spring-txn.version>11.10.3</ebean-spring-txn.version>
