@@ -24,11 +24,13 @@ The primary goal of the [Spring Data](http://projects.spring.io/spring-data) pro
 
 ## Why choose [Ebean ORM](https://ebean-orm.github.io)
 
-[see](http://ebean-orm.github.io/architecture/compare-jpa)
+[CLICK HERE TO SEE](http://ebean-orm.github.io/architecture/compare-jpa)
 
 ## Quick Start ##
 
 Create maven project，recommend to use spring boot to build web project.
+
+[SEE EXAMPLE spring-boot-starter-data-ebean](https://github.com/hexagonframework/spring-boot-data-ebean-samples)
 
 Download the jar through Maven:
 

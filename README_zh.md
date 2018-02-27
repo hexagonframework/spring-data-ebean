@@ -34,6 +34,8 @@
 
 建立maven项目，建议使用spring boot建立web项目
 
+[使用spring-boot-starter-data-ebean示例](https://github.com/hexagonframework/spring-boot-data-ebean-samples)
+
 通过Maven引入依赖包:
 
 ```xml
