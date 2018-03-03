@@ -5,7 +5,6 @@ import io.ebean.EbeanServerFactory;
 import io.ebean.config.CurrentUserProvider;
 import io.ebean.config.ServerConfig;
 import io.ebean.spring.txn.SpringJdbcTransactionManager;
-import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -17,6 +16,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
 
 /**
  * @author Xuegui Yuan
@@ -42,7 +43,6 @@ public class SampleConfig {
     ServerConfig config = new ServerConfig();
 
     config.setDataSource(dataSource());
-    config.addPackage("org.springframework.data.ebean.sample.domain");
     config.setExternalTransactionManager(new SpringJdbcTransactionManager());
 
     config.loadFromProperties();

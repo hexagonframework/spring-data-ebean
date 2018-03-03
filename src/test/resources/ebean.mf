@@ -1,0 +1,1 @@
+entity-packages: org.springframework.data.ebean.sample.domain

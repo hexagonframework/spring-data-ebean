@@ -164,6 +164,7 @@
             <version>${aspectj}</version>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
