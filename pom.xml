@@ -11,7 +11,7 @@
 
     <groupId>io.github.hexagonframework.data</groupId>
     <artifactId>spring-data-ebean</artifactId>
-    <version>1.2.7.RELEASE</version>
+    <version>1.3.0.SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Spring Data Ebean</name>
@@ -49,7 +49,7 @@
         <bundlor.failOnWarnings>false</bundlor.failOnWarnings>
         <spring>4.3.14.RELEASE</spring>
         <springdata.commons>1.13.10.RELEASE</springdata.commons>
-        <ebean.version>11.10.6</ebean.version>
+        <ebean.version>11.13.1</ebean.version>
         <ebean-spring-txn.version>11.10.3</ebean-spring-txn.version>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     </properties>
