@@ -271,7 +271,7 @@ public class EbeanQueryChannelService {
      * @return
      */
     public <T> DtoQuery<T> createDtoQuery(Class<T> dtoType, String sql) {
-        return ebeanServer.findDto(dtoType, sql);
+        return ebeanServer.findDto(dtoType, sql).setRelaxedMode();
     }
 
     /**
