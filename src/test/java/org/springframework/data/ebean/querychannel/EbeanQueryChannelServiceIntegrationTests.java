@@ -23,12 +23,12 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SampleConfig.class)
 public class EbeanQueryChannelServiceIntegrationTests {
-  // Test fixture
-  User user;
-  @Autowired
-  private EbeanQueryChannelService ebeanQueryChannelService;
-  @Autowired
-  private UserRepository repository;
+    // Test fixture
+    User user;
+    @Autowired
+    private EbeanQueryChannelService ebeanQueryChannelService;
+    @Autowired
+    private UserRepository repository;
 
     @Before
     public void initUser() {
@@ -68,23 +68,23 @@ public class EbeanQueryChannelServiceIntegrationTests {
         assertEquals("testquerychannel@163.com", userInfo3.getEmailAddress());
     }
 
-  @Test
-  public void createNamedQuery() {
-    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
-        "userInfoByEmail").setParameter("emailAddress",
-        "testquerychannel@163.com").findOne();
-    assertEquals("QueryChannel", userInfo.getFirstName());
-    assertEquals("testquerychannel@163.com", userInfo.getEmailAddress());
-  }
+    @Test
+    public void createNamedQuery() {
+        UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+                "userInfoByEmail").setParameter("emailAddress",
+                "testquerychannel@163.com").findOne();
+        assertEquals("QueryChannel", userInfo.getFirstName());
+        assertEquals("testquerychannel@163.com", userInfo.getEmailAddress());
+    }
 
-  @Test
-  public void createNamedQueryWhere() {
-    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
-        "userInfo").where()
-        .eq("emailAddress", "testquerychannel@163.com").findOne();
-    assertEquals("QueryChannel", userInfo.getFirstName());
-    assertEquals("testquerychannel@163.com", userInfo.getEmailAddress());
-  }
+    @Test
+    public void createNamedQueryWhere() {
+        UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+                "userInfo").where()
+                .eq("emailAddress", "testquerychannel@163.com").findOne();
+        assertEquals("QueryChannel", userInfo.getFirstName());
+        assertEquals("testquerychannel@163.com", userInfo.getEmailAddress());
+    }
 
     @Test
     public void createDtoQuery() {
