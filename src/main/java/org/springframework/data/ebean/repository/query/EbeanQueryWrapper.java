@@ -16,7 +16,10 @@
 
 package org.springframework.data.ebean.repository.query;
 
-import io.ebean.*;
+import io.ebean.PagedList;
+import io.ebean.Query;
+import io.ebean.SqlUpdate;
+import io.ebean.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
@@ -26,8 +29,10 @@ import org.springframework.data.util.StreamUtils;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.springframework.data.ebean.repository.query.EbeanQueryWrapper.QueryType.QUERY;
+
 /**
- * Ebean query wrapper, wrap Query、 SqlQuery、Update、SqlUpdate.
+ * Ebean query wrapper, wrap Query、Update、SqlUpdate.
  *
  * @author Xuegui Yuan
  */
@@ -38,11 +43,9 @@ public class EbeanQueryWrapper<T> {
   public EbeanQueryWrapper(T queryInstance) {
     this.queryInstance = queryInstance;
     if (queryInstance instanceof Query) {
-      this.queryType = QueryType.ORM_QUERY;
-    } else if (queryInstance instanceof SqlQuery) {
-      this.queryType = QueryType.SQL_QUERY;
+        this.queryType = QUERY;
     } else if (queryInstance instanceof Update) {
-      this.queryType = QueryType.ORM_UPDATE;
+        this.queryType = QueryType.UPDATE;
     } else if (queryInstance instanceof SqlUpdate) {
       this.queryType = QueryType.SQL_UPDATE;
     } else {
@@ -56,13 +59,10 @@ public class EbeanQueryWrapper<T> {
 
   public void setParameter(String name, Object value) {
     switch (queryType) {
-      case ORM_QUERY:
+        case QUERY:
         ((Query) queryInstance).setParameter(name, value);
         break;
-      case SQL_QUERY:
-        ((SqlQuery) queryInstance).setParameter(name, value);
-        break;
-      case ORM_UPDATE:
+        case UPDATE:
         ((Update) queryInstance).setParameter(name, value);
         break;
       case SQL_UPDATE:
@@ -75,13 +75,10 @@ public class EbeanQueryWrapper<T> {
 
   public void setParameter(int position, Object value) {
     switch (queryType) {
-      case ORM_QUERY:
+        case QUERY:
         ((Query) queryInstance).setParameter(position, value);
         break;
-      case SQL_QUERY:
-        ((SqlQuery) queryInstance).setParameter(position, value);
-        break;
-      case ORM_UPDATE:
+        case UPDATE:
         ((Update) queryInstance).setParameter(position, value);
         break;
       case SQL_UPDATE:
@@ -93,158 +90,120 @@ public class EbeanQueryWrapper<T> {
   }
 
   public Object findOne() {
-    switch (queryType) {
-      case ORM_QUERY:
-        return ((Query) queryInstance).findOne();
-      case SQL_QUERY:
-        return ((SqlQuery) queryInstance).findOne();
-      default:
-        throw new IllegalArgumentException("query must be Query or SqlQuery!");
+      if (queryType == QUERY) {
+          return ((Query) queryInstance).findOne();
     }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public Page findPage(Pageable pageable) {
-    switch (queryType) {
-      case ORM_QUERY:
-        PagedList pagedList = ((Query) queryInstance)
-                .setFirstRow((int)pageable.getOffset())
-                .setMaxRows(pageable.getPageSize())
-                .findPagedList();
-        return PageableExecutionUtils.getPage(pagedList.getList(), pageable, () -> pagedList.getTotalCount());
-      default:
-        throw new IllegalArgumentException("query must be Query!");
+      if (queryType == QUERY) {
+          PagedList pagedList = ((Query) queryInstance)
+                  .setFirstRow((int) pageable.getOffset())
+                  .setMaxRows(pageable.getPageSize())
+                  .findPagedList();
+          return PageableExecutionUtils.getPage(pagedList.getList(), pageable, () -> pagedList.getTotalCount());
+
     }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public int update() {
     switch (queryType) {
-      case ORM_QUERY:
+        case QUERY:
         return ((Query) queryInstance).update();
-      case ORM_UPDATE:
+        case UPDATE:
         return ((Update) queryInstance).execute();
       case SQL_UPDATE:
         return ((SqlUpdate) queryInstance).execute();
       default:
-        throw new IllegalArgumentException("query must be Query or Update or SqlUpdate!");
+          throw new IllegalArgumentException("query not supported!");
     }
   }
 
   public int delete() {
     switch (queryType) {
-      case ORM_QUERY:
+        case QUERY:
         return ((Query) queryInstance).delete();
+        case UPDATE:
+            return ((Update) queryInstance).execute();
+        case SQL_UPDATE:
+            return ((SqlUpdate) queryInstance).execute();
       default:
-        throw new IllegalArgumentException("query must be Query!");
+          throw new IllegalArgumentException("query not supported!");
     }
   }
 
   public boolean isExists() {
-    switch (queryType) {
-      case ORM_QUERY:
-        return ((Query) queryInstance).findCount() > 0;
-      case SQL_QUERY:
-        return ((SqlQuery) queryInstance).findOne().getLong("c") > 0;
-      default:
-        throw new IllegalArgumentException("query must be Query or SqlQuery!");
+      if (queryType == QUERY) {
+          return ((Query) queryInstance).findCount() > 0;
     }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public Stream findStream() {
-    switch (queryType) {
-      case ORM_QUERY:
-        return StreamUtils.createStreamFromIterator(((Query) queryInstance).findIterate());
-      default:
-        throw new IllegalArgumentException("query must be Query!");
+      if (queryType == QUERY) {
+          return StreamUtils.createStreamFromIterator(((Query) queryInstance).findIterate());
     }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public Object findList() {
-    switch (queryType) {
-      case ORM_QUERY:
-        return ((Query) queryInstance).findList();
-      case SQL_QUERY:
-        return ((SqlQuery) queryInstance).findList();
-      default:
-        throw new IllegalArgumentException("query must be Query or SqlQuery!");
+      if (queryType == QUERY) {
+          return ((Query) queryInstance).findList();
     }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public Object findSlice(Pageable pageable) {
     List resultList = null;
     int pageSize = pageable.getPageSize();
     int offset = (int)pageable.getOffset();
-    switch (queryType) {
-      case ORM_QUERY:
-        resultList = ((Query) queryInstance).setFirstRow(offset).setMaxRows(pageSize + 1).findList();
-        break;
-      case SQL_QUERY:
-        resultList = ((SqlQuery) queryInstance).setFirstRow(offset).setMaxRows(pageSize + 1).findList();
-        break;
-      default:
-        throw new IllegalArgumentException("query must be Query or SqlQuery!");
-    }
-
-    boolean hasNext = resultList != null && resultList.size() > pageSize;
-    return new SliceImpl<Object>(hasNext ? resultList.subList(0, pageSize) : resultList, pageable, hasNext);
+      if (queryType == QUERY) {
+          resultList = ((Query) queryInstance).setFirstRow(offset).setMaxRows(pageSize + 1).findList();
+          boolean hasNext = resultList != null && resultList.size() > pageSize;
+          return new SliceImpl<Object>(hasNext ? resultList.subList(0, pageSize) : resultList, pageable, hasNext);
+      }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public Integer getMaxRows() {
-    switch (queryType) {
-      case ORM_QUERY:
-        return ((Query) queryInstance).getMaxRows();
-      default:
-        throw new IllegalArgumentException("query must be Query!");
+      if (queryType == QUERY) {
+          return ((Query) queryInstance).getMaxRows();
     }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public void setMaxRows(int maxRows) {
-    switch (queryType) {
-      case ORM_QUERY:
-        ((Query) queryInstance).setMaxRows(maxRows);
-        break;
-      case SQL_QUERY:
-        ((SqlQuery) queryInstance).setMaxRows(maxRows);
-        break;
-      default:
-        throw new IllegalArgumentException("query not supported!");
-    }
+      if (queryType == QUERY) {
+          ((Query) queryInstance).setMaxRows(maxRows);
+      }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public int getFirstRow() {
-    switch (queryType) {
-      case ORM_QUERY:
-        return ((Query) queryInstance).getFirstRow();
-      default:
-        throw new IllegalArgumentException("query must be Query!");
+      if (queryType == QUERY) {
+          return ((Query) queryInstance).getFirstRow();
     }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public void setFirstRow(int firstRow) {
-    switch (queryType) {
-      case ORM_QUERY:
-        ((Query) queryInstance).setFirstRow(firstRow);
-        break;
-      case SQL_QUERY:
-        ((SqlQuery) queryInstance).setFirstRow(firstRow);
-        break;
-      default:
-        throw new IllegalArgumentException("query not supported!");
-    }
+      if (queryType == QUERY) {
+          ((Query) queryInstance).setFirstRow(firstRow);
+      }
+      throw new IllegalArgumentException("query not supported!");
   }
 
   public static enum QueryType {
     /**
      * Query
      */
-    ORM_QUERY,
-    /**
-     * SqlQuery
-     */
-    SQL_QUERY,
+    QUERY,
     /**
      * Update
      */
-    ORM_UPDATE,
+    UPDATE,
     /**
      * SqlUpdate
      */
