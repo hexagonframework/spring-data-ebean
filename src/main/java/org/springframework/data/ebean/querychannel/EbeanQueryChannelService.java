@@ -264,6 +264,17 @@ public class EbeanQueryChannelService {
     }
 
     /**
+     * Return a dto query using sql.
+     *
+     * @param dtoType DTO Bean type, just normal classes
+     * @param sql     native SQL
+     * @return
+     */
+    public <T> DtoQuery<T> createDtoQuery(Class<T> dtoType, String sql) {
+        return ebeanServer.findDto(dtoType, sql);
+    }
+
+    /**
      * Return a ExampleExpression using example.
      *
      * @return the created ExampleExpression using example
