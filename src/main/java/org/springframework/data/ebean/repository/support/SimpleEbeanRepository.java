@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -184,18 +185,19 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
         .findList();
   }
 
-  public Class<T> getEntityType() {
+  private Class<T> getEntityType() {
     return entityType;
   }
 
-  public boolean existsById(ID id) {
-    return db().find(getEntityType()).where().idEq(id).findCount() > 0;
+  @Override
+  public <S extends T> Optional<S> findOne(Example<S> example) {
+    return db().find(example.getProbeType())
+        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findOneOrEmpty();
   }
 
   @Override
-  public <S extends T> S findOne(Example<S> example) {
-    return db().find(example.getProbeType())
-        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findOne();
+  public boolean existsById(ID id) {
+    return db().find(getEntityType()).where().idEq(id).findCount() > 0;
   }
 
   @Override
@@ -203,20 +205,6 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     return Converters.convertToSpringDataPage(db().find(example.getProbeType())
         .where(ExampleExpressionBuilder.exampleExpression(db(), example))
         .findPagedList(), pageable.getSort());
-  }
-
-  public <S extends T> List<S> saveAll(Iterable<S> entities) {
-    List<S> result = new ArrayList<S>();
-
-    if (entities == null) {
-      return result;
-    }
-
-    for (S entity : entities) {
-      result.add(save(entity));
-    }
-
-    return result;
   }
 
   @Override
@@ -232,6 +220,25 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     }
 
   @Override
+  public <S extends T> List<S> saveAll(Iterable<S> entities) {
+    List<S> result = new ArrayList<S>();
+
+    if (entities == null) {
+      return result;
+    }
+
+    for (S entity : entities) {
+      result.add(save(entity));
+    }
+
+    return result;
+  }
+
+
+
+
+
+  @Override
   public <S extends T> S save(S s) {
     if (s.isNew()) {
       db().save(s);
@@ -241,35 +248,9 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     return s;
   }
 
-
-  @Override
-  public <S extends T> Iterable<S> save(Iterable<S> entities) {
-    return saveAll(entities);
-  }
-
-  @Override
-  public T findOne(ID id) {
-    return findById(id);
-  }
-
-  @Override
-  public boolean exists(ID id) {
-    return false;
-  }
-
-  @Override
-  public Iterable<T> findAll(Iterable<ID> ids) {
-    return findAllById(ids);
-  }
-
   @Override
   public long count() {
     return db().find(getEntityType()).findCount();
-  }
-
-  @Override
-  public void delete(ID id) {
-    deleteById(id);
   }
 
   @Override
@@ -278,24 +259,21 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
   }
 
   @Override
-  public void delete(Iterable<? extends T> entities) {
-    deleteAll(entities);
-  }
-
-  @Override
   public void deleteAll() {
     db().find(getEntityType()).delete();
   }
 
-  public T findById(ID id) {
-    return db().find(getEntityType()).where().idEq(id).findOne();
+  @Override
+  public Optional<T> findById(ID id) {
+    return db().find(getEntityType()).where().idEq(id).findOneOrEmpty();
   }
 
-
+  @Override
   public void deleteById(ID id) {
     db().delete(getEntityType(), id);
   }
 
+  @Override
   public void deleteAll(Iterable<? extends T> iterable) {
     db().deleteAll((Collection<?>) iterable);
   }

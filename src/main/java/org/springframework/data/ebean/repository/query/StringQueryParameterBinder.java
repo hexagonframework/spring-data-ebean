@@ -74,7 +74,7 @@ public class StringQueryParameterBinder extends ParameterBinder {
     Assert.notNull(parameter, "Parameter must not be null!");
 
     if (parameter.isNamedParameter()) {
-      return query.getBindingFor(parameter.getName());
+      return query.getBindingFor(parameter.getName().orElseThrow(() -> new IllegalArgumentException("Parameter needs to be named!")));
     }
 
     try {

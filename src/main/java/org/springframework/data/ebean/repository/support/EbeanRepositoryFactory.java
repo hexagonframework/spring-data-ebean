@@ -18,6 +18,8 @@ package org.springframework.data.ebean.repository.support;
 
 import io.ebean.EbeanServer;
 import java.io.Serializable;
+import java.util.Optional;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.ebean.repository.EbeanRepository;
 import org.springframework.data.ebean.repository.query.EbeanQueryLookupStrategy;
 import org.springframework.data.repository.core.EntityInformation;
@@ -57,10 +59,11 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
         super.setBeanClassLoader(classLoader);
     }
 
-    @Override
-    public <T, ID extends Serializable> EntityInformation<T, ID> getEntityInformation(Class<T> domainClass) {
-        return new PersistableEntityInformation(domainClass);
-    }
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T, ID> EntityInformation<T, ID> getEntityInformation(Class<T> domainClass) {
+    return new PersistableEntityInformation(domainClass);
+  }
 
     /*
      * (non-Javadoc)
@@ -68,8 +71,7 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
      */
     @Override
     protected Object getTargetRepository(RepositoryInformation information) {
-        SimpleEbeanRepository<?, ?> repository = getTargetRepository(information, ebeanServer);
-        return repository;
+      return getTargetRepository(information, ebeanServer);
     }
 
     /**
@@ -80,7 +82,7 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
      * @param ebeanServer
      * @return
      */
-    protected <T, ID extends Serializable> SimpleEbeanRepository<?, ?> getTargetRepository(
+    protected <T extends Persistable, ID extends Serializable> SimpleEbeanRepository<T, ID> getTargetRepository(
         RepositoryInformation information, EbeanServer ebeanServer) {
 
         return getTargetRepositoryViaReflection(information, information.getDomainType(), ebeanServer);
@@ -100,9 +102,9 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
      * @see org.springframework.data.repository.core.impl.RepositoryFactorySupport#getQueryLookupStrategy(org.springframework.data.repository.query.QueryLookupStrategy.Key, org.springframework.data.repository.query.EvaluationContextProvider)
      */
     @Override
-    protected QueryLookupStrategy getQueryLookupStrategy(QueryLookupStrategy.Key key,
-                                                         EvaluationContextProvider evaluationContextProvider) {
-        return EbeanQueryLookupStrategy.create(ebeanServer, key, evaluationContextProvider);
+    protected Optional<QueryLookupStrategy> getQueryLookupStrategy(QueryLookupStrategy.Key key,
+                                                                   EvaluationContextProvider evaluationContextProvider) {
+      return Optional.ofNullable(EbeanQueryLookupStrategy.create(ebeanServer, key, evaluationContextProvider));
     }
 
   /**

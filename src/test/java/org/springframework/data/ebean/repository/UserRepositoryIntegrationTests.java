@@ -135,8 +135,8 @@ public class UserRepositoryIntegrationTests {
     @Test
     public void testAuditable() {
         User u = userRepository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com");
-        assertEquals("test", u.getCreatedBy());
-        assertEquals("test", u.getLastModifiedBy());
+        assertEquals("test", u.getCreatedBy().orElse(null));
+        assertEquals("test", u.getLastModifiedBy().orElse(null));
     }
 
     @Test
@@ -155,6 +155,6 @@ public class UserRepositoryIntegrationTests {
         User u = userRepository.findOneByProperty("emailAddress", "yuanxuegui@126.com");
         assertNotNull(u);
 
-        userRepository.delete(u.getId());
+        userRepository.deleteById(u.getId());
     }
 }

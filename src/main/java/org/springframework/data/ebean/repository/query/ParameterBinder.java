@@ -149,7 +149,7 @@ public class ParameterBinder {
    */
   protected void bind(EbeanQueryWrapper query, Parameter parameter, Object value, int position) {
     if (parameter.isNamedParameter()) {
-      query.setParameter(parameter.getName(), value);
+      query.setParameter(parameter.getName().get(), value);
     } else {
       query.setParameter(position, value);
     }
