@@ -24,109 +24,61 @@
 * 方便的与Spring集成
 * 支持MySQL、Oracle、SQL Server、H2、PostgreSQL等数据库
 
+#### 实现的场景 ####
+1. Fetch single entity based on primary key
+2. Fetch list of entities based on condition
+3. Save new single entity and return primary key
+4. Batch insert multiple entities of the same type and return generated keys
+5. Update single existing entity - update all fields of entity at once
+6. Fetch many-to-one relation (Company for Department)
+7. Fetch one-to-many relation (Departments for Company)
+8. Update entities one-to-many relation (Departments in Company) - add two items, update two items and delete one item - all at once
+9. Complex select - construct select where conditions based on some boolean conditions + throw in some JOINs
+10. Execute query using JDBC simple Statement (not PreparedStatement)
+11. Remove single entity based on primary key
+
 ## 为什么选择[Ebean ORM](https://ebean-orm.github.io)
 
 基于JPA注解的轻量级ORM实现，支持Mybatis不支持的实体关联，但相比Hibernate/JPA具有Mybatis的查询灵活性，支持查询[partial objects](https://ebean-orm.github.io/docs/query/partialobjects)。
 对于实现领域模型仓储接口的聚合根实体保存(保存聚合根实体同时保存聚合根上的关联实体、值对象)和partial objects等技术要求，Ebean都非常适用。
-[查看更多详情](http://ebean-orm.github.io/architecture/compare-jpa)
+
+我选择关系型数据持久化框架的基本原则:
+1. 拥抱SQL而非隐藏
+2. 可以实现面向领域编程
+3. 可以利用JPA注解，但不能是JPA的完整实现（这点我偏向于Ebean）
+4. 足够成熟以应对企业级应用（Ebean和Hibernate同时期作品，资格老，而且持续更新以满足更高需求）
+
+#### 框架优缺点比较
+**Hibernate/JPA**
+* [Compare to JPA](http://ebean-orm.github.io/architecture/compare-jpa)
+* 反正比Hibernate/JPA好
+
+**MyBatis**
+* 优点
+  * 在XML映射文件里写SQL语句很爽
+* 缺点
+  * 实现一个DAO、仓储要写很多文件，方法多了比较繁琐
+  * 无法在一个方法里做批处理，无法级联加载
+  * 无法面向对象，无法实现DDD
+
+**EBean**
+* 优点
+  * 所有场景都实现非常完美，代码可读性高
+  * 实现批处理超级简单
+  * ORM查询、sql查询、DTO查询都非常简单  
+* 缺点
+  * 还没发现
 
 ## 快速开始 ##
 
 建立maven项目，建议使用spring boot建立web项目
 
-使用spring-boot-starter-data-ebean,参考[spring-boot-data-ebean-samples](https://github.com/hexagonframework/spring-boot-data-ebean-samples)
+实例：[spring-boot-data-ebean-samples](https://github.com/hexagonframework/spring-boot-data-ebean-samples)
 
-如果不使用spring-boot-starter-data-ebean，步骤如下:
 
-通过Maven引入依赖包:
+1、创建一个表格实体类或SQL实体类或DTO类:
 
-```xml
-<dependency>
-  <groupId>io.github.hexagonframework.data</groupId>
-  <artifactId>spring-data-ebean</artifactId>
-  <version>{current version}</version>
-</dependency>
-```
-
-如果使用Maven编译、打包、运行，需要在pom文件中加入如下插件对实体类进行字节码加强，如果直接通过IDE运行需要安装、开启ebean enhancement插件
-
-```xml
-<build>
-    <plugins>
-      <plugin>
-        <groupId>io.repaint.maven</groupId>
-        <artifactId>tiles-maven-plugin</artifactId>
-        <version>2.8</version>
-        <extensions>true</extensions>
-        <configuration>
-          <tiles>
-            <tile>org.avaje.tile:java-compile:1.1</tile>
-            <tile>io.ebean.tile:enhancement:5.1</tile>
-          </tiles>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-```
-
-增加配置，最简单的通过Java注解配置的Spring Data Ebean 配置如下所示：
-```java
-@Configuration
-@EnableEbeanRepositories(value = "org.springframework.data.ebean.sample")
-@EnableTransactionManagement
-public class SampleConfig {
-    @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-      return new DataSourceTransactionManager(dataSource);
-    }
-    
-    @Bean
-    public EbeanQueryChannelService ebeanQueryChannelService(EbeanServer ebeanServer) {
-      return new EbeanQueryChannelService(ebeanServer);
-    }
-    
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Bean
-    @Primary
-    public ServerConfig defaultEbeanServerConfig() {
-      ServerConfig config = new ServerConfig();
-    
-      config.setDataSource(dataSource());
-      config.addPackage("org.springframework.data.ebean.sample.domain");
-      config.setExternalTransactionManager(new SpringJdbcTransactionManager());
-    
-      config.loadFromProperties();
-      config.setDefaultServer(true);
-      config.setRegister(true);
-      config.setAutoCommitMode(false);
-      config.setExpressionNativeIlike(true);
-    
-      config.setCurrentUserProvider(new CurrentUserProvider() {
-        @Override
-        public Object currentUser() {
-          return "test"; // just for test, can rewrite to get the currentUser from threadLocal
-        }
-      });
-    
-      return config;
-     }
-    
-     @Bean
-     public DataSource dataSource() {
-       return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
-     }
-    
-     @Bean
-     @Primary
-     public EbeanServer defaultEbeanServer(ServerConfig defaultEbeanServerConfig) {
-       return EbeanServerFactory.create(defaultEbeanServerConfig);
-     }
-}
-```
-
-创建一个表格实体类或SQL实体类:
-
-表格实体
+表格实体：
 ```java
 @Entity
 public class User {
@@ -143,7 +95,7 @@ public class User {
   // equals / hashcode
 }
 ```
-SQL实体或POJO DTO（注意：这个是替代MyBatis的重要特性！！！)
+SQL实体：
 
 Sql实体：
 ```java
@@ -168,7 +120,7 @@ public class UserDTO {
 }
 ```
 
-创建一个仓储接口,使用包名 `org.springframework.data.ebean.sample`
+2、创建一个仓储接口
 ```
 public interface UserRepository extends EbeanRepository<User, Long> {
     @Query("where emailAddress = :emailAddress order by id desc")
@@ -208,7 +160,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
 }
 ```
 
-对于使用到的命名sql查询、命名orm查询，编写XML文件`resources/ebean.xml`：
+3、 对于使用到的命名sql查询、命名orm查询，编写XML文件`resources/ebean.xml`：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -246,7 +198,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
 </ebean>
 ```
 
-编写一个测试用例:
+4、 编写你的使用代码:
 
 `UserRepositoryIntegrationTests.java`
 ```java
@@ -428,16 +380,4 @@ public class EbeanQueryChannelServiceIntegrationTests {
     }
 
 }
-```
-
-运行
-
-1、使用IntelliJ编译执行Test(推荐)
-
-执行前需要安装ebean enhancement的IntelliJ插件，安装完后要在Build菜单下勾选Enhance 10.x Enhancement。
-然后就可以运行Test
-
-2、使用MAVEN编译执行Test
-```
-mvn test
 ```
