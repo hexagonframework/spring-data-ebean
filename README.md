@@ -22,108 +22,55 @@ The primary goal of the [Spring Data](http://projects.spring.io/spring-data) pro
 * Possibility to integrate custom repository code
 * Easy Spring integration with custom namespace
 
-## Why choose [Ebean ORM](https://ebean-orm.github.io)
+#### Scenarios implemented ####
+1. Fetch single entity based on primary key
+2. Fetch list of entities based on condition
+3. Save new single entity and return primary key
+4. Batch insert multiple entities of the same type and return generated keys
+5. Update single existing entity - update all fields of entity at once
+6. Fetch many-to-one relation (Company for Department)
+7. Fetch one-to-many relation (Departments for Company)
+8. Update entities one-to-many relation (Departments in Company) - add two items, update two items and delete one item - all at once
+9. Complex select - construct select where conditions based on some boolean conditions + throw in some JOINs
+10. Execute query using JDBC simple Statement (not PreparedStatement)
+11. Remove single entity based on primary key
 
-[CLICK HERE TO SEE](http://ebean-orm.github.io/architecture/compare-jpa)
+## Why choose [Ebean ORM](https://ebean-orm.github.io)
+Conditions on frameworks which I choose for consideration:
+1. The framework should embrace - not hide - SQL language and RDBMS we are using
+2. The framework can implement DDD
+3. Can utilize JPA annotations, but must not be full JPA implementation
+4. The framework must be mature enough for "enterprise level" use
+
+#### Subjective pros/cons of each framework 
+**Hibernate/JPA**
+* [Compare to JPA](http://ebean-orm.github.io/architecture/compare-jpa)
+
+**MyBatis**
+* Pros
+  * Writing SQL statements in XML mapper file feels good - it's easy to work with parameters
+* Cons
+  * Quite a lot of files for single DAO implementation
+  * Can't run batch and non-batch operations in single SqlSession
+  . Can't implement DDD
+
+**EBean**
+* Pros
+  * Everything looks very nice - all the scenarios are implemented by very readable code
+  * Super simple batch operations (actually it's only about using right method :) ) 
+  * Although there are methods which make CRUD operations and Querying super simple, there are still means how to execute plain SQL and even a way how to get the basic JDBC Transaction object, which you can use for core JDBC stuff. That is really good.
+* Cons
+  * Not found any
 
 ## Quick Start ##
 
-Create maven project，recommend to use spring boot to build web project.
+Create maven project，recommend to use spring boot and [spring-data-ebean-spring-boot](https://github.com/hexagonframework/spring-data-ebean-spring-boot.git) to build web project.
 
-If using spring-boot-starter-data-ebean, see example [spring-boot-data-ebean-samples](https://github.com/hexagonframework/spring-boot-data-ebean-samples)
+Examples: [spring-boot-data-ebean-samples](https://github.com/hexagonframework/spring-boot-data-ebean-samples)
 
-else following:
-download the jar through Maven:
+1. Create modal as table entity or sql entity or DTO:
 
-```xml
-<dependency>
-  <groupId>io.github.hexagonframework.data</groupId>
-  <artifactId>spring-data-ebean</artifactId>
-  <version>{current version}</version>
-</dependency>
-```
-
-If using maven to compile, package, run，should add:
-
-```xml
-<build>
-    <plugins>
-      <plugin>
-        <groupId>io.repaint.maven</groupId>
-        <artifactId>tiles-maven-plugin</artifactId>
-        <version>2.8</version>
-        <extensions>true</extensions>
-        <configuration>
-          <tiles>
-            <tile>org.avaje.tile:java-compile:1.1</tile>
-            <tile>io.ebean.tile:enhancement:5.1</tile>
-          </tiles>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-```
-
-If run with ide, should install, enable ebean enhancement plugin.
-
-The simple Spring Data Ebean configuration with Java-Config looks like this: 
-```java
-@Configuration
-@EnableEbeanRepositories(value = "org.springframework.data.ebean.sample")
-@EnableTransactionManagement
-public class SampleConfig {
-    @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-      return new DataSourceTransactionManager(dataSource);
-    }
-    
-    @Bean
-    public EbeanQueryChannelService ebeanQueryChannelService(EbeanServer ebeanServer) {
-      return new EbeanQueryChannelService(ebeanServer);
-    }
-    
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Bean
-    @Primary
-    public ServerConfig defaultEbeanServerConfig() {
-      ServerConfig config = new ServerConfig();
-    
-      config.setDataSource(dataSource());
-      config.addPackage("org.springframework.data.ebean.sample.domain");
-      config.setExternalTransactionManager(new SpringJdbcTransactionManager());
-    
-      config.loadFromProperties();
-      config.setDefaultServer(true);
-      config.setRegister(true);
-      config.setAutoCommitMode(false);
-      config.setExpressionNativeIlike(true);
-    
-      config.setCurrentUserProvider(new CurrentUserProvider() {
-        @Override
-        public Object currentUser() {
-          return "test"; // just for test, can rewrite to get the currentUser from threadLocal
-        }
-      });
-    
-      return config;
-     }
-    
-     @Bean
-     public DataSource dataSource() {
-       return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
-     }
-    
-     @Bean
-     @Primary
-     public EbeanServer defaultEbeanServer(ServerConfig defaultEbeanServerConfig) {
-       return EbeanServerFactory.create(defaultEbeanServerConfig);
-     }
-}
-```
-
-Create an table entity or sql entity:
-
-Table entity
+Table entity:
 ```java
 @Entity
 public class User {
@@ -140,7 +87,7 @@ public class User {
   // equals / hashcode
 }
 ```
-Sql entity or DTO(The feature to replace MyBatis)
+Sql entity:
 
 Sql entity:
 ```java
@@ -165,7 +112,7 @@ public class UserDTO {
   private String emailAddress;
 }
 ```
-Create a repository interface in `org.springframework.data.ebean.sample`:
+2. Create a repository interface:
 
 ```java
 public interface UserRepository extends EbeanRepository<User, Long> {
@@ -200,7 +147,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
 }
 ```
 
-Create a named query config in `resources/ebean.xml`:
+3. Options to create a named query config in `resources/ebean.xml` when using named query:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -238,7 +185,7 @@ Create a named query config in `resources/ebean.xml`:
 </ebean>
 ```
 
-Write a test client:
+4. Write your code to use model and repository(FOR DDD CURD) or `EbeanQueryChannelService`(FOR DTO QUERY):
 
 `UserRepositoryIntegrationTests.java`
 ```java
