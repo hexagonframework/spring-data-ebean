@@ -57,8 +57,9 @@
 * 优点
   * 在XML映射文件里写SQL语句很爽
 * 缺点
-  * 实现一个DAO、仓储要写很多文件，方法多了比较繁琐
+  * 实现一个DAO、仓储要写很多文件（DAO/Repository、XXXMapper、XXXMapper.xml），方法多了比较繁琐
   * 无法在一个方法里做批处理，无法级联加载
+  * 即时是简单的CRUD，都显得繁琐，导致存在各种弥补mybatis这一缺陷的第三方封装框架
   * 无法面向对象，无法实现DDD
 
 **EBean**
@@ -67,7 +68,7 @@
   * 实现批处理超级简单
   * ORM查询、sql查询、DTO查询都非常简单  
 * 缺点
-  * 还没发现
+  * DTO查询功能较新，有待增加XML mapping对DTO的支持
 
 ## 快速开始 ##
 
@@ -81,6 +82,8 @@
 表格实体：
 ```java
 @Entity
+@Getter
+@Setter
 public class User {
 
   @Id
@@ -89,10 +92,6 @@ public class User {
   private String firstname;
   private String lastname;
   @Column(nullable = false, unique = true) private String emailAddress;
-       
-  // Getters and setters
-  // (Firstname, Lastname,emailAddress)-constructor and noargs-constructor
-  // equals / hashcode
 }
 ```
 SQL实体：
