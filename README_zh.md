@@ -72,7 +72,7 @@
 
 ## 快速开始 ##
 
-建立maven项目，建议使用spring boot建立web项目
+建立maven项目，建议使用spring boot和[spring-data-ebean-spring-boot](https://github.com/hexagonframework/spring-data-ebean-spring-boot.git)建立web项目
 
 实例：[spring-boot-data-ebean-samples](https://github.com/hexagonframework/spring-boot-data-ebean-samples)
 
