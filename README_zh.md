@@ -15,10 +15,10 @@
 ## 支持的一些特性 ##
 
 * 对标准Entity支持完整CRUD操作，包括常用的查询操作
-* 支持通过接口中的注解生成对应的查询（orm查询、sql查询、命名orm查询、命名sql查询）
+* 支持通过接口中的注解生成对应的查询（orm查询、sql查询、命名orm查询、命名sql查询、dto查询）
 * 支持通过接口中的方法名生成对应的查询
 * 支持QueryChannel服务
-* 提供基础属性的实体基类
+* 提供基础属性的实体基类和面向领域编程基类
 * 原生支持使用注解实现审计（如创建人、创建时间、修改人、最后修改时间)
 * 支持自定义编写基于Ebean的查询，方便而不失灵活性
 * 方便的与Spring集成
@@ -57,8 +57,9 @@
 * 优点
   * 在XML映射文件里写SQL语句很爽
 * 缺点
-  * 实现一个DAO、仓储要写很多文件，方法多了比较繁琐
+  * 实现一个DAO、仓储要写很多文件（DAO/Repository、XXXMapper、XXXMapper.xml），方法多了比较繁琐
   * 无法在一个方法里做批处理，无法级联加载
+  * 即时是简单的CRUD，都显得繁琐，导致存在各种弥补mybatis这一缺陷的第三方封装框架
   * 无法面向对象，无法实现DDD
 
 **EBean**
@@ -67,7 +68,7 @@
   * 实现批处理超级简单
   * ORM查询、sql查询、DTO查询都非常简单  
 * 缺点
-  * 还没发现
+  * DTO查询功能较新，有待增加XML mapping对DTO的支持
 
 ## 快速开始 ##
 
@@ -81,6 +82,8 @@
 表格实体：
 ```java
 @Entity
+@Getter
+@Setter
 public class User {
 
   @Id
@@ -89,10 +92,6 @@ public class User {
   private String firstname;
   private String lastname;
   @Column(nullable = false, unique = true) private String emailAddress;
-       
-  // Getters and setters
-  // (Firstname, Lastname,emailAddress)-constructor and noargs-constructor
-  // equals / hashcode
 }
 ```
 SQL实体：

@@ -50,9 +50,10 @@ Conditions on frameworks which I choose for consideration:
 * Pros
   * Writing SQL statements in XML mapper file feels good - it's easy to work with parameters
 * Cons
-  * Quite a lot of files for single DAO implementation
+  * Quite a lot of files for single DAO implementation, DAO/Repository and XXXMapper and XXXMapper.xml
   * Can't run batch and non-batch operations in single SqlSession
-  . Can't implement DDD
+  * Too many XML mapper files.
+  * Can't implement DDD
 
 **EBean**
 * Pros
@@ -60,7 +61,7 @@ Conditions on frameworks which I choose for consideration:
   * Super simple batch operations (actually it's only about using right method :) ) 
   * Although there are methods which make CRUD operations and Querying super simple, there are still means how to execute plain SQL and even a way how to get the basic JDBC Transaction object, which you can use for core JDBC stuff. That is really good.
 * Cons
-  * Not found any
+  * DTO query do not support XML mapping
 
 ## Quick Start ##
 
@@ -73,6 +74,8 @@ Examples: [spring-boot-data-ebean-samples](https://github.com/hexagonframework/s
 Table entity:
 ```java
 @Entity
+@Getter
+@Setter
 public class User {
 
   @Id
@@ -81,10 +84,6 @@ public class User {
   private String firstname;
   private String lastname;
   @Column(nullable = false, unique = true) private String emailAddress;
-       
-  // Getters and setters
-  // (Firstname, Lastname,emailAddress)-constructor and noargs-constructor
-  // equals / hashcode
 }
 ```
 Sql entity:
