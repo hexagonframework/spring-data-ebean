@@ -54,9 +54,31 @@
 4. 足够成熟以应对企业级应用（Ebean和Hibernate同时期作品，资格老，而且持续更新以满足更高需求）
 
 #### 框架优缺点比较
+> 参考：[java-persistence-frameworks-comparison](https://github.com/bwajtr/java-persistence-frameworks-comparison)
+
 **Hibernate/JPA**
 * [Compare to JPA](http://ebean-orm.github.io/architecture/compare-jpa)
 * 反正比Hibernate/JPA好
+
+**JDBC Template**
+* 优点
+    * 感觉自己非常接近JDBC本身
+    * 实现了所有的场景而没有更大的问题-没有隐藏的惊喜
+    * 非常容易的批量操作
+    * 设置简单
+* 缺点
+    * 在Java代码中内联SQL使得实现仓储接口的可读性不强。如果Java支持多行字符串，那就更好了
+    * 调试日志可以更好 
+
+**jOOQ**
+* 优点
+  * 非常流畅，很容易编写新的查询，代码非常易读
+  * 一旦设置好，就很容易使用，非常适合简单的查询
+  * 很棒的日志记录器调试输出
+* 缺点
+  * 某些数据库的付费许可证——很难说服经理们相信它是值得的:)
+  * 对于大的查询来说没有那么多的实用性——最好使用原生SQL(参见场景9)
+  * 批量操作的怪异语法(如果您不使用UpdatableRecord)。但这没什么大不了的……
 
 **MyBatis**
 * 优点
