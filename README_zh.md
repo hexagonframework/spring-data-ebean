@@ -150,7 +150,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
     int deleteUserByEmailAddress(@Param("emailAddress") String emailAddress);
 
     /**
-     * 命名ORM查询 
+     * 命名ORM/SQL查询 
      */
     @Query(name = "withManagerById")
     List<User> findByLastnameNamedOql(@Param("lastname") String lastname);
