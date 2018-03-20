@@ -8,6 +8,11 @@
 
 [QQ群: 635113788]
 
+* [码云 spring-data-ebean(定时拉取Github)](https://gitee.com/hexagonframework/spring-data-ebean)
+* [Github spring-data-ebean](https://github.com/hexagonframework/spring-data-ebean)
+* [码云 spring-data-ebean(定时拉取Github)](https://gitee.com/hexagonframework/spring-data-ebean-spring-boot)
+* [Github spring-data-ebean-spring-boot](https://github.com/hexagonframework/spring-data-ebean-spring-boot)
+
 [Spring Data](http://projects.spring.io/spring-data/)项目的主要目标是使构建使用DDD仓储接口与实现的Spring应用程序变得更加容易。此模块是基于[Ebean ORM](https://ebean-orm.github.io)（轻量级JPA）的仓储层实现。
 通过使用此模块，你可以在基于Ebean ORM下使用Spring Data模式带来的便利性。
 如果你还没有接触过[Spring Data](http://projects.spring.io/spring-data/)或[Ebean ORM](https://ebean-orm.github.io)，建议先了解下该项目。
@@ -17,8 +22,8 @@
 * 对标准Entity支持完整CRUD操作，包括常用的查询操作
 * 支持通过接口中的注解生成对应的查询（orm查询、sql查询、命名orm查询、命名sql查询、dto查询）
 * 支持通过接口中的方法名生成对应的查询
-* 支持QueryChannel服务
-* 提供基础属性的实体基类和面向领域编程基类
+* 支持QueryChannel服务，用于CQRS
+* 提供基础属性的实体基类和面向领域编程DDD基类
 * 原生支持使用注解实现审计（如创建人、创建时间、修改人、最后修改时间)
 * 支持自定义编写基于Ebean的查询，方便而不失灵活性
 * 方便的与Spring集成
