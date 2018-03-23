@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class FullName implements Serializable {
-    private String firstName;
-    private String lastName;
+  private String firstName;
+  private String lastName;
 }

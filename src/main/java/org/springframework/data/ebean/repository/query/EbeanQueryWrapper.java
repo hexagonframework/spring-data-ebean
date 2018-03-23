@@ -43,9 +43,9 @@ public class EbeanQueryWrapper<T> {
   public EbeanQueryWrapper(T queryInstance) {
     this.queryInstance = queryInstance;
     if (queryInstance instanceof Query) {
-        this.queryType = QUERY;
+      this.queryType = QUERY;
     } else if (queryInstance instanceof Update) {
-        this.queryType = QueryType.UPDATE;
+      this.queryType = QueryType.UPDATE;
     } else if (queryInstance instanceof SqlUpdate) {
       this.queryType = QueryType.SQL_UPDATE;
     } else {
@@ -59,10 +59,10 @@ public class EbeanQueryWrapper<T> {
 
   void setParameter(String name, Object value) {
     switch (queryType) {
-        case QUERY:
+      case QUERY:
         ((Query) queryInstance).setParameter(name, value);
         break;
-        case UPDATE:
+      case UPDATE:
         ((Update) queryInstance).setParameter(name, value);
         break;
       case SQL_UPDATE:
@@ -75,10 +75,10 @@ public class EbeanQueryWrapper<T> {
 
   void setParameter(int position, Object value) {
     switch (queryType) {
-        case QUERY:
+      case QUERY:
         ((Query) queryInstance).setParameter(position, value);
         break;
-        case UPDATE:
+      case UPDATE:
         ((Update) queryInstance).setParameter(position, value);
         break;
       case SQL_UPDATE:
@@ -91,113 +91,113 @@ public class EbeanQueryWrapper<T> {
 
   @SuppressWarnings("unchecked")
   <E> E findOne() {
-      if (queryType == QUERY) {
-        return ((Query<E>) queryInstance).findOne();
+    if (queryType == QUERY) {
+      return ((Query<E>) queryInstance).findOne();
     }
-      throw new IllegalArgumentException("query not supported!");
+    throw new IllegalArgumentException("query not supported!");
   }
 
   @SuppressWarnings("unchecked")
   <E> Page<E> findPage(Pageable pageable) {
-      if (queryType == QUERY) {
-        PagedList<E> pagedList = ((Query<E>) queryInstance)
-                  .setFirstRow((int) pageable.getOffset())
-                  .setMaxRows(pageable.getPageSize())
-                  .findPagedList();
-        return PageableExecutionUtils.getPage(pagedList.getList(), pageable, pagedList::getTotalCount);
+    if (queryType == QUERY) {
+      PagedList<E> pagedList = ((Query<E>) queryInstance)
+          .setFirstRow((int) pageable.getOffset())
+          .setMaxRows(pageable.getPageSize())
+          .findPagedList();
+      return PageableExecutionUtils.getPage(pagedList.getList(), pageable, pagedList::getTotalCount);
 
     }
-      throw new IllegalArgumentException("query not supported!");
+    throw new IllegalArgumentException("query not supported!");
   }
 
   int update() {
     switch (queryType) {
-        case QUERY:
+      case QUERY:
         return ((Query) queryInstance).update();
-        case UPDATE:
+      case UPDATE:
         return ((Update) queryInstance).execute();
       case SQL_UPDATE:
         return ((SqlUpdate) queryInstance).execute();
       default:
-          throw new IllegalArgumentException("query not supported!");
+        throw new IllegalArgumentException("query not supported!");
     }
   }
 
   int delete() {
     switch (queryType) {
-        case QUERY:
+      case QUERY:
         return ((Query) queryInstance).delete();
-        case UPDATE:
-            return ((Update) queryInstance).execute();
-        case SQL_UPDATE:
-            return ((SqlUpdate) queryInstance).execute();
+      case UPDATE:
+        return ((Update) queryInstance).execute();
+      case SQL_UPDATE:
+        return ((SqlUpdate) queryInstance).execute();
       default:
-          throw new IllegalArgumentException("query not supported!");
+        throw new IllegalArgumentException("query not supported!");
     }
   }
 
   boolean isExists() {
-      if (queryType == QUERY) {
-          return ((Query) queryInstance).findCount() > 0;
+    if (queryType == QUERY) {
+      return ((Query) queryInstance).findCount() > 0;
     }
-      throw new IllegalArgumentException("query not supported!");
+    throw new IllegalArgumentException("query not supported!");
   }
 
   @SuppressWarnings("unchecked")
   <E> Stream<E> findStream() {
-      if (queryType == QUERY) {
-        return StreamUtils.createStreamFromIterator(((Query<E>) queryInstance).findIterate());
+    if (queryType == QUERY) {
+      return StreamUtils.createStreamFromIterator(((Query<E>) queryInstance).findIterate());
     }
-      throw new IllegalArgumentException("query not supported!");
+    throw new IllegalArgumentException("query not supported!");
   }
 
   @SuppressWarnings("unchecked")
   <E> List<E> findList() {
-      if (queryType == QUERY) {
-        return ((Query<E>) queryInstance).findList();
+    if (queryType == QUERY) {
+      return ((Query<E>) queryInstance).findList();
     }
-      throw new IllegalArgumentException("query not supported!");
+    throw new IllegalArgumentException("query not supported!");
   }
 
   @SuppressWarnings("unchecked")
   <E> Slice<E> findSlice(Pageable pageable) {
     List<E> resultList = null;
     int pageSize = pageable.getPageSize();
-    int offset = (int)pageable.getOffset();
-      if (queryType == QUERY) {
-        resultList = ((Query<E>) queryInstance).setFirstRow(offset).setMaxRows(pageSize + 1).findList();
-        boolean hasNext = resultList.size() > pageSize;
-        return new SliceImpl<E>(hasNext ? resultList.subList(0, pageSize) : resultList, pageable, hasNext);
-      }
-      throw new IllegalArgumentException("query not supported!");
+    int offset = (int) pageable.getOffset();
+    if (queryType == QUERY) {
+      resultList = ((Query<E>) queryInstance).setFirstRow(offset).setMaxRows(pageSize + 1).findList();
+      boolean hasNext = resultList.size() > pageSize;
+      return new SliceImpl<E>(hasNext ? resultList.subList(0, pageSize) : resultList, pageable, hasNext);
+    }
+    throw new IllegalArgumentException("query not supported!");
   }
 
   Integer getMaxRows() {
-      if (queryType == QUERY) {
-          return ((Query) queryInstance).getMaxRows();
+    if (queryType == QUERY) {
+      return ((Query) queryInstance).getMaxRows();
     }
-      throw new IllegalArgumentException("query not supported!");
+    throw new IllegalArgumentException("query not supported!");
   }
 
   void setMaxRows(int maxRows) {
-      if (queryType == QUERY) {
-          ((Query) queryInstance).setMaxRows(maxRows);
-      }
-      throw new IllegalArgumentException("query not supported!");
+    if (queryType == QUERY) {
+      ((Query) queryInstance).setMaxRows(maxRows);
+    }
+    throw new IllegalArgumentException("query not supported!");
   }
 
   int getFirstRow() {
-      if (queryType == QUERY) {
-          return ((Query) queryInstance).getFirstRow();
+    if (queryType == QUERY) {
+      return ((Query) queryInstance).getFirstRow();
     }
-      throw new IllegalArgumentException("query not supported!");
+    throw new IllegalArgumentException("query not supported!");
   }
 
   void setFirstRow(int firstRow) {
-      if (queryType == QUERY) {
-          ((Query) queryInstance).setFirstRow(firstRow);
-      }
-      throw new IllegalArgumentException("query not supported!");
+    if (queryType == QUERY) {
+      ((Query) queryInstance).setFirstRow(firstRow);
+    }
+    throw new IllegalArgumentException("query not supported!");
   }
 
   public enum QueryType {

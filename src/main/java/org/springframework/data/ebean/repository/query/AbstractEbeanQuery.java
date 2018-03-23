@@ -21,7 +21,11 @@ import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.util.Assert;
 
-import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.*;
+import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.PagedExecution;
+import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.SingleEntityExecution;
+import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.SlicedExecution;
+import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.StreamExecution;
+import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.UpdateExecution;
 
 /**
  * Abstract base class to implement {@link RepositoryQuery}.
@@ -79,17 +83,17 @@ public abstract class AbstractEbeanQuery implements RepositoryQuery {
 
   protected AbstractEbeanQueryExecution getExecution() {
     if (method.isStreamQuery()) {
-        return new StreamExecution();
+      return new StreamExecution();
     } else if (method.isCollectionQuery()) {
-        return new AbstractEbeanQueryExecution.CollectionExecution();
+      return new AbstractEbeanQueryExecution.CollectionExecution();
     } else if (method.isSliceQuery()) {
-        return new SlicedExecution(method.getParameters());
+      return new SlicedExecution(method.getParameters());
     } else if (method.isPageQuery()) {
-        return new PagedExecution(method.getParameters());
+      return new PagedExecution(method.getParameters());
     } else if (method.isModifyingQuery()) {
-        return new UpdateExecution(method, ebeanServer);
+      return new UpdateExecution(method, ebeanServer);
     } else {
-        return new SingleEntityExecution();
+      return new SingleEntityExecution();
     }
   }
 

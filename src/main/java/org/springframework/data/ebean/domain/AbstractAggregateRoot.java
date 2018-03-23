@@ -16,16 +16,15 @@
 
 package org.springframework.data.ebean.domain;
 
-import org.springframework.data.domain.AfterDomainEventPublication;
-import org.springframework.data.domain.DomainEvents;
-import org.springframework.util.Assert;
-
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
+import org.springframework.data.domain.AfterDomainEventPublication;
+import org.springframework.data.domain.DomainEvents;
+import org.springframework.util.Assert;
 
 /**
  * Abstract base class for aggregate root, aggregate extends {@link AbstractEntity} and add
@@ -35,37 +34,37 @@ import java.util.List;
  */
 @MappedSuperclass
 public abstract class AbstractAggregateRoot extends AbstractEntity {
-    @Transient
-    private transient final List<DomainEvent> domainEvents = new ArrayList<>();
+  @Transient
+  private transient final List<DomainEvent> domainEvents = new ArrayList<>();
 
-    /**
-     * Registers the given event object for publication on a call to a Spring Data repository's save methods.
-     *
-     * @param event must not be {@literal null}.
-     * @return the event that has been added.
-     */
-    protected <T extends DomainEvent> T registerEvent(T event) {
-        Assert.notNull(event, "Domain event must not be null!");
+  /**
+   * Registers the given event object for publication on a call to a Spring Data repository's save methods.
+   *
+   * @param event must not be {@literal null}.
+   * @return the event that has been added.
+   */
+  protected <T extends DomainEvent> T registerEvent(T event) {
+    Assert.notNull(event, "Domain event must not be null!");
 
-        this.domainEvents.add(event);
-        return event;
-    }
+    this.domainEvents.add(event);
+    return event;
+  }
 
-    /**
-     * Clears all domain events currently held. Usually invoked by the infrastructure in place in Spring Data
-     * repositories.
-     */
-    @AfterDomainEventPublication
-    protected void clearDomainEvents() {
-        this.domainEvents.clear();
-    }
+  /**
+   * Clears all domain events currently held. Usually invoked by the infrastructure in place in Spring Data
+   * repositories.
+   */
+  @AfterDomainEventPublication
+  protected void clearDomainEvents() {
+    this.domainEvents.clear();
+  }
 
-    /**
-     * All domain events currently captured by the aggregate.
-     */
-    @DomainEvents
-    protected Collection<DomainEvent> domainEvents() {
-        return Collections.unmodifiableList(domainEvents);
-    }
+  /**
+   * All domain events currently captured by the aggregate.
+   */
+  @DomainEvents
+  protected Collection<DomainEvent> domainEvents() {
+    return Collections.unmodifiableList(domainEvents);
+  }
 
 }

@@ -16,6 +16,7 @@
 
 package org.springframework.data.ebean.repository.query;
 
+import java.util.List;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.Parameter;
@@ -24,8 +25,6 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.util.Assert;
-
-import java.util.List;
 
 /**
  * A {@link StringQueryParameterBinder} that is able to bind synthetic query parameters.
@@ -59,10 +58,6 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
     this.parser = parser;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.EbeanQueryWrapper)
-   */
   @Override
   public EbeanQueryWrapper bind(EbeanQueryWrapper ebeanQuery) {
     return potentiallyBindExpressionParameters(super.bind(ebeanQuery));
@@ -127,10 +122,6 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
     return evaluationContextProvider.getEvaluationContext(getParameters(), getValues());
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.jpa.repository.query.ParameterBinder#canBindParameter(org.springframework.data.jpa.repository.query.JpaParameters.JpaParameter)
-   */
   @Override
   protected boolean canBindParameter(Parameter parameter) {
 

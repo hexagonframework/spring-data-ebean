@@ -49,10 +49,6 @@ public class StringQueryParameterBinder extends ParameterBinder {
     this.query = query;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.jpa.repository.query.ParameterBinder#bind(javax.persistence.EbeanQueryWrapper, org.springframework.data.repository.query.Parameter, java.lang.Object, int)
-   */
   @Override
   protected void bind(EbeanQueryWrapper ebeanQuery, Parameter methodParameter, Object value, int position) {
 

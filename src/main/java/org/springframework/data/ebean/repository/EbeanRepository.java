@@ -81,10 +81,9 @@ public interface EbeanRepository<T extends Persistable, ID extends Serializable>
    * Update entities which is not loaded.
    *
    * @param entities
-   * @param <S>
    * @return
    */
-  <S extends T> List<S> update(Iterable<S> entities);
+  Iterable<T> updateAll(Iterable<T> entities);
 
   /**
    * Find all order by sort config.
@@ -109,6 +108,7 @@ public interface EbeanRepository<T extends Persistable, ID extends Serializable>
    * @param ids Id list
    * @return List
    */
+  @Override
   List<T> findAllById(Iterable<ID> ids);
 
   /**

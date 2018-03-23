@@ -16,9 +16,12 @@
 
 package org.springframework.data.ebean.annotation;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.springframework.data.annotation.QueryAnnotation;
-
-import java.lang.annotation.*;
 
 /**
  * Annotation to declare stored procedure mappings directly on repository methods.
