@@ -67,7 +67,7 @@ Conditions on frameworks which I choose for consideration:
   * Paid license for certain databases - it'll be difficult to persuade managers that it's worth it :)
   * Not so much usable for big queries - it's better to use native SQL (see scenario 9.)
   * Weird syntax of batch operations (in case that you do not use UpdatableRecord). But it's not a big deal... 
-
+  
 **MyBatis**
 * Pros
   * Writing SQL statements in XML mapper file feels good - it's easy to work with parameters
