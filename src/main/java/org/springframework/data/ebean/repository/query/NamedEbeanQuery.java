@@ -17,17 +17,16 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
+import io.ebean.Query;
+import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.RepositoryQuery;
 
-import javax.persistence.PersistenceException;
-
 /**
  * {@link RepositoryQuery} implementation that inspects a {@link QueryMethod}
- * for the existence of an {@link Query} annotation and creates a Ebean native
+ * for the existence of an {@link org.springframework.data.ebean.annotation.Query} annotation and creates a Ebean named
  * {@link io.ebean.Query} from it.
  *
  * @author Xuegui Yuan
@@ -37,12 +36,12 @@ final class NamedEbeanQuery extends AbstractEbeanQuery {
   private static final Logger LOG = LoggerFactory.getLogger(NamedEbeanQuery.class);
 
   private final String queryName;
-  private io.ebean.Query query;
+  private Query query;
 
   /**
    * Creates a new {@link NamedEbeanQuery}.
    */
-  private NamedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, io.ebean.Query query) {
+  private NamedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, Query query) {
     super(method, ebeanServer);
 
     this.queryName = method.getNamedQueryName();
@@ -61,7 +60,7 @@ final class NamedEbeanQuery extends AbstractEbeanQuery {
     LOG.debug("Looking up named query {}", queryName);
 
     try {
-      io.ebean.Query query = ebeanServer.createNamedQuery(method.getEntityInformation().getJavaType(), queryName);
+      Query query = ebeanServer.createNamedQuery(method.getEntityInformation().getJavaType(), queryName);
       return new NamedEbeanQuery(method, ebeanServer, query);
     } catch (PersistenceException e) {
       LOG.debug("Did not find named query {}", queryName);
@@ -69,10 +68,6 @@ final class NamedEbeanQuery extends AbstractEbeanQuery {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.ebean.repository.query.AbstractJpaQuery#doCreateQuery(java.lang.Object[])
-   */
   @Override
   protected EbeanQueryWrapper doCreateQuery(Object[] values) {
     return createBinder(values).bindAndPrepare(EbeanQueryWrapper.ofEbeanQuery(query));

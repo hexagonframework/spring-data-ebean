@@ -39,115 +39,115 @@ import org.springframework.util.ClassUtils;
 @MappedSuperclass
 public abstract class AbstractEntity implements Persistable<Long>, Auditable<String, Long, LocalDateTime> {
 
-    private static final long serialVersionUID = -5554308939380869754L;
+  private static final long serialVersionUID = -5554308939380869754L;
 
-    @Id
-    protected Long id;
+  @Id
+  protected Long id;
 
-    @WhoCreated
-    String createdBy;
+  @WhoCreated
+  String createdBy;
 
-    @CreatedTimestamp
-    LocalDateTime createdDate;
+  @CreatedTimestamp
+  LocalDateTime createdDate;
 
-    @WhoModified
-    String lastModifiedBy;
+  @WhoModified
+  String lastModifiedBy;
 
-    @UpdatedTimestamp
-    LocalDateTime lastModifiedDate;
-
-    @Override
-    public Optional<String> getCreatedBy() {
-      return Optional.ofNullable(createdBy);
-    }
-
-    @Override
-    public void setCreatedBy(String createdBy) {
-      this.createdBy = createdBy;
-    }
+  @UpdatedTimestamp
+  LocalDateTime lastModifiedDate;
 
   @Override
-  public Long getId() {
-    return id;
+  public Optional<String> getCreatedBy() {
+    return Optional.ofNullable(createdBy);
   }
 
-    @Override
-    public Optional<LocalDateTime> getCreatedDate() {
-      return Optional.ofNullable(createdDate);
-    }
+  @Override
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  @Override
+  public Optional<LocalDateTime> getCreatedDate() {
+    return Optional.ofNullable(createdDate);
+  }
 
   @Override
   public void setCreatedDate(LocalDateTime createdDate) {
     this.createdDate = createdDate;
   }
 
-  /**
-     * Sets the id of the entity.
-     *
-     * @param id the id to set
-     */
-    public void setId(final Long id) {
-        this.id = id;
-    }
+  @Override
+  public Optional<String> getLastModifiedBy() {
+    return Optional.ofNullable(lastModifiedBy);
+  }
 
-    @Override
-    public Optional<String> getLastModifiedBy() {
-      return Optional.ofNullable(lastModifiedBy);
-    }
+  @Override
+  public void setLastModifiedBy(String lastModifiedBy) {
+    this.lastModifiedBy = lastModifiedBy;
+  }
 
-    @Override
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-  @Transient
-    @Override
-  public boolean isNew() {
-    return null == getId();
-    }
-
-    @Override
-    public Optional<LocalDateTime> getLastModifiedDate() {
-      return Optional.ofNullable(lastModifiedDate);
-    }
+  @Override
+  public Optional<LocalDateTime> getLastModifiedDate() {
+    return Optional.ofNullable(lastModifiedDate);
+  }
 
   @Override
   public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
+    this.lastModifiedDate = lastModifiedDate;
+  }
+
+  @Override
+  public int hashCode() {
+    int hashCode = 17;
+
+    hashCode += null == getId() ? 0 : getId().hashCode() * 31;
+
+    return hashCode;
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  /**
+   * Sets the id of the entity.
+   *
+   * @param id the id to set
+   */
+  public void setId(final Long id) {
+    this.id = id;
+  }
+
+  @Transient
+  @Override
+  public boolean isNew() {
+    return null == getId();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (null == obj) {
+      return false;
     }
 
-    @Override
-    public int hashCode() {
-        int hashCode = 17;
-
-        hashCode += null == getId() ? 0 : getId().hashCode() * 31;
-
-        return hashCode;
+    if (this == obj) {
+      return true;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (null == obj) {
-            return false;
-        }
-
-        if (this == obj) {
-            return true;
-        }
-
-        if (!getClass().equals(ClassUtils.getUserClass(obj))) {
-            return false;
-        }
-
-        AbstractEntity that = (AbstractEntity) obj;
-
-      return null != this.getId() && this.getId().equals(that.getId());
+    if (!getClass().equals(ClassUtils.getUserClass(obj))) {
+      return false;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
-    }
+    AbstractEntity that = (AbstractEntity) obj;
+
+    return null != this.getId() && this.getId().equals(that.getId());
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
+  }
 
 
 }

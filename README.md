@@ -43,8 +43,30 @@ Conditions on frameworks which I choose for consideration:
 4. The framework must be mature enough for "enterprise level" use
 
 #### Subjective pros/cons of each framework 
+> Reference：[java-persistence-frameworks-comparison](https://github.com/bwajtr/java-persistence-frameworks-comparison)
+
 **Hibernate/JPA**
 * [Compare to JPA](http://ebean-orm.github.io/architecture/compare-jpa)
+
+**JDBC Template**
+* Pros
+    * Feels like you are very close to JDBC itself
+    * Implemented all of the scenarios without bigger issues - there were no hidden surprises
+    * Very easy batch operations
+    * Easy setup
+* Cons
+    * Methods in JDBCDataRepositoryImpl are not much readable - that's because you have to inline SQL in Java code. It would have been better if Java supported multiline strings.
+    * Debug logging could be better  
+
+**jOOQ**
+* Pros
+  * Very fluent, very easy to write new queries, code is very readable
+  * Once setup it's very easy to use, excellent for simple queries
+  * Awesome logger debug output
+* Cons
+  * Paid license for certain databases - it'll be difficult to persuade managers that it's worth it :)
+  * Not so much usable for big queries - it's better to use native SQL (see scenario 9.)
+  * Weird syntax of batch operations (in case that you do not use UpdatableRecord). But it's not a big deal... 
 
 **MyBatis**
 * Pros

@@ -6,7 +6,7 @@ import org.springframework.data.ebean.domain.DomainEvent;
  * @author Xuegui Yuan
  */
 public class UserEmailChangedEvent extends DomainEvent {
-    public UserEmailChangedEvent(Object source) {
-        super(source);
-    }
+  public UserEmailChangedEvent(Object source) {
+    super(source);
+  }
 }

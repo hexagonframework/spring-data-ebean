@@ -16,14 +16,13 @@
 
 package org.springframework.data.ebean.repository.query;
 
+import java.util.regex.Pattern;
 import org.springframework.data.repository.core.EntityMetadata;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.util.Assert;
-
-import java.util.regex.Pattern;
 
 /**
  * Extension of {@link StringQuery} that evaluates the given query string as a SpEL template-expression.

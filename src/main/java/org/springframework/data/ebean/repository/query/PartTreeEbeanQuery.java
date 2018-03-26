@@ -53,10 +53,6 @@ public class PartTreeEbeanQuery extends AbstractEbeanQuery {
     this.queryPreparer = new QueryPreparer(ebeanServer);
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.jpa.repository.query.AbstractEbeanQuery#getExecution()
-   */
   @Override
   protected AbstractEbeanQueryExecution getExecution() {
     if (this.tree.isDelete()) {

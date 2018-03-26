@@ -25,17 +25,18 @@
 * 支持MySQL、Oracle、SQL Server、H2、PostgreSQL等数据库
 
 #### 实现的场景 ####
-1. Fetch single entity based on primary key
-2. Fetch list of entities based on condition
-3. Save new single entity and return primary key
-4. Batch insert multiple entities of the same type and return generated keys
-5. Update single existing entity - update all fields of entity at once
-6. Fetch many-to-one relation (Company for Department)
-7. Fetch one-to-many relation (Departments for Company)
-8. Update entities one-to-many relation (Departments in Company) - add two items, update two items and delete one item - all at once
-9. Complex select - construct select where conditions based on some boolean conditions + throw in some JOINs
-10. Execute query using JDBC simple Statement (not PreparedStatement)
-11. Remove single entity based on primary key
+
+1. 基于主键获取单个实体
+2. 根据条件获取实体的列表
+3. 保存新的单个实体并返回主键
+4. 批量插入相同类型的多个实体并返回生成的主键列表
+5. 更新单个现有实体——同时更新所有的实体字段
+6. 获取多对一关系(部门的所属公司)
+7. 获取一对多关系(公司的部门)
+8. 更新实体一对多的关系(公司的部门)-增加两个项目，更新两个项目和删除一个项目-所有只需一句代码/一次操作
+9. 复杂的选择-构造选择的条件基于一些布尔条件+加入一些连接
+10. 使用JDBC简单语句(非PreparedStatement)执行查询
+11. 基于主键移除单个实体
 
 ## 为什么选择[Ebean ORM](https://ebean-orm.github.io)
 
@@ -49,9 +50,31 @@
 4. 足够成熟以应对企业级应用（Ebean和Hibernate同时期作品，资格老，而且持续更新以满足更高需求）
 
 #### 框架优缺点比较
+> 参考：[java-persistence-frameworks-comparison](https://github.com/bwajtr/java-persistence-frameworks-comparison)
+
 **Hibernate/JPA**
 * [Compare to JPA](http://ebean-orm.github.io/architecture/compare-jpa)
 * 反正比Hibernate/JPA好
+
+**JDBC Template**
+* 优点
+    * 感觉自己非常接近JDBC本身
+    * 实现了所有的场景而没有更大的问题-没有隐藏的惊喜
+    * 非常容易的批量操作
+    * 设置简单
+* 缺点
+    * 在Java代码中内联SQL使得实现仓储接口的可读性不强。如果Java支持多行字符串，那就更好了
+    * 调试日志可以更好 
+
+**jOOQ**
+* 优点
+  * 非常流畅，很容易编写新的查询，代码非常易读
+  * 一旦设置好，就很容易使用，非常适合简单的查询
+  * 很棒的日志记录器调试输出
+* 缺点
+  * 某些数据库的付费许可证——很难说服经理们相信它是值得的:)
+  * 对于大的查询来说没有那么多的实用性——最好使用原生SQL(参见场景9)
+  * 批量操作的怪异语法(如果您不使用UpdatableRecord)。但这没什么大不了的……
 
 **MyBatis**
 * 优点
@@ -72,7 +95,7 @@
 
 ## 快速开始 ##
 
-建立maven项目，建议使用spring boot建立web项目
+建立maven项目，建议使用spring boot和[spring-data-ebean-spring-boot](https://github.com/hexagonframework/spring-data-ebean-spring-boot.git)建立web项目
 
 实例：[spring-boot-data-ebean-samples](https://github.com/hexagonframework/spring-boot-data-ebean-samples)
 
@@ -150,7 +173,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
     int deleteUserByEmailAddress(@Param("emailAddress") String emailAddress);
 
     /**
-     * 命名ORM查询 
+     * 命名ORM/SQL查询 
      */
     @Query(name = "withManagerById")
     List<User> findByLastnameNamedOql(@Param("lastname") String lastname);

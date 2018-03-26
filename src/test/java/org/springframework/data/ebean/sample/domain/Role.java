@@ -29,63 +29,63 @@ import javax.persistence.Id;
 @Entity
 public class Role {
 
-    private static final String PREFIX = "ROLE_";
+  private static final String PREFIX = "ROLE_";
 
-    @Id
-    @GeneratedValue
-    private Integer id;
-    private String name;
+  @Id
+  @GeneratedValue
+  private Integer id;
+  private String name;
 
-    /**
-     * Creates a new instance of {@code Role}.
-     */
-    public Role() {
-    }
+  /**
+   * Creates a new instance of {@code Role}.
+   */
+  public Role() {
+  }
 
-    /**
-     * Creates a new preconfigured {@code Role}.
-     *
-     * @param name
-     */
-    public Role(final String name) {
-        this.name = name;
-    }
+  /**
+   * Creates a new preconfigured {@code Role}.
+   *
+   * @param name
+   */
+  public Role(final String name) {
+    this.name = name;
+  }
 
-    /**
-     * Returns the id.
-     *
-     * @return
-     */
-    public Integer getId() {
+  /**
+   * Returns the id.
+   *
+   * @return
+   */
+  public Integer getId() {
 
-        return id;
-    }
+    return id;
+  }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
 
-        return PREFIX + name;
-    }
+    return PREFIX + name;
+  }
 
-    /**
-     * Returns whether the role is to be considered new.
-     *
-     * @return
-     */
-    public boolean isNew() {
+  /**
+   * Returns whether the role is to be considered new.
+   *
+   * @return
+   */
+  public boolean isNew() {
 
-        return id == null;
-    }
+    return id == null;
+  }
 }

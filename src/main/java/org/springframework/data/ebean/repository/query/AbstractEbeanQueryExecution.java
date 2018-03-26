@@ -108,7 +108,7 @@ public abstract class AbstractEbeanQueryExecution {
 
     private final Parameters<?, ?> parameters;
 
-      public PagedExecution(Parameters<?, ?> parameters) {
+    public PagedExecution(Parameters<?, ?> parameters) {
 
       this.parameters = parameters;
     }
@@ -176,7 +176,7 @@ public abstract class AbstractEbeanQueryExecution {
 
     private final EbeanServer ebeanServer;
 
-      public DeleteExecution(EbeanServer ebeanServer) {
+    public DeleteExecution(EbeanServer ebeanServer) {
       this.ebeanServer = ebeanServer;
     }
 
