@@ -182,7 +182,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
 }
 ```
 
-3、 对于使用到的命名sql查询、命名orm查询，编写XML文件`resources/ebean.xml`：
+3、 对于使用到的命名sql查询、命名orm查询，编写XML文件：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>

@@ -168,7 +168,7 @@ public interface UserRepository extends EbeanRepository<User, Long> {
 }
 ```
 
-3. Options to create a named query config in `resources/ebean.xml` when using named query:
+3. Options to create a named query config in xml when using named query:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
