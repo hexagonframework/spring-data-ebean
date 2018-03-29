@@ -283,6 +283,17 @@ public class EbeanQueryChannelService {
   }
 
   /**
+   * Return a named dto query.
+   *
+   * @param dtoType    DTO Bean type, just normal classes
+   * @param namedQuery the query using query name.
+   * @return
+   */
+  public <T> DtoQuery<T> createNamedDtoQuery(Class<T> dtoType, String namedQuery) {
+    return ebeanServer.createNamedDtoQuery(dtoType, namedQuery).setRelaxedMode();
+  }
+
+  /**
    * Return a ExampleExpression using example.
    *
    * @return the created ExampleExpression using example

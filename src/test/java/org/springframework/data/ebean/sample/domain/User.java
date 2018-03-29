@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -70,9 +69,6 @@ public class User extends AbstractAggregateRoot {
   @Lob
   private byte[] binaryData;
 
-  @ElementCollection
-  private Set<String> attributes;
-
   @Temporal(TemporalType.DATE)
   private Date dateOfBirth;
 
@@ -97,7 +93,6 @@ public class User extends AbstractAggregateRoot {
     this.active = true;
     this.roles = new HashSet<Role>(Arrays.asList(roles));
     this.colleagues = new HashSet<User>();
-    this.attributes = new HashSet<String>();
   }
 
   public void changeEmail(String emailAddress) {
