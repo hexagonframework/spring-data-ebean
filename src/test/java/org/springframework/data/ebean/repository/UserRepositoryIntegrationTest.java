@@ -44,8 +44,16 @@ public class UserRepositoryIntegrationTest {
   }
 
   @Test
-  public void testFindAll_Page() {
+  public void findAll_Page() {
     Page<User> page = userRepository.findAll(PageRequest.of(0, 20, Sort.Direction.DESC, "id"));
+    assertNotNull(page);
+  }
+
+  @Test
+  public void findAll_Example_Page() {
+    User userExample = new User("X", "Y", "y");
+    Page<User> page = userRepository.findAll(Example.of(userExample),
+        PageRequest.of(0, 20, Sort.Direction.DESC, "id"));
     assertNotNull(page);
   }
 
