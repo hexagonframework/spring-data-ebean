@@ -68,4 +68,17 @@ public class Converters {
         PageRequest.of(pagedList.getPageIndex(), pagedList.getPageSize(), sort),
         pagedList.getTotalCount());
   }
+
+  /**
+   * Convert Ebean pagedList Sort to Spring data Page.
+   *
+   * @param pagedList
+   * @param <T>
+   * @return
+   */
+  public static <T> Page<T> convertToSpringDataPage(PagedList<T> pagedList) {
+    return new PageImpl<T>(pagedList.getList(),
+        PageRequest.of(pagedList.getPageIndex(), pagedList.getPageSize()),
+        pagedList.getTotalCount());
+  }
 }
