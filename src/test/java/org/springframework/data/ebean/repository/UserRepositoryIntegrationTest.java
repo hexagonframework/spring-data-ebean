@@ -9,6 +9,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.ebean.sample.config.SampleConfig;
 import org.springframework.data.ebean.sample.domain.User;
 import org.springframework.data.ebean.sample.domain.UserRepository;
@@ -44,7 +45,7 @@ public class UserRepositoryIntegrationTest {
 
   @Test
   public void testFindAll_Page() {
-    Page<User> page = userRepository.findAll(PageRequest.of(0, 20));
+    Page<User> page = userRepository.findAll(PageRequest.of(0, 20, Sort.Direction.DESC, "id"));
     assertNotNull(page);
   }
 

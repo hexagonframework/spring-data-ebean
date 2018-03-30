@@ -19,6 +19,7 @@ package org.springframework.data.ebean.util;
 import io.ebean.OrderBy;
 import io.ebean.PagedList;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -45,9 +46,11 @@ public class Converters {
       return null;
     }
     List<String> list = new ArrayList<>();
-    while (sort.iterator().hasNext()) {
-      Sort.Order so = sort.iterator().next();
-      list.add(so.getDirection() == Sort.Direction.ASC ? so.getProperty() + " asc" : so.getProperty() + " desc");
+
+    Iterator<Sort.Order> orderIterator = sort.iterator();
+    while (orderIterator.hasNext()) {
+      Sort.Order so = orderIterator.next();
+      list.add(so.getProperty() + " " + so.getDirection());
     }
     return new OrderBy<T>(StringUtils.collectionToCommaDelimitedString(list));
   }
