@@ -84,6 +84,7 @@ Conditions on frameworks which I choose for consideration:
   * Although there are methods which make CRUD operations and Querying super simple, there are still means how to execute plain SQL and even a way how to get the basic JDBC Transaction object, which you can use for core JDBC stuff. That is really good.
 * Cons
   * DTO query do not support XML mapping
+  * Necessity of "enhancement" of the entities - this was quite surprising to me - but actually it's basically only about right environment setup (IDE plugin and Gradle plugin) and then you don't have to think about it
 
 ## Quick Start ##
 
