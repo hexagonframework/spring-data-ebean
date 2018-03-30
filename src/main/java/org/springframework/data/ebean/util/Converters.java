@@ -56,7 +56,7 @@ public class Converters {
   }
 
   /**
-   * Convert Ebean pagedList Sort to Spring data Page.
+   * Convert Ebean PagedList with Sort to Spring data Page.
    *
    * @param pagedList
    * @param sort
@@ -70,7 +70,7 @@ public class Converters {
   }
 
   /**
-   * Convert Ebean pagedList Sort to Spring data Page.
+   * Convert Ebean PagedList to Spring data Page.
    *
    * @param pagedList
    * @param <T>
