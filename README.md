@@ -5,7 +5,7 @@
 [![GitHub release](https://img.shields.io/github/release/hexagonframework/spring-data-ebean.svg)](https://github.com/hexagonframework/spring-data-ebean/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[MAVEN Cental Link](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
+[MAVEN Central Link](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
 
 
 [简体中文](README_zh.md)
