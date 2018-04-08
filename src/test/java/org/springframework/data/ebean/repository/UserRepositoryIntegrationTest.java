@@ -174,4 +174,12 @@ public class UserRepositoryIntegrationTest {
 
     userRepository.deleteById(u.getId());
   }
+
+  @Test
+  public void testFindAll_Example() {
+    User u = new User();
+    u.setId(1L);
+    Example example = Example.of(u);
+    userRepository.findAll(example);
+  }
 }
