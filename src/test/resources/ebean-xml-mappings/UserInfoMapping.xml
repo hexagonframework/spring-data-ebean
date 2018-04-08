@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ebean xmlns="http://ebean-orm.github.io/xml/ns/ebean">
+    <entity class="org.springframework.data.ebean.sample.domain.UserInfo">
+        <raw-sql name="userInfo">
+            <query>
+                select first_name, last_name, email_address from user
+            </query>
+        </raw-sql>
+        <raw-sql name="userInfoByEmail">
+            <query>
+                select first_name, last_name, email_address from user
+                where email_address = :emailAddress
+                order by id desc
+            </query>
+        </raw-sql>
+    </entity>
+</ebean>

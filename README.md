@@ -2,9 +2,10 @@
 > Ebean implementation for spring data.
 
 [![Build Status](https://travis-ci.org/hexagonframework/spring-data-ebean.svg?branch=master)](https://travis-ci.org/hexagonframework/spring-data-ebean) [![Gitter chat](https://badges.gitter.im/hexagonframework/spring-data-ebean/gitter.png)](https://gitter.im/hexagonframework/spring-data-ebean)
-[![Maven Central : ebean](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean) 
- 
-[Maven cental link](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
+[![GitHub release](https://img.shields.io/github/release/hexagonframework/spring-data-ebean.svg)](https://github.com/hexagonframework/spring-data-ebean/releases)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+[MAVEN Central Link](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
 
 
 [简体中文](README_zh.md)
@@ -84,6 +85,7 @@ Conditions on frameworks which I choose for consideration:
   * Although there are methods which make CRUD operations and Querying super simple, there are still means how to execute plain SQL and even a way how to get the basic JDBC Transaction object, which you can use for core JDBC stuff. That is really good.
 * Cons
   * DTO query do not support XML mapping
+  * Necessity of "enhancement" of the entities - this was quite surprising to me - but actually it's basically only about right environment setup (IDE plugin and Gradle plugin) and then you don't have to think about it
 
 ## Quick Start ##
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ebean xmlns="http://ebean-orm.github.io/xml/ns/ebean">
+    <entity class="org.springframework.data.ebean.sample.domain.User">
+        <named-query name="withManagerById">
+            <query>
+                select (fullName,address)
+                fetch manager (lastName)
+                where fullName.lastName = :lastName order by id desc
+            </query>
+        </named-query>
+        <raw-sql name="byEmailAddressEquals">
+            <query>
+                select * from user
+                where email_address = :emailAddress
+                order by id desc
+            </query>
+        </raw-sql>
+    </entity>
+</ebean>

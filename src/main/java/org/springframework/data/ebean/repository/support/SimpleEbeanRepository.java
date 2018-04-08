@@ -17,6 +17,7 @@
 package org.springframework.data.ebean.repository.support;
 
 import io.ebean.EbeanServer;
+import io.ebean.PagedList;
 import io.ebean.SqlUpdate;
 import io.ebean.UpdateQuery;
 import io.ebean.text.PathProperties;
@@ -70,20 +71,12 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
 
   @Override
   public Page<T> findAll(Pageable pageable) {
-    return Converters.convertToSpringDataPage(db().find(getEntityType())
-        .setMaxRows(pageable.getPageSize()).setFirstRow((int) pageable.getOffset())
+    PagedList<T> pagedList = db().find(getEntityType())
+        .setMaxRows(pageable.getPageSize())
+        .setFirstRow((int) pageable.getOffset())
         .setOrder(Converters.convertToEbeanOrderBy(pageable.getSort()))
-        .findPagedList(), pageable.getSort());
-  }
-
-  private Class<T> getEntityType() {
-    return entityType;
-  }
-
-  @Override
-  public <S extends T> Optional<S> findOne(Example<S> example) {
-    return db().find(example.getProbeType())
-        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findOneOrEmpty();
+        .findPagedList();
+    return Converters.convertToSpringDataPage(pagedList, pageable.getSort());
   }
 
   @Override
@@ -91,11 +84,8 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     return ebeanServer;
   }
 
-  @Override
-  public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
-    return Converters.convertToSpringDataPage(db().find(example.getProbeType())
-        .where(ExampleExpressionBuilder.exampleExpression(db(), example))
-        .findPagedList(), pageable.getSort());
+  private Class<T> getEntityType() {
+    return entityType;
   }
 
   @Override
@@ -105,31 +95,13 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
   }
 
   @Override
-  public <S extends T> long count(Example<S> example) {
-    return db().find(example.getProbeType())
-        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount();
-  }
-
-  @Override
   public UpdateQuery<T> updateQuery() {
     return db().update(getEntityType());
   }
 
   @Override
-  public <S extends T> boolean exists(Example<S> example) {
-    return db().find(example.getProbeType())
-        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount() > 0;
-  }
-
-  @Override
   public SqlUpdate sqlUpdateOf(String sql) {
     return db().createSqlUpdate(sql);
-  }
-
-  @Override
-  public <S extends T> S save(S s) {
-    db().save(s);
-    return s;
   }
 
   @Override
@@ -139,16 +111,153 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
   }
 
   @Override
-  public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {
+  public Iterable<T> updateAll(Iterable<T> entities) {
     Assert.notNull(entities, "The given Iterable of entities not be null!");
-    db().saveAll((Collection<?>) entities);
+    db().updateAll((Collection<?>) entities);
     return entities;
   }
 
   @Override
-  public Iterable<T> updateAll(Iterable<T> entities) {
+  public List<T> findAll(Sort sort) {
+    return db().find(getEntityType()).setOrder(Converters.convertToEbeanOrderBy(sort)).findList();
+  }
+
+  @Override
+  public List<T> findAll() {
+    return db().find(getEntityType()).where().findList();
+  }
+
+  @Override
+  public List<T> findAllById(Iterable<ID> ids) {
+    Assert.notNull(ids, "The given Iterable of Id's must not be null!");
+    return db().find(getEntityType())
+        .where()
+        .idIn(ids)
+        .findList();
+  }
+
+  @Override
+  public T findOne(ID id, String selects) {
+    Assert.notNull(id, ID_MUST_NOT_BE_NULL);
+    return db().find(getEntityType())
+        .select(selects)
+        .where()
+        .idEq(id)
+        .findOne();
+  }
+
+  @Override
+  public T findOneByProperty(String propertyName, Object propertyValue) {
+    Assert.notNull(propertyName, PROP_MUST_NOT_BE_NULL);
+    return db().find(getEntityType())
+        .where()
+        .eq(propertyName, propertyValue)
+        .findOne();
+  }
+
+  @Override
+  public T findOneByProperty(String propertyName, Object propertyValue, String selects) {
+    Assert.notNull(propertyName, PROP_MUST_NOT_BE_NULL);
+    return db().find(getEntityType())
+        .apply(PathProperties.parse(selects))
+        .where()
+        .eq(propertyName, propertyValue)
+        .findOne();
+  }
+
+  @Override
+  public List<T> findAll(String selects) {
+    Assert.notNull(selects, SELECT_FIELDS_MUST_NOT_BE_NULL);
+    return db().find(getEntityType())
+        .select(selects)
+        .findList();
+  }
+
+  @Override
+  public List<T> findAll(Iterable<ID> ids, String selects) {
+    Assert.notNull(ids, "The given Iterable of Id's must not be null!");
+    Assert.notNull(selects, SELECT_FIELDS_MUST_NOT_BE_NULL);
+    return db().find(getEntityType())
+        .select(selects)
+        .where()
+        .idIn(ids)
+        .findList();
+  }
+
+  @Override
+  public List<T> findAll(Sort sort, String selects) {
+    Assert.notNull(selects, SELECT_FIELDS_MUST_NOT_BE_NULL);
+    return db().find(getEntityType())
+        .select(selects)
+        .setOrder(Converters.convertToEbeanOrderBy(sort))
+        .findList();
+  }
+
+  @Override
+  public Page<T> findAll(Pageable pageable, String selects) {
+    Assert.notNull(selects, SELECT_FIELDS_MUST_NOT_BE_NULL);
+    PagedList<T> pagedList = db().find(getEntityType())
+        .select(selects)
+        .setMaxRows(pageable.getPageSize())
+        .setFirstRow((int) pageable.getOffset())
+        .setOrder(Converters.convertToEbeanOrderBy(pageable.getSort()))
+        .findPagedList();
+    return Converters.convertToSpringDataPage(pagedList, pageable.getSort());
+  }
+
+  @Override
+  public <S extends T> List<S> findAll(Example<S> example) {
+    return db().find(example.getProbeType())
+        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findList();
+  }
+
+  @Override
+  public <S extends T> List<S> findAll(Example<S> example, Sort sort) {
+    return db().find(example.getProbeType())
+        .where(ExampleExpressionBuilder.exampleExpression(db(), example))
+        .setOrder(Converters.convertToEbeanOrderBy(sort))
+        .findList();
+  }
+
+  @Override
+  public <S extends T> Optional<S> findOne(Example<S> example) {
+    return db().find(example.getProbeType())
+        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findOneOrEmpty();
+  }
+
+  @Override
+  public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
+    PagedList<S> pagedList = db().find(example.getProbeType())
+        .where(ExampleExpressionBuilder.exampleExpression(db(), example))
+        .setMaxRows(pageable.getPageSize())
+        .setFirstRow((int) pageable.getOffset())
+        .setOrder(Converters.convertToEbeanOrderBy(pageable.getSort()))
+        .findPagedList();
+    return Converters.convertToSpringDataPage(pagedList, pageable.getSort());
+  }
+
+  @Override
+  public <S extends T> long count(Example<S> example) {
+    return db().find(example.getProbeType())
+        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount();
+  }
+
+  @Override
+  public <S extends T> boolean exists(Example<S> example) {
+    return db().find(example.getProbeType())
+        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findCount() > 0;
+  }
+
+  @Override
+  public <S extends T> S save(S s) {
+    db().save(s);
+    return s;
+  }
+
+  @Override
+  public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {
     Assert.notNull(entities, "The given Iterable of entities not be null!");
-    db().updateAll((Collection<?>) entities);
+    db().saveAll((Collection<?>) entities);
     return entities;
   }
 
@@ -165,18 +274,8 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
   }
 
   @Override
-  public List<T> findAll(Sort sort) {
-    return db().find(getEntityType()).setOrder(Converters.convertToEbeanOrderBy(sort)).findList();
-  }
-
-  @Override
   public long count() {
     return db().find(getEntityType()).findCount();
-  }
-
-  @Override
-  public List<T> findAll() {
-    return db().find(getEntityType()).where().findList();
   }
 
   @Override
@@ -186,20 +285,8 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
   }
 
   @Override
-  public List<T> findAllById(Iterable<ID> ids) {
-    Assert.notNull(ids, "The given Iterable of Id's must not be null!");
-    return db().find(getEntityType()).where().idIn(ids).findList();
-  }
-
-  @Override
   public void delete(T t) {
     db().delete(t);
-  }
-
-  @Override
-  public T findOne(ID id, String selects) {
-    Assert.notNull(id, ID_MUST_NOT_BE_NULL);
-    return db().find(getEntityType()).select(selects).where().idEq(id).findOne();
   }
 
   @Override
@@ -209,64 +296,8 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
   }
 
   @Override
-  public T findOneByProperty(String propertyName, Object propertyValue) {
-    Assert.notNull(propertyName, PROP_MUST_NOT_BE_NULL);
-    return db().find(getEntityType()).where().eq(propertyName, propertyValue).findOne();
-  }
-
-  @Override
   public void deleteAll() {
     db().find(getEntityType()).delete();
-  }
-
-  @Override
-  public T findOneByProperty(String propertyName, Object propertyValue, String selects) {
-    Assert.notNull(propertyName, PROP_MUST_NOT_BE_NULL);
-    return db().find(getEntityType()).apply(PathProperties.parse(selects)).where()
-        .eq(propertyName, propertyValue).findOne();
-  }
-
-  @Override
-  public List<T> findAll(String selects) {
-    Assert.notNull(selects, SELECT_FIELDS_MUST_NOT_BE_NULL);
-    return db().find(getEntityType()).select(selects).findList();
-  }
-
-  @Override
-  public List<T> findAll(Iterable<ID> ids, String selects) {
-    Assert.notNull(ids, "The given Iterable of Id's must not be null!");
-    Assert.notNull(selects, SELECT_FIELDS_MUST_NOT_BE_NULL);
-    return db().find(getEntityType()).select(selects).where().idIn(ids).findList();
-  }
-
-  @Override
-  public List<T> findAll(Sort sort, String selects) {
-    Assert.notNull(selects, SELECT_FIELDS_MUST_NOT_BE_NULL);
-    return db().find(getEntityType()).select(selects).setOrder(Converters.convertToEbeanOrderBy(sort)).findList();
-  }
-
-  @Override
-  public Page<T> findAll(Pageable pageable, String selects) {
-    Assert.notNull(selects, SELECT_FIELDS_MUST_NOT_BE_NULL);
-    return Converters.convertToSpringDataPage(db().find(getEntityType())
-        .select(selects).setMaxRows(pageable.getPageSize())
-        .setFirstRow((int) pageable.getOffset())
-        .setOrder(Converters.convertToEbeanOrderBy(pageable.getSort()))
-        .findPagedList(), pageable.getSort());
-  }
-
-  @Override
-  public <S extends T> List<S> findAll(Example<S> example) {
-    return db().find(example.getProbeType())
-        .where(ExampleExpressionBuilder.exampleExpression(db(), example)).findList();
-  }
-
-  @Override
-  public <S extends T> List<S> findAll(Example<S> example, Sort sort) {
-    return db().find(example.getProbeType())
-        .where(ExampleExpressionBuilder.exampleExpression(db(), example))
-        .setOrder(Converters.convertToEbeanOrderBy(sort))
-        .findList();
   }
 
 

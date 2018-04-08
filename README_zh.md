@@ -2,11 +2,18 @@
 > Ebean implementation for spring data.
 
 [![Build Status](https://travis-ci.org/hexagonframework/spring-data-ebean.svg?branch=master)](https://travis-ci.org/hexagonframework/spring-data-ebean) [![Gitter chat](https://badges.gitter.im/hexagonframework/spring-data-ebean/gitter.png)](https://gitter.im/hexagonframework/spring-data-ebean)
-[![Maven Central : ebean](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.hexagonframework.data/spring-data-ebean) 
- 
-[Maven cental link](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
+[![GitHub release](https://img.shields.io/github/release/hexagonframework/spring-data-ebean.svg)](https://github.com/hexagonframework/spring-data-ebean/releases)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+[MAVEN中央仓库链接](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.hexagonframework.data%22%20AND%20a%3A%22spring-data-ebean%22 "maven central spring-data-ebean")
+
 
 [QQ群: 635113788]
+
+* [码云 spring-data-ebean(定时拉取Github)](https://gitee.com/hexagonframework/spring-data-ebean)
+* [Github spring-data-ebean](https://github.com/hexagonframework/spring-data-ebean)
+* [码云 spring-data-ebean(定时拉取Github)](https://gitee.com/hexagonframework/spring-data-ebean-spring-boot)
+* [Github spring-data-ebean-spring-boot](https://github.com/hexagonframework/spring-data-ebean-spring-boot)
 
 [Spring Data](http://projects.spring.io/spring-data/)项目的主要目标是使构建使用DDD仓储接口与实现的Spring应用程序变得更加容易。此模块是基于[Ebean ORM](https://ebean-orm.github.io)（轻量级JPA）的仓储层实现。
 通过使用此模块，你可以在基于Ebean ORM下使用Spring Data模式带来的便利性。
@@ -17,8 +24,8 @@
 * 对标准Entity支持完整CRUD操作，包括常用的查询操作
 * 支持通过接口中的注解生成对应的查询（orm查询、sql查询、命名orm查询、命名sql查询、dto查询）
 * 支持通过接口中的方法名生成对应的查询
-* 支持QueryChannel服务
-* 提供基础属性的实体基类和面向领域编程基类
+* 支持QueryChannel服务，用于CQRS
+* 提供基础属性的实体基类和面向领域编程DDD基类
 * 原生支持使用注解实现审计（如创建人、创建时间、修改人、最后修改时间)
 * 支持自定义编写基于Ebean的查询，方便而不失灵活性
 * 方便的与Spring集成
@@ -92,6 +99,7 @@
   * ORM查询、sql查询、DTO查询都非常简单  
 * 缺点
   * DTO查询功能较新，有待增加XML mapping对DTO的支持
+  * 必须“增强”实体，但实际上它基本上只是关于环境的设置(IDE插件和Gradle插件)，然后你就不用去想它了。
 
 ## 快速开始 ##
 
