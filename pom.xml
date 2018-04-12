@@ -44,7 +44,7 @@
         <bundlor.failOnWarnings>false</bundlor.failOnWarnings>
         <spring>5.0.4.RELEASE</spring>
         <springdata.commons>2.0.5.RELEASE</springdata.commons>
-        <ebean.version>11.15.3</ebean.version>
+        <ebean.version>11.15.4</ebean.version>
         <ebean-spring-txn.version>11.10.4</ebean-spring-txn.version>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     </properties>
