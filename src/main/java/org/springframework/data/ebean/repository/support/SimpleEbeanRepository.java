@@ -132,7 +132,7 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     Assert.notNull(ids, "The given Iterable of Id's must not be null!");
     return db().find(getEntityType())
         .where()
-        .idIn(ids)
+        .idIn((Collection<?>) ids)
         .findList();
   }
 
@@ -180,7 +180,7 @@ public class SimpleEbeanRepository<T extends Persistable, ID extends Serializabl
     return db().find(getEntityType())
         .select(selects)
         .where()
-        .idIn(ids)
+        .idIn((Collection<?>) ids)
         .findList();
   }
 
