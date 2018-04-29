@@ -1,8 +1,6 @@
 package org.springframework.data.ebean.querychannel;
 
 import io.ebean.Query;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +11,9 @@ import org.springframework.data.ebean.sample.domain.UserInfo;
 import org.springframework.data.ebean.sample.domain.UserRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,7 +26,7 @@ public class EbeanQueryChannelServiceIntegrationTest {
   // Test fixture
   User user;
   @Autowired
-  private EbeanQueryChannelService ebeanQueryChannelService;
+  private QueryChannelService queryChannel;
   @Autowired
   private UserRepository repository;
 
@@ -46,11 +47,11 @@ public class EbeanQueryChannelServiceIntegrationTest {
     columnsMapping.put("first_name", "firstName");
     columnsMapping.put("last_name", "lastName");
 
-    Query<UserInfo> query1 = ebeanQueryChannelService.createSqlQuery(UserInfo.class,
+    Query<UserInfo> query1 = queryChannel.createSqlQuery(UserInfo.class,
         sql1);
-    Query<UserInfo> query2 = ebeanQueryChannelService.createSqlQuery(UserInfo.class,
+    Query<UserInfo> query2 = queryChannel.createSqlQuery(UserInfo.class,
         sql2);
-    Query<UserInfo> query3 = ebeanQueryChannelService.createSqlQueryMappingColumns(UserInfo.class,
+    Query<UserInfo> query3 = queryChannel.createSqlQueryMappingColumns(UserInfo.class,
         sql1, columnsMapping);
 
     query1.setParameter("lastName", "Test");
@@ -69,7 +70,7 @@ public class EbeanQueryChannelServiceIntegrationTest {
 
   @Test
   public void createNamedQuery() {
-    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+    UserInfo userInfo = queryChannel.createNamedQuery(UserInfo.class,
         "userInfoByEmail").setParameter("emailAddress",
         "testquerychannel@163.com").findOne();
     assertEquals("QueryChannel", userInfo.getFirstName());
@@ -78,7 +79,7 @@ public class EbeanQueryChannelServiceIntegrationTest {
 
   @Test
   public void createNamedQueryWhere() {
-    UserInfo userInfo = ebeanQueryChannelService.createNamedQuery(UserInfo.class,
+    UserInfo userInfo = queryChannel.createNamedQuery(UserInfo.class,
         "userInfo").where()
         .eq("emailAddress", "testquerychannel@163.com").findOne();
     assertEquals("QueryChannel", userInfo.getFirstName());
@@ -88,7 +89,7 @@ public class EbeanQueryChannelServiceIntegrationTest {
   @Test
   public void createDtoQuery() {
     String sql = "select first_name, last_name, email_address from user where email_address = :emailAddress";
-    UserDTO userDTO = ebeanQueryChannelService.createDtoQuery(UserDTO.class, sql)
+    UserDTO userDTO = queryChannel.createDtoQuery(UserDTO.class, sql)
         .setParameter("emailAddress", "testquerychannel@163.com")
         .findOne();
     assertEquals("QueryChannel", userDTO.getFirstName());
@@ -97,11 +98,36 @@ public class EbeanQueryChannelServiceIntegrationTest {
 
   @Test
   public void createNamedDtoQuery() {
-    UserDTO userDTO = ebeanQueryChannelService.createNamedDtoQuery(UserDTO.class, "byEmail")
+    UserDTO userDTO = queryChannel.createNamedDtoQuery(UserDTO.class, "byEmail")
         .setParameter("emailAddress", "testquerychannel@163.com")
         .findOne();
     assertEquals("QueryChannel", userDTO.getFirstName());
     assertEquals("testquerychannel@163.com", userDTO.getEmailAddress());
+  }
+
+  @Test
+  public void query_queryObject() {
+    UserQuery userQuery = new UserQuery();
+    userQuery.setEmailAddress("testquerychannel@163.com");
+    userQuery.setAgeStart(1);
+    userQuery.setAgeEnd(30);
+    UserDTO user = queryChannel.createQuery(User.class, userQuery)
+            .asDto(UserDTO.class)
+            .setRelaxedMode()
+            .findOne();
+    assertEquals("testquerychannel@163.com", user.getEmailAddress());
+  }
+
+  @Test
+  public void applyQueryObject() {
+    UserQuery userQuery = new UserQuery();
+    userQuery.setEmailAddress("testquerychannel@163.com");
+    userQuery.setAgeStart(1);
+    userQuery.setAgeEnd(30);
+    UserInfo userInfo = EbeanQueryChannelService.applyWhere(queryChannel.createNamedQuery(UserInfo.class,
+            "userInfo").where(), userQuery).findOne();
+    assertEquals("QueryChannel", userInfo.getFirstName());
+    assertEquals("testquerychannel@163.com", userInfo.getEmailAddress());
   }
 
 }
