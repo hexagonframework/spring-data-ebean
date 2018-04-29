@@ -324,7 +324,6 @@ public class UserQuery {
     private int ageEnd;
 }
 ```
-```
 `EbeanQueryChannelServiceIntegrationTests.java`
 ```java
 package org.springframework.data.ebean.querychannel;
