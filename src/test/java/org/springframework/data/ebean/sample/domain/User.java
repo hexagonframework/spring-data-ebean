@@ -16,23 +16,15 @@
 
 package org.springframework.data.ebean.sample.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.ebean.domain.AbstractAggregateRoot;
+
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.ebean.domain.AbstractAggregateRoot;
 
 /**
  * Domain class representing a person emphasizing the use of {@code AbstractEntity}. No declaration of an id is
@@ -76,7 +68,6 @@ public class User extends AbstractAggregateRoot {
    * Creates a new empty instance of {@code User}.
    */
   public User() {
-    this(null, null, null);
   }
 
   /**

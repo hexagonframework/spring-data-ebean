@@ -5,11 +5,11 @@ import io.ebean.EbeanServerFactory;
 import io.ebean.config.CurrentUserProvider;
 import io.ebean.config.ServerConfig;
 import io.ebean.spring.txn.SpringJdbcTransactionManager;
-import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.ebean.querychannel.EbeanQueryChannelService;
+import org.springframework.data.ebean.querychannel.QueryChannelService;
 import org.springframework.data.ebean.repository.config.EnableEbeanRepositories;
 import org.springframework.data.ebean.sample.domain.UserDomainService;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -17,6 +17,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
 
 /**
  * @author Xuegui Yuan
@@ -31,7 +33,7 @@ public class SampleConfig {
   }
 
   @Bean
-  public EbeanQueryChannelService ebeanQueryChannelService(EbeanServer ebeanServer) {
+  public QueryChannelService ebeanQueryChannelService(EbeanServer ebeanServer) {
     return new EbeanQueryChannelService(ebeanServer);
   }
 

@@ -21,11 +21,7 @@ import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.util.Assert;
 
-import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.PagedExecution;
-import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.SingleEntityExecution;
-import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.SlicedExecution;
-import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.StreamExecution;
-import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.UpdateExecution;
+import static org.springframework.data.ebean.repository.query.AbstractEbeanQueryExecution.*;
 
 /**
  * Abstract base class to implement {@link RepositoryQuery}.
@@ -34,83 +30,83 @@ import static org.springframework.data.ebean.repository.query.AbstractEbeanQuery
  */
 public abstract class AbstractEbeanQuery implements RepositoryQuery {
 
-  private final EbeanQueryMethod method;
-  private final EbeanServer ebeanServer;
+    private final EbeanQueryMethod method;
+    private final EbeanServer ebeanServer;
 
-  /**
-   * Creates a new {@link AbstractEbeanQuery} from the given {@link EbeanQueryMethod}.
-   *
-   * @param method
-   * @param ebeanServer
-   */
-  public AbstractEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer) {
+    /**
+     * Creates a new {@link AbstractEbeanQuery} from the given {@link EbeanQueryMethod}.
+     *
+     * @param method
+     * @param ebeanServer
+     */
+    public AbstractEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer) {
 
-    Assert.notNull(method, "EbeanQueryMethod must not be null!");
-    Assert.notNull(ebeanServer, "EbeanServer must not be null!");
+        Assert.notNull(method, "EbeanQueryMethod must not be null!");
+        Assert.notNull(ebeanServer, "EbeanServer must not be null!");
 
-    this.method = method;
-    this.ebeanServer = ebeanServer;
-  }
-
-  /**
-   * Returns the {@link EbeanServer}.
-   *
-   * @return will never be {@literal null}.
-   */
-  protected EbeanServer getEbeanServer() {
-    return ebeanServer;
-  }
-
-  @Override
-  public Object execute(Object[] parameters) {
-    return doExecute(getExecution(), parameters);
-  }
-
-  @Override
-  public EbeanQueryMethod getQueryMethod() {
-    return method;
-  }
-
-  /**
-   * @param execution
-   * @param values
-   * @return
-   */
-  private Object doExecute(AbstractEbeanQueryExecution execution, Object[] values) {
-    Object result = execution.execute(this, values);
-    return result;
-  }
-
-  protected AbstractEbeanQueryExecution getExecution() {
-    if (method.isStreamQuery()) {
-      return new StreamExecution();
-    } else if (method.isCollectionQuery()) {
-      return new AbstractEbeanQueryExecution.CollectionExecution();
-    } else if (method.isSliceQuery()) {
-      return new SlicedExecution(method.getParameters());
-    } else if (method.isPageQuery()) {
-      return new PagedExecution(method.getParameters());
-    } else if (method.isModifyingQuery()) {
-      return new UpdateExecution(method, ebeanServer);
-    } else {
-      return new SingleEntityExecution();
+        this.method = method;
+        this.ebeanServer = ebeanServer;
     }
-  }
 
-  protected ParameterBinder createBinder(Object[] values) {
-    return new ParameterBinder((DefaultParameters) getQueryMethod().getParameters(), values);
-  }
+    /**
+     * Returns the {@link EbeanServer}.
+     *
+     * @return will never be {@literal null}.
+     */
+    protected EbeanServer getEbeanServer() {
+        return ebeanServer;
+    }
 
-  protected EbeanQueryWrapper createQuery(Object[] values) {
-    return doCreateQuery(values);
-  }
+    @Override
+    public Object execute(Object[] parameters) {
+        return doExecute(getExecution(), parameters);
+    }
 
-  /**
-   * Creates a {@link io.ebean.Query} or {@link io.ebean.SqlQuery} instance for the given values.
-   *
-   * @param values must not be {@literal null}.
-   * @return
-   */
-  protected abstract EbeanQueryWrapper doCreateQuery(Object[] values);
+    @Override
+    public EbeanQueryMethod getQueryMethod() {
+        return method;
+    }
+
+    /**
+     * @param execution
+     * @param values
+     * @return
+     */
+    private Object doExecute(AbstractEbeanQueryExecution execution, Object[] values) {
+        Object result = execution.execute(this, values);
+        return result;
+    }
+
+    protected AbstractEbeanQueryExecution getExecution() {
+        if (method.isStreamQuery()) {
+            return new StreamExecution();
+        } else if (method.isCollectionQuery()) {
+            return new AbstractEbeanQueryExecution.CollectionExecution();
+        } else if (method.isSliceQuery()) {
+            return new SlicedExecution(method.getParameters());
+        } else if (method.isPageQuery()) {
+            return new PagedExecution(method.getParameters());
+        } else if (method.isModifyingQuery()) {
+            return new UpdateExecution(method, ebeanServer);
+        } else {
+            return new SingleEntityExecution();
+        }
+    }
+
+    protected ParameterBinder createBinder(Object[] values) {
+        return new ParameterBinder((DefaultParameters) getQueryMethod().getParameters(), values);
+    }
+
+    protected EbeanQueryWrapper createQuery(Object[] values) {
+        return doCreateQuery(values);
+    }
+
+    /**
+     * Creates a {@link io.ebean.Query} or {@link io.ebean.SqlQuery} instance for the given values.
+     *
+     * @param values must not be {@literal null}.
+     * @return
+     */
+    protected abstract EbeanQueryWrapper doCreateQuery(Object[] values);
 
 }

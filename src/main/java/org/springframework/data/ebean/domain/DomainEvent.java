@@ -25,8 +25,8 @@ import org.springframework.context.ApplicationEvent;
  */
 public class DomainEvent extends ApplicationEvent {
 
-  public DomainEvent(Object source) {
-    super(source);
-  }
+    public DomainEvent(Object source) {
+        super(source);
+    }
 
 }

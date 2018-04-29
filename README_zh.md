@@ -309,6 +309,22 @@ public class UserRepositoryIntegrationTests {
     }
 }
 ```
+查询对象 `UserQuery`
+```java
+@Data
+@IncludeFields("emailAddress")
+public class UserQuery {
+    @ExprParam(expr = ExprType.CONTAINS)
+    private String emailAddress;
+
+    @ExprParam(name = "age", expr = ExprType.GE)
+    private int ageStart;
+
+    @ExprParam(name = "age", expr = ExprType.LE)
+    private int ageEnd;
+}
+```
+```
 `EbeanQueryChannelServiceIntegrationTests.java`
 ```java
 package org.springframework.data.ebean.querychannel;
@@ -407,6 +423,31 @@ public class EbeanQueryChannelServiceIntegrationTests {
                 .findOne();
         assertEquals("QueryChannel", userDTO.getFirstName());
         assertEquals("testquerychannel@163.com", userDTO.getEmailAddress());
+    }
+    
+    @Test
+    public void query_queryObject() {
+        UserQuery userQuery = new UserQuery();
+        userQuery.setEmailAddress("testquerychannel@163.com");
+        userQuery.setAgeStart(1);
+        userQuery.setAgeEnd(30);
+        UserDTO user = queryChannel.createQuery(User.class, userQuery)
+                .asDto(UserDTO.class)
+                .setRelaxedMode()
+                .findOne();
+        assertEquals("testquerychannel@163.com", user.getEmailAddress());
+    }
+    
+    @Test
+    public void applyQueryObject() {
+        UserQuery userQuery = new UserQuery();
+        userQuery.setEmailAddress("testquerychannel@163.com");
+        userQuery.setAgeStart(1);
+        userQuery.setAgeEnd(30);
+        UserInfo userInfo = EbeanQueryChannelService.applyWhere(queryChannel.createNamedQuery(UserInfo.class,
+                "userInfo").where(), userQuery).findOne();
+        assertEquals("QueryChannel", userInfo.getFirstName());
+        assertEquals("testquerychannel@163.com", userInfo.getEmailAddress());
     }
 
 }

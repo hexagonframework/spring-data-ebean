@@ -27,12 +27,12 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
  */
 public class EbeanRepositoryNameSpaceHandler extends NamespaceHandlerSupport {
 
-  @Override
-  public void init() {
+    @Override
+    public void init() {
 
-    RepositoryConfigurationExtension extension = new EbeanRepositoryConfigExtension();
-    RepositoryBeanDefinitionParser repositoryBeanDefinitionParser = new RepositoryBeanDefinitionParser(extension);
+        RepositoryConfigurationExtension extension = new EbeanRepositoryConfigExtension();
+        RepositoryBeanDefinitionParser repositoryBeanDefinitionParser = new RepositoryBeanDefinitionParser(extension);
 
-    registerBeanDefinitionParser("repositories", repositoryBeanDefinitionParser);
-  }
+        registerBeanDefinitionParser("repositories", repositoryBeanDefinitionParser);
+    }
 }

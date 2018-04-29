@@ -28,35 +28,35 @@ import org.springframework.data.domain.Example;
  */
 public class ExampleExpressionBuilder {
 
-  /**
-   * Return a ExampleExpression from Spring data Example
-   *
-   * @param ebeanServer
-   * @param example
-   * @param <T>
-   * @return
-   */
-  public static <T> ExampleExpression exampleExpression(EbeanServer ebeanServer, Example<T> example) {
-    LikeType likeType;
-    switch (example.getMatcher().getDefaultStringMatcher()) {
-      case EXACT:
-        likeType = LikeType.EQUAL_TO;
-        break;
-      case CONTAINING:
-        likeType = LikeType.CONTAINS;
-        break;
-      case STARTING:
-        likeType = LikeType.STARTS_WITH;
-        break;
-      case ENDING:
-        likeType = LikeType.ENDS_WITH;
-        break;
-      default:
-        likeType = LikeType.RAW;
-        break;
+    /**
+     * Return a ExampleExpression from Spring data Example
+     *
+     * @param ebeanServer
+     * @param example
+     * @param <T>
+     * @return
+     */
+    public static <T> ExampleExpression exampleExpression(EbeanServer ebeanServer, Example<T> example) {
+        LikeType likeType;
+        switch (example.getMatcher().getDefaultStringMatcher()) {
+            case EXACT:
+                likeType = LikeType.EQUAL_TO;
+                break;
+            case CONTAINING:
+                likeType = LikeType.CONTAINS;
+                break;
+            case STARTING:
+                likeType = LikeType.STARTS_WITH;
+                break;
+            case ENDING:
+                likeType = LikeType.ENDS_WITH;
+                break;
+            default:
+                likeType = LikeType.RAW;
+                break;
+        }
+        return ebeanServer.getExpressionFactory().exampleLike(example.getProbe(),
+                example.getMatcher().isIgnoreCaseEnabled(),
+                likeType);
     }
-    return ebeanServer.getExpressionFactory().exampleLike(example.getProbe(),
-        example.getMatcher().isIgnoreCaseEnabled(),
-        likeType);
-  }
 }
