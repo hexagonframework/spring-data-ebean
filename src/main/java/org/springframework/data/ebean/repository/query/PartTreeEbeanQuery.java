@@ -32,137 +32,137 @@ import org.springframework.data.repository.query.parser.PartTree;
  */
 public class PartTreeEbeanQuery extends AbstractEbeanQuery {
 
-  private final Class<?> domainClass;
-  private final PartTree tree;
-  private final DefaultParameters parameters;
+    private final Class<?> domainClass;
+    private final PartTree tree;
+    private final DefaultParameters parameters;
 
-  private final QueryPreparer queryPreparer;
+    private final QueryPreparer queryPreparer;
 
-  /**
-   * Creates a new {@link PartTreeEbeanQuery}.
-   *
-   * @param method      must not be {@literal null}.
-   * @param ebeanServer must not be {@literal null}.
-   */
-  public PartTreeEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer) {
-    super(method, ebeanServer);
+    /**
+     * Creates a new {@link PartTreeEbeanQuery}.
+     *
+     * @param method      must not be {@literal null}.
+     * @param ebeanServer must not be {@literal null}.
+     */
+    public PartTreeEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer) {
+        super(method, ebeanServer);
 
-    this.domainClass = method.getEntityInformation().getJavaType();
-    this.tree = new PartTree(method.getName(), domainClass);
-    this.parameters = (DefaultParameters) method.getParameters();
-    this.queryPreparer = new QueryPreparer(ebeanServer);
-  }
-
-  @Override
-  protected AbstractEbeanQueryExecution getExecution() {
-    if (this.tree.isDelete()) {
-      return new AbstractEbeanQueryExecution.DeleteExecution(getEbeanServer());
-    } else if (this.tree.isExistsProjection()) {
-      return new AbstractEbeanQueryExecution.ExistsExecution();
+        this.domainClass = method.getEntityInformation().getJavaType();
+        this.tree = new PartTree(method.getName(), domainClass);
+        this.parameters = (DefaultParameters) method.getParameters();
+        this.queryPreparer = new QueryPreparer(ebeanServer);
     }
 
-    return super.getExecution();
-  }
+    @Override
+    protected AbstractEbeanQueryExecution getExecution() {
+        if (this.tree.isDelete()) {
+            return new AbstractEbeanQueryExecution.DeleteExecution(getEbeanServer());
+        } else if (this.tree.isExistsProjection()) {
+            return new AbstractEbeanQueryExecution.ExistsExecution();
+        }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
-   */
-  @Override
-  public EbeanQueryWrapper doCreateQuery(Object[] values) {
-    return queryPreparer.createQuery(values);
-  }
+        return super.getExecution();
+    }
 
-  /**
-   * EbeanQueryWrapper preparer to create {@link Query} instances and potentially cache them.
-   *
-   * @author Xuegui Yuan
-   */
-  private class QueryPreparer {
-
-    private final EbeanServer ebeanServer;
-
-    public QueryPreparer(EbeanServer ebeanServer) {
-      this.ebeanServer = ebeanServer;
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
+     */
+    @Override
+    public EbeanQueryWrapper doCreateQuery(Object[] values) {
+        return queryPreparer.createQuery(values);
     }
 
     /**
-     * Creates a new {@link Query} for the given parameter values.
+     * EbeanQueryWrapper preparer to create {@link Query} instances and potentially cache them.
      *
-     * @param values
-     * @return
+     * @author Xuegui Yuan
      */
-    public EbeanQueryWrapper createQuery(Object[] values) {
-      ParametersParameterAccessor accessor = new ParametersParameterAccessor(parameters, values);
-      EbeanQueryCreator ebeanQueryCreator = createCreator(accessor);
-      return
-          restrictMaxResultsIfNecessary(
-              invokeBinding(getBinder(values),
-                  EbeanQueryWrapper.ofEbeanQuery(ebeanQueryCreator.createQuery())));
-    }
+    private class QueryPreparer {
 
-    protected EbeanQueryCreator createCreator(ParametersParameterAccessor accessor) {
-      EbeanServer ebeanServer = getEbeanServer();
-      Query ebeanQuery = ebeanServer.createQuery(domainClass);
-      ExpressionList expressionList = ebeanQuery.where();
+        private final EbeanServer ebeanServer;
 
-      ParameterMetadataProvider provider = new ParameterMetadataProvider(accessor);
+        public QueryPreparer(EbeanServer ebeanServer) {
+            this.ebeanServer = ebeanServer;
+        }
 
-      ResultProcessor processor = getQueryMethod().getResultProcessor();
+        /**
+         * Creates a new {@link Query} for the given parameter values.
+         *
+         * @param values
+         * @return
+         */
+        public EbeanQueryWrapper createQuery(Object[] values) {
+            ParametersParameterAccessor accessor = new ParametersParameterAccessor(parameters, values);
+            EbeanQueryCreator ebeanQueryCreator = createCreator(accessor);
+            return
+                    restrictMaxResultsIfNecessary(
+                            invokeBinding(getBinder(values),
+                                    EbeanQueryWrapper.ofEbeanQuery(ebeanQueryCreator.createQuery())));
+        }
 
-      return new EbeanQueryCreator(tree, processor.getReturnedType(), expressionList, provider);
-    }
+        protected EbeanQueryCreator createCreator(ParametersParameterAccessor accessor) {
+            EbeanServer ebeanServer = getEbeanServer();
+            Query ebeanQuery = ebeanServer.createQuery(domainClass);
+            ExpressionList expressionList = ebeanQuery.where();
 
-    /**
-     * Restricts the max results of the given {@link Query} if the current {@code tree} marks this {@code query} as
-     * limited.
-     *
-     * @param query
-     * @return
-     */
-    private EbeanQueryWrapper restrictMaxResultsIfNecessary(EbeanQueryWrapper query) {
-      if (tree.isLimiting()) {
+            ParameterMetadataProvider provider = new ParameterMetadataProvider(accessor);
 
-        if (query.getMaxRows() != Integer.MAX_VALUE) {
+            ResultProcessor processor = getQueryMethod().getResultProcessor();
+
+            return new EbeanQueryCreator(tree, processor.getReturnedType(), expressionList, provider);
+        }
+
+        /**
+         * Restricts the max results of the given {@link Query} if the current {@code tree} marks this {@code query} as
+         * limited.
+         *
+         * @param query
+         * @return
+         */
+        private EbeanQueryWrapper restrictMaxResultsIfNecessary(EbeanQueryWrapper query) {
+            if (tree.isLimiting()) {
+
+                if (query.getMaxRows() != Integer.MAX_VALUE) {
                     /*
                      * In order to return the correct results, we have to adjust the first result offset to be returned if:
 					 * - a Pageable parameter is present
 					 * - AND the requested page number > 0
 					 * - AND the requested page size was bigger than the derived result limitation via the First/Top keyword.
 					 */
-          if (query.getMaxRows() > tree.getMaxResults() && query.getFirstRow() > 0) {
-            query.setFirstRow(query.getFirstRow() - (query.getMaxRows() - tree.getMaxResults()));
-          }
+                    if (query.getMaxRows() > tree.getMaxResults() && query.getFirstRow() > 0) {
+                        query.setFirstRow(query.getFirstRow() - (query.getMaxRows() - tree.getMaxResults()));
+                    }
+                }
+
+                query.setMaxRows(tree.getMaxResults());
+            }
+
+            if (tree.isExistsProjection()) {
+                query.setMaxRows(1);
+            }
+
+            return query;
         }
 
-        query.setMaxRows(tree.getMaxResults());
-      }
+        /**
+         * Invokes parameter binding on the given {@link ExpressionList}.
+         *
+         * @param binder
+         * @param query
+         * @return
+         */
+        protected EbeanQueryWrapper invokeBinding(ParameterBinder binder, EbeanQueryWrapper query) {
+            return binder.bindAndPrepare(query);
+        }
 
-      if (tree.isExistsProjection()) {
-        query.setMaxRows(1);
-      }
+        private ParameterBinder getBinder(Object[] values) {
+            return new ParameterBinder(parameters, values);
+        }
 
-      return query;
+        private Sort getDynamicSort(Object[] values) {
+            return parameters.potentiallySortsDynamically() ? new ParametersParameterAccessor(parameters, values).getSort()
+                    : null;
+        }
     }
-
-    /**
-     * Invokes parameter binding on the given {@link ExpressionList}.
-     *
-     * @param binder
-     * @param query
-     * @return
-     */
-    protected EbeanQueryWrapper invokeBinding(ParameterBinder binder, EbeanQueryWrapper query) {
-      return binder.bindAndPrepare(query);
-    }
-
-    private ParameterBinder getBinder(Object[] values) {
-      return new ParameterBinder(parameters, values);
-    }
-
-    private Sort getDynamicSort(Object[] values) {
-      return parameters.potentiallySortsDynamically() ? new ParametersParameterAccessor(parameters, values).getSort()
-          : null;
-    }
-  }
 }

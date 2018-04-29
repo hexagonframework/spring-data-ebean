@@ -16,18 +16,19 @@
 
 package org.springframework.data.ebean.repository.config;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
-import javax.persistence.Entity;
-import javax.persistence.MappedSuperclass;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.ebean.repository.EbeanRepository;
 import org.springframework.data.ebean.repository.support.EbeanRepositoryFactoryBean;
 import org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport;
+
+import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
 
 /**
  * Ebean specific configuration extension parsing custom attributes from the XML namespace and
@@ -39,52 +40,52 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
  */
 public class EbeanRepositoryConfigExtension extends RepositoryConfigurationExtensionSupport {
 
-  private static final String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = "transactionManager";
-  private static final String ENABLE_DEFAULT_TRANSACTIONS_ATTRIBUTE = "enableDefaultTransactions";
+    private static final String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = "transactionManager";
+    private static final String ENABLE_DEFAULT_TRANSACTIONS_ATTRIBUTE = "enableDefaultTransactions";
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.repository.config.RepositoryConfigurationExtension#getRepositoryFactoryBeanClassName()
-   */
-  @Override
-  public String getRepositoryFactoryBeanClassName() {
-    return EbeanRepositoryFactoryBean.class.getName();
-  }
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.config.RepositoryConfigurationExtension#getRepositoryFactoryBeanClassName()
+     */
+    @Override
+    public String getRepositoryFactoryBeanClassName() {
+        return EbeanRepositoryFactoryBean.class.getName();
+    }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getModuleName()
-   */
-  @Override
-  public String getModuleName() {
-    return "Ebean";
-  }
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getModuleName()
+     */
+    @Override
+    public String getModuleName() {
+        return "Ebean";
+    }
 
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.repository.config14.RepositoryConfigurationExtensionSupport#getModulePrefix()
-   */
-  @Override
-  protected String getModulePrefix() {
-    return getModuleName().toLowerCase(Locale.US);
-  }
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.config14.RepositoryConfigurationExtensionSupport#getModulePrefix()
+     */
+    @Override
+    protected String getModulePrefix() {
+        return getModuleName().toLowerCase(Locale.US);
+    }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getIdentifyingAnnotations()
-   */
-  @Override
-  protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
-    return Arrays.asList(Entity.class, MappedSuperclass.class);
-  }
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getIdentifyingAnnotations()
+     */
+    @Override
+    protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
+        return Arrays.asList(Entity.class, MappedSuperclass.class);
+    }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getIdentifyingTypes()
-   */
-  @Override
-  protected Collection<Class<?>> getIdentifyingTypes() {
-    return Collections.<Class<?>>singleton(EbeanRepository.class);
-  }
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport#getIdentifyingTypes()
+     */
+    @Override
+    protected Collection<Class<?>> getIdentifyingTypes() {
+        return Collections.<Class<?>>singleton(EbeanRepository.class);
+    }
 }

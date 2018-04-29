@@ -17,12 +17,7 @@
 package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
-import org.springframework.data.repository.query.DefaultParameters;
-import org.springframework.data.repository.query.EvaluationContextProvider;
-import org.springframework.data.repository.query.ParameterAccessor;
-import org.springframework.data.repository.query.ParametersParameterAccessor;
-import org.springframework.data.repository.query.ResultProcessor;
-import org.springframework.data.repository.query.ReturnedType;
+import org.springframework.data.repository.query.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.Assert;
 
@@ -34,77 +29,77 @@ import org.springframework.util.Assert;
  */
 abstract class AbstractStringBasedEbeanQuery extends AbstractEbeanQuery {
 
-  private final StringQuery query;
-  private final EvaluationContextProvider evaluationContextProvider;
-  private final SpelExpressionParser parser;
+    private final StringQuery query;
+    private final EvaluationContextProvider evaluationContextProvider;
+    private final SpelExpressionParser parser;
 
-  /**
-   * Creates a new {@link AbstractStringBasedEbeanQuery} from the given {@link EbeanQueryMethod}, {@link io.ebean.EbeanServer} and
-   * query {@link String}.
-   *
-   * @param method                    must not be {@literal null}.
-   * @param ebeanServer               must not be {@literal null}.
-   * @param queryString               must not be {@literal null}.
-   * @param evaluationContextProvider must not be {@literal null}.
-   * @param parser                    must not be {@literal null}.
-   */
-  public AbstractStringBasedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
-                                       EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
+    /**
+     * Creates a new {@link AbstractStringBasedEbeanQuery} from the given {@link EbeanQueryMethod}, {@link io.ebean.EbeanServer} and
+     * query {@link String}.
+     *
+     * @param method                    must not be {@literal null}.
+     * @param ebeanServer               must not be {@literal null}.
+     * @param queryString               must not be {@literal null}.
+     * @param evaluationContextProvider must not be {@literal null}.
+     * @param parser                    must not be {@literal null}.
+     */
+    public AbstractStringBasedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
+                                         EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
 
-    super(method, ebeanServer);
+        super(method, ebeanServer);
 
-    Assert.hasText(queryString, "EbeanQueryWrapper string must not be null or empty!");
-    Assert.notNull(evaluationContextProvider, "ExpressionEvaluationContextProvider must not be null!");
-    Assert.notNull(parser, "Parser must not be null or empty!");
+        Assert.hasText(queryString, "EbeanQueryWrapper string must not be null or empty!");
+        Assert.notNull(evaluationContextProvider, "ExpressionEvaluationContextProvider must not be null!");
+        Assert.notNull(parser, "Parser must not be null or empty!");
 
-    this.evaluationContextProvider = evaluationContextProvider;
-    this.query = new ExpressionBasedStringQuery(queryString, method.getEntityInformation(), parser);
-    this.parser = parser;
-  }
+        this.evaluationContextProvider = evaluationContextProvider;
+        this.query = new ExpressionBasedStringQuery(queryString, method.getEntityInformation(), parser);
+        this.parser = parser;
+    }
 
-  /**
-   * @return the query
-   */
-  public StringQuery getQuery() {
-    return query;
-  }
+    /**
+     * @return the query
+     */
+    public StringQuery getQuery() {
+        return query;
+    }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
-   */
-  @Override
-  public EbeanQueryWrapper doCreateQuery(Object[] values) {
-    ParameterAccessor accessor = new ParametersParameterAccessor(getQueryMethod().getParameters(), values);
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#doCreateQuery(java.lang.Object[])
+     */
+    @Override
+    public EbeanQueryWrapper doCreateQuery(Object[] values) {
+        ParameterAccessor accessor = new ParametersParameterAccessor(getQueryMethod().getParameters(), values);
 
-    EbeanQueryWrapper query = createEbeanQuery(this.query.getQueryString());
+        EbeanQueryWrapper query = createEbeanQuery(this.query.getQueryString());
 
-    return createBinder(values).bindAndPrepare(query);
-  }
+        return createBinder(values).bindAndPrepare(query);
+    }
 
-  /*
-   * (non-Javadoc)
-   * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#createBinder(java.lang.Object[])
-   */
-  @Override
-  protected ParameterBinder createBinder(Object[] values) {
-    return new SpelExpressionStringQueryParameterBinder((DefaultParameters) getQueryMethod().getParameters(), values, query,
-        evaluationContextProvider, parser);
-  }
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.ebean.repository.query.AbstractEbeanQuery#createBinder(java.lang.Object[])
+     */
+    @Override
+    protected ParameterBinder createBinder(Object[] values) {
+        return new SpelExpressionStringQueryParameterBinder((DefaultParameters) getQueryMethod().getParameters(), values, query,
+                evaluationContextProvider, parser);
+    }
 
-  /**
-   * Creates an appropriate Ebean query from an {@link EbeanServer} according to the current {@link AbstractEbeanQuery}
-   * type.
-   *
-   * @param queryString
-   * @return
-   */
-  protected EbeanQueryWrapper createEbeanQuery(String queryString) {
-    EbeanServer ebeanServer = getEbeanServer();
+    /**
+     * Creates an appropriate Ebean query from an {@link EbeanServer} according to the current {@link AbstractEbeanQuery}
+     * type.
+     *
+     * @param queryString
+     * @return
+     */
+    protected EbeanQueryWrapper createEbeanQuery(String queryString) {
+        EbeanServer ebeanServer = getEbeanServer();
 
-    ResultProcessor resultFactory = getQueryMethod().getResultProcessor();
-    ReturnedType returnedType = resultFactory.getReturnedType();
+        ResultProcessor resultFactory = getQueryMethod().getResultProcessor();
+        ReturnedType returnedType = resultFactory.getReturnedType();
 
-    return EbeanQueryWrapper.ofEbeanQuery(ebeanServer.createQuery(returnedType.getReturnedType(), queryString));
-  }
+        return EbeanQueryWrapper.ofEbeanQuery(ebeanServer.createQuery(returnedType.getReturnedType(), queryString));
+    }
 }

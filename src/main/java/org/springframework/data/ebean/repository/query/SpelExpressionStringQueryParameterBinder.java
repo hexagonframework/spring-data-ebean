@@ -16,7 +16,6 @@
 
 package org.springframework.data.ebean.repository.query;
 
-import java.util.List;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.Parameter;
@@ -26,6 +25,8 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 /**
  * A {@link StringQueryParameterBinder} that is able to bind synthetic query parameters.
  *
@@ -33,117 +34,117 @@ import org.springframework.util.Assert;
  */
 class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinder {
 
-  private final StringQuery query;
-  private final EvaluationContextProvider evaluationContextProvider;
-  private final SpelExpressionParser parser;
+    private final StringQuery query;
+    private final EvaluationContextProvider evaluationContextProvider;
+    private final SpelExpressionParser parser;
 
-  /**
-   * Creates a new {@link SpelExpressionStringQueryParameterBinder}.
-   *
-   * @param parameters                must not be {@literal null}
-   * @param values                    must not be {@literal null}
-   * @param query                     must not be {@literal null}
-   * @param evaluationContextProvider must not be {@literal null}
-   * @param parser                    must not be {@literal null}
-   */
-  public SpelExpressionStringQueryParameterBinder(DefaultParameters parameters, Object[] values, StringQuery query,
-                                                  EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
+    /**
+     * Creates a new {@link SpelExpressionStringQueryParameterBinder}.
+     *
+     * @param parameters                must not be {@literal null}
+     * @param values                    must not be {@literal null}
+     * @param query                     must not be {@literal null}
+     * @param evaluationContextProvider must not be {@literal null}
+     * @param parser                    must not be {@literal null}
+     */
+    public SpelExpressionStringQueryParameterBinder(DefaultParameters parameters, Object[] values, StringQuery query,
+                                                    EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
 
-    super(parameters, values, query);
-    Assert.notNull(evaluationContextProvider, "EvaluationContextProvider must not be null!");
-    Assert.notNull(parser, "SpelExpressionParser must not be null!");
+        super(parameters, values, query);
+        Assert.notNull(evaluationContextProvider, "EvaluationContextProvider must not be null!");
+        Assert.notNull(parser, "SpelExpressionParser must not be null!");
 
-    this.evaluationContextProvider = evaluationContextProvider;
-    this.query = query;
-    this.parser = parser;
-  }
+        this.evaluationContextProvider = evaluationContextProvider;
+        this.query = query;
+        this.parser = parser;
+    }
 
-  @Override
-  public EbeanQueryWrapper bind(EbeanQueryWrapper ebeanQuery) {
-    return potentiallyBindExpressionParameters(super.bind(ebeanQuery));
-  }
+    @Override
+    public EbeanQueryWrapper bind(EbeanQueryWrapper ebeanQuery) {
+        return potentiallyBindExpressionParameters(super.bind(ebeanQuery));
+    }
 
-  /**
-   * @param ebeanQuery must not be {@literal null}
-   * @return
-   */
-  private EbeanQueryWrapper potentiallyBindExpressionParameters(EbeanQueryWrapper ebeanQuery) {
-    for (StringQuery.ParameterBinding binding : query.getParameterBindings()) {
+    /**
+     * @param ebeanQuery must not be {@literal null}
+     * @return
+     */
+    private EbeanQueryWrapper potentiallyBindExpressionParameters(EbeanQueryWrapper ebeanQuery) {
+        for (StringQuery.ParameterBinding binding : query.getParameterBindings()) {
 
-      if (binding.isExpression()) {
+            if (binding.isExpression()) {
 
-        Expression expr = parseExpressionString(binding.getExpression());
+                Expression expr = parseExpressionString(binding.getExpression());
 
-        Object value = evaluateExpression(expr);
+                Object value = evaluateExpression(expr);
 
-        try {
-          if (binding.getName() != null) {
-            ebeanQuery.setParameter(binding.getName(), binding.prepare(value));
-          } else {
-            ebeanQuery.setParameter(binding.getPosition(), binding.prepare(value));
-          }
-        } catch (IllegalArgumentException iae) {
+                try {
+                    if (binding.getName() != null) {
+                        ebeanQuery.setParameter(binding.getName(), binding.prepare(value));
+                    } else {
+                        ebeanQuery.setParameter(binding.getPosition(), binding.prepare(value));
+                    }
+                } catch (IllegalArgumentException iae) {
 
-          // Since Eclipse doesn't reliably report whether a query has parameters
-          // we simply try to set the parameters and ignore possible failures.
+                    // Since Eclipse doesn't reliably report whether a query has parameters
+                    // we simply try to set the parameters and ignore possible failures.
+                }
+            }
         }
-      }
+
+        return ebeanQuery;
     }
 
-    return ebeanQuery;
-  }
-
-  /**
-   * Parses the given {@code expressionString} into a SpEL {@link Expression}.
-   *
-   * @param expressionString
-   * @return
-   */
-  private Expression parseExpressionString(String expressionString) {
-    return parser.parseExpression(expressionString);
-  }
-
-  /**
-   * Evaluates the given SpEL {@link Expression}.
-   *
-   * @param expr
-   * @return
-   */
-  private Object evaluateExpression(Expression expr) {
-    return expr.getValue(getEvaluationContext(), Object.class);
-  }
-
-  /**
-   * Returns the {@link StandardEvaluationContext} to use for evaluation.
-   *
-   * @return
-   */
-  private EvaluationContext getEvaluationContext() {
-    return evaluationContextProvider.getEvaluationContext(getParameters(), getValues());
-  }
-
-  @Override
-  protected boolean canBindParameter(Parameter parameter) {
-
-    List<StringQuery.ParameterBinding> parameterBindings = query.getParameterBindings();
-
-    // if no parameter bindings are present, we simply rely on the check in super.
-    if (parameterBindings.isEmpty()) {
-      return super.canBindParameter(parameter);
+    /**
+     * Parses the given {@code expressionString} into a SpEL {@link Expression}.
+     *
+     * @param expressionString
+     * @return
+     */
+    private Expression parseExpressionString(String expressionString) {
+        return parser.parseExpression(expressionString);
     }
 
-    // otherwise determine whether there are any non expression parameters left to be bound.
-    int expressionParameterCount = 0;
-    for (StringQuery.ParameterBinding binding : parameterBindings) {
-
-      if (binding.isExpression()) {
-        expressionParameterCount++;
-      }
+    /**
+     * Evaluates the given SpEL {@link Expression}.
+     *
+     * @param expr
+     * @return
+     */
+    private Object evaluateExpression(Expression expr) {
+        return expr.getValue(getEvaluationContext(), Object.class);
     }
 
-    boolean allParametersAreUsedInExpressions = parameterBindings.size() - expressionParameterCount == 0;
+    /**
+     * Returns the {@link StandardEvaluationContext} to use for evaluation.
+     *
+     * @return
+     */
+    private EvaluationContext getEvaluationContext() {
+        return evaluationContextProvider.getEvaluationContext(getParameters(), getValues());
+    }
 
-    // if all parameters are used in expressions, then we can skip their bindings now, since they'll get bound later.
-    return !allParametersAreUsedInExpressions && super.canBindParameter(parameter);
-  }
+    @Override
+    protected boolean canBindParameter(Parameter parameter) {
+
+        List<StringQuery.ParameterBinding> parameterBindings = query.getParameterBindings();
+
+        // if no parameter bindings are present, we simply rely on the check in super.
+        if (parameterBindings.isEmpty()) {
+            return super.canBindParameter(parameter);
+        }
+
+        // otherwise determine whether there are any non expression parameters left to be bound.
+        int expressionParameterCount = 0;
+        for (StringQuery.ParameterBinding binding : parameterBindings) {
+
+            if (binding.isExpression()) {
+                expressionParameterCount++;
+            }
+        }
+
+        boolean allParametersAreUsedInExpressions = parameterBindings.size() - expressionParameterCount == 0;
+
+        // if all parameters are used in expressions, then we can skip their bindings now, since they'll get bound later.
+        return !allParametersAreUsedInExpressions && super.canBindParameter(parameter);
+    }
 }

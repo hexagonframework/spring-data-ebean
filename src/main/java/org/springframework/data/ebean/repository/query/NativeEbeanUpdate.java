@@ -33,32 +33,32 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
  */
 final class NativeEbeanUpdate extends AbstractStringBasedEbeanQuery {
 
-  /**
-   * Creates a new {@link NativeEbeanUpdate} encapsulating the query annotated on the given {@link EbeanQueryMethod}.
-   *
-   * @param method                    must not be {@literal null}.
-   * @param ebeanServer               must not be {@literal null}.
-   * @param queryString               must not be {@literal null} or empty.
-   * @param evaluationContextProvider
-   */
-  public NativeEbeanUpdate(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
-                           EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
+    /**
+     * Creates a new {@link NativeEbeanUpdate} encapsulating the query annotated on the given {@link EbeanQueryMethod}.
+     *
+     * @param method                    must not be {@literal null}.
+     * @param ebeanServer               must not be {@literal null}.
+     * @param queryString               must not be {@literal null} or empty.
+     * @param evaluationContextProvider
+     */
+    public NativeEbeanUpdate(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
+                             EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
 
-    super(method, ebeanServer, queryString, evaluationContextProvider, parser);
+        super(method, ebeanServer, queryString, evaluationContextProvider, parser);
 
-    Parameters<?, ?> parameters = method.getParameters();
-    boolean hasPagingOrSortingParameter = parameters.hasPageableParameter() || parameters.hasSortParameter();
-    boolean containsPageableOrSortInQueryExpression = queryString.contains("#pageable")
-        || queryString.contains("#sort");
+        Parameters<?, ?> parameters = method.getParameters();
+        boolean hasPagingOrSortingParameter = parameters.hasPageableParameter() || parameters.hasSortParameter();
+        boolean containsPageableOrSortInQueryExpression = queryString.contains("#pageable")
+                || queryString.contains("#sort");
 
-    if (hasPagingOrSortingParameter && !containsPageableOrSortInQueryExpression) {
-      throw new InvalidEbeanQueryMethodException(
-          "Cannot use native queries with dynamic sorting and/or pagination in method " + method);
+        if (hasPagingOrSortingParameter && !containsPageableOrSortInQueryExpression) {
+            throw new InvalidEbeanQueryMethodException(
+                    "Cannot use native queries with dynamic sorting and/or pagination in method " + method);
+        }
     }
-  }
 
-  @Override
-  protected EbeanQueryWrapper createEbeanQuery(String queryString) {
-    return EbeanQueryWrapper.ofEbeanQuery(getEbeanServer().createSqlUpdate(queryString));
-  }
+    @Override
+    protected EbeanQueryWrapper createEbeanQuery(String queryString) {
+        return EbeanQueryWrapper.ofEbeanQuery(getEbeanServer().createSqlUpdate(queryString));
+    }
 }

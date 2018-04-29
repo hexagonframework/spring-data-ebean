@@ -18,11 +18,12 @@ package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
 import io.ebean.Query;
-import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.RepositoryQuery;
+
+import javax.persistence.PersistenceException;
 
 /**
  * {@link RepositoryQuery} implementation that inspects a {@link QueryMethod}
@@ -33,43 +34,43 @@ import org.springframework.data.repository.query.RepositoryQuery;
  */
 final class NamedEbeanQuery extends AbstractEbeanQuery {
 
-  private static final Logger LOG = LoggerFactory.getLogger(NamedEbeanQuery.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NamedEbeanQuery.class);
 
-  private final String queryName;
-  private Query query;
+    private final String queryName;
+    private Query query;
 
-  /**
-   * Creates a new {@link NamedEbeanQuery}.
-   */
-  private NamedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, Query query) {
-    super(method, ebeanServer);
+    /**
+     * Creates a new {@link NamedEbeanQuery}.
+     */
+    private NamedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, Query query) {
+        super(method, ebeanServer);
 
-    this.queryName = method.getNamedQueryName();
-    this.query = query;
-  }
-
-  /**
-   * Looks up a named query for the given {@link org.springframework.data.repository.query.QueryMethod}.
-   *
-   * @param method
-   * @return
-   */
-  public static RepositoryQuery lookupFrom(EbeanQueryMethod method, EbeanServer ebeanServer) {
-    final String queryName = method.getNamedQueryName();
-
-    LOG.debug("Looking up named query {}", queryName);
-
-    try {
-      Query query = ebeanServer.createNamedQuery(method.getEntityInformation().getJavaType(), queryName);
-      return new NamedEbeanQuery(method, ebeanServer, query);
-    } catch (PersistenceException e) {
-      LOG.debug("Did not find named query {}", queryName);
-      return null;
+        this.queryName = method.getNamedQueryName();
+        this.query = query;
     }
-  }
 
-  @Override
-  protected EbeanQueryWrapper doCreateQuery(Object[] values) {
-    return createBinder(values).bindAndPrepare(EbeanQueryWrapper.ofEbeanQuery(query));
-  }
+    /**
+     * Looks up a named query for the given {@link org.springframework.data.repository.query.QueryMethod}.
+     *
+     * @param method
+     * @return
+     */
+    public static RepositoryQuery lookupFrom(EbeanQueryMethod method, EbeanServer ebeanServer) {
+        final String queryName = method.getNamedQueryName();
+
+        LOG.debug("Looking up named query {}", queryName);
+
+        try {
+            Query query = ebeanServer.createNamedQuery(method.getEntityInformation().getJavaType(), queryName);
+            return new NamedEbeanQuery(method, ebeanServer, query);
+        } catch (PersistenceException e) {
+            LOG.debug("Did not find named query {}", queryName);
+            return null;
+        }
+    }
+
+    @Override
+    protected EbeanQueryWrapper doCreateQuery(Object[] values) {
+        return createBinder(values).bindAndPrepare(EbeanQueryWrapper.ofEbeanQuery(query));
+    }
 }

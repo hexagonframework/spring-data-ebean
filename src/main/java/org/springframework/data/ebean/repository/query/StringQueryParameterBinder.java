@@ -31,58 +31,58 @@ import static org.springframework.data.ebean.repository.query.StringQuery.Parame
  */
 public class StringQueryParameterBinder extends ParameterBinder {
 
-  private final StringQuery query;
+    private final StringQuery query;
 
-  /**
-   * Creates a new {@link StringQueryParameterBinder} from the given {@link Parameters}, method arguments and
-   * {@link StringQuery}.
-   *
-   * @param parameters must not be {@literal null}.
-   * @param values     must not be {@literal null}.
-   * @param query      must not be {@literal null}.
-   */
-  public StringQueryParameterBinder(DefaultParameters parameters, Object[] values, StringQuery query) {
+    /**
+     * Creates a new {@link StringQueryParameterBinder} from the given {@link Parameters}, method arguments and
+     * {@link StringQuery}.
+     *
+     * @param parameters must not be {@literal null}.
+     * @param values     must not be {@literal null}.
+     * @param query      must not be {@literal null}.
+     */
+    public StringQueryParameterBinder(DefaultParameters parameters, Object[] values, StringQuery query) {
 
-    super(parameters, values);
+        super(parameters, values);
 
-    Assert.notNull(query, "StringQuery must not be null!");
-    this.query = query;
-  }
-
-  @Override
-  protected void bind(EbeanQueryWrapper ebeanQuery, Parameter methodParameter, Object value, int position) {
-
-    ParameterBinding binding = getBindingFor(ebeanQuery, position, methodParameter);
-    super.bind(ebeanQuery, methodParameter, binding.prepare(value), position);
-  }
-
-  /**
-   * Finds the {@link LikeParameterBinding} to be applied before binding a parameter value to the query.
-   *
-   * @param ebeanQuery must not be {@literal null}.
-   * @param position
-   * @param parameter  must not be {@literal null}.
-   * @return the {@link ParameterBinding} for the given parameters or {@literal null} if none available.
-   */
-  private ParameterBinding getBindingFor(Object ebeanQuery, int position, Parameter parameter) {
-
-    Assert.notNull(ebeanQuery, "EbeanQueryWrapper must not be null!");
-    Assert.notNull(parameter, "Parameter must not be null!");
-
-    if (parameter.isNamedParameter()) {
-      return query.getBindingFor(parameter.getName().orElseThrow(() -> new IllegalArgumentException("Parameter needs to be named!")));
+        Assert.notNull(query, "StringQuery must not be null!");
+        this.query = query;
     }
 
-    try {
-      return query.getBindingFor(position);
+    @Override
+    protected void bind(EbeanQueryWrapper ebeanQuery, Parameter methodParameter, Object value, int position) {
 
-    } catch (IllegalArgumentException ex) {
-
-      // We should actually reject parameters unavailable, but as EclipseLink doesn't implement ….getParameter(int) for
-      // native queries correctly we need to fall back to an indexed parameter
-      // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=427892
-
-      return new ParameterBinding(position);
+        ParameterBinding binding = getBindingFor(ebeanQuery, position, methodParameter);
+        super.bind(ebeanQuery, methodParameter, binding.prepare(value), position);
     }
-  }
+
+    /**
+     * Finds the {@link LikeParameterBinding} to be applied before binding a parameter value to the query.
+     *
+     * @param ebeanQuery must not be {@literal null}.
+     * @param position
+     * @param parameter  must not be {@literal null}.
+     * @return the {@link ParameterBinding} for the given parameters or {@literal null} if none available.
+     */
+    private ParameterBinding getBindingFor(Object ebeanQuery, int position, Parameter parameter) {
+
+        Assert.notNull(ebeanQuery, "EbeanQueryWrapper must not be null!");
+        Assert.notNull(parameter, "Parameter must not be null!");
+
+        if (parameter.isNamedParameter()) {
+            return query.getBindingFor(parameter.getName().orElseThrow(() -> new IllegalArgumentException("Parameter needs to be named!")));
+        }
+
+        try {
+            return query.getBindingFor(position);
+
+        } catch (IllegalArgumentException ex) {
+
+            // We should actually reject parameters unavailable, but as EclipseLink doesn't implement ….getParameter(int) for
+            // native queries correctly we need to fall back to an indexed parameter
+            // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=427892
+
+            return new ParameterBinding(position);
+        }
+    }
 }
