@@ -20,6 +20,7 @@ import io.ebean.*;
 import io.ebean.text.PathProperties;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.ebean.annotation.ExprParam;
+import org.springframework.data.ebean.annotation.IncludeFields;
 import org.springframework.data.ebean.util.Converters;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -356,6 +357,17 @@ public class EbeanQueryChannelService implements QueryChannelService {
         Query<T> query = ebeanServer.find(entityType);
         if (StringUtils.hasText(fetchPath)) {
             query.apply(PathProperties.parse(fetchPath));
+        } else {
+            // queryObject IncludePath
+            if (queryObject != null) {
+                if (queryObject.getClass().isAnnotationPresent(IncludeFields.class)) {
+                    IncludeFields includeFields = queryObject.getClass().getAnnotation(IncludeFields.class);
+                    String ifs = includeFields.value();
+                    if (StringUtils.hasText(ifs)) {
+                        query.apply(PathProperties.parse(ifs));
+                    }
+                }
+            }
         }
 
         ExpressionList<T> expressionList = query.where();

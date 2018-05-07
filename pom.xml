@@ -6,7 +6,7 @@
 
     <groupId>io.github.hexagonframework.data</groupId>
     <artifactId>spring-data-ebean</artifactId>
-    <version>1.4.0.RELEASE</version>
+    <version>1.4.1.RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Spring Data Ebean</name>
@@ -47,7 +47,7 @@
         <bundlor.failOnWarnings>false</bundlor.failOnWarnings>
         <spring>5.0.4.RELEASE</spring>
         <springdata.commons>2.0.5.RELEASE</springdata.commons>
-        <ebean.version>11.15.4</ebean.version>
+        <ebean.version>11.15.5</ebean.version>
         <ebean-spring-txn.version>11.10.4</ebean-spring-txn.version>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     </properties>
@@ -60,6 +60,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -72,6 +73,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.0.0</version>
                         <configuration>
                             <source>${java.version}</source>
                         </configuration>
@@ -87,6 +89,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
@@ -222,14 +225,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.0.0</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>wagon-maven-plugin</artifactId>
+                <version>2.0.0</version>
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>1.5.6</version>
             </plugin>
         </plugins>
     </build>

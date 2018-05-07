@@ -111,11 +111,16 @@ public class EbeanQueryChannelServiceIntegrationTest {
     userQuery.setEmailAddress("testquerychannel@163.com");
     userQuery.setAgeStart(1);
     userQuery.setAgeEnd(30);
-    UserDTO user = queryChannel.createQuery(User.class, userQuery)
+
+    User user = queryChannel.createQuery(User.class, userQuery)
+            .findOne();
+    assertEquals("testquerychannel@163.com", user.getEmailAddress());
+
+    UserDTO userDTO = queryChannel.createQuery(User.class, userQuery)
             .asDto(UserDTO.class)
             .setRelaxedMode()
             .findOne();
-    assertEquals("testquerychannel@163.com", user.getEmailAddress());
+    assertEquals("testquerychannel@163.com", userDTO.getEmailAddress());
   }
 
   @Test

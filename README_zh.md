@@ -312,7 +312,7 @@ public class UserRepositoryIntegrationTests {
 查询对象 `UserQuery`
 ```java
 @Data
-@IncludeFields("emailAddress")
+@IncludeFields("emailAddress,fullName(lastName,firstName),age")
 public class UserQuery {
     @ExprParam(expr = ExprType.CONTAINS)
     private String emailAddress;

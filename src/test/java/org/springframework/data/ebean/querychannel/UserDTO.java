@@ -1,6 +1,5 @@
 package org.springframework.data.ebean.querychannel;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,9 +9,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 public class UserDTO {
-  private String firstName;
   private String lastName;
+  private String firstName;
   private String emailAddress;
+  private int age;
 }
