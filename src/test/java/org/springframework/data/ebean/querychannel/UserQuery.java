@@ -9,7 +9,7 @@ import org.springframework.data.ebean.annotation.IncludeFields;
  * @version 1.0 (created time: 2018/4/29).
  */
 @Data
-@IncludeFields("emailAddress")
+@IncludeFields("emailAddress,fullName(lastName,firstName),age")
 public class UserQuery {
     @ExprParam(expr = ExprType.CONTAINS)
     private String emailAddress;
