@@ -1,6 +1,9 @@
 package org.springframework.data.ebean.sample.domain;
 
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.ebean.annotation.Modifying;
 import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.ebean.repository.EbeanRepository;
@@ -40,4 +43,8 @@ public interface UserRepository extends EbeanRepository<User, Long> {
   List<User> findByLastNameNamedOql(@Param("lastName") String lastName);
 
   List<User> findAllByEmailAddressAndFullNameLastName(@Param("emailAddress") String emailAddress, @Param("lastName") String lastName);
+
+  @Query( value = "where emailAddress = :emailAddress")
+  Page<User> findUserByEmailAddressEqualsOql(@Param("emailAddress") String lastName, Pageable page);
+
 }
