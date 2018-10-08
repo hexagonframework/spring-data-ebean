@@ -468,4 +468,11 @@ public class UserRepositoryIntegrationTest {
     assertNotNull(u);
     assertEquals("yuanxuegui@126.com", u.getEmailAddress());
   }
+
+  @Test
+  public void findUserByEmailAddressEqualsOql_pageable() {
+    Page<User> page = userRepository.findUserByEmailAddressEqualsOql("yuanxuegui@163.com", PageRequest.of(0, 20, Sort.Direction.DESC, "id"));
+    assertNotNull(page);
+  }
+
 }
