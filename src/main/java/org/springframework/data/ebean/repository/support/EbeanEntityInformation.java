@@ -7,6 +7,7 @@ import org.springframework.data.repository.core.EntityInformation;
 
 /**
  * Extension of {@link EntityInformation} to capture information about ebean entity.
+ * @author Xuegui Yuan
  */
 public class EbeanEntityInformation<T, ID> implements EntityInformation<T, ID> {
 

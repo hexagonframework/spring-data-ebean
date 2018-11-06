@@ -62,7 +62,6 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
     @SuppressWarnings("unchecked")
     @Override
     public <T, ID> EntityInformation<T, ID> getEntityInformation(Class<T> domainClass) {
-
         return new EbeanEntityInformation(this.ebeanServer, domainClass);
     }
 
