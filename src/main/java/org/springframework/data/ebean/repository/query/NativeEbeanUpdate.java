@@ -18,9 +18,9 @@ package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
 import org.springframework.data.ebean.annotation.Query;
-import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryMethod;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
@@ -42,7 +42,7 @@ final class NativeEbeanUpdate extends AbstractStringBasedEbeanQuery {
      * @param evaluationContextProvider
      */
     public NativeEbeanUpdate(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
-                             EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
+                             QueryMethodEvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
 
         super(method, ebeanServer, queryString, evaluationContextProvider, parser);
 

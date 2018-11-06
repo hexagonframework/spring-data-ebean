@@ -17,8 +17,8 @@
 package org.springframework.data.ebean.repository.query;
 
 import org.springframework.data.repository.query.DefaultParameters;
-import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.Parameter;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -35,7 +35,7 @@ import java.util.List;
 class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinder {
 
     private final StringQuery query;
-    private final EvaluationContextProvider evaluationContextProvider;
+    private final QueryMethodEvaluationContextProvider evaluationContextProvider;
     private final SpelExpressionParser parser;
 
     /**
@@ -48,7 +48,7 @@ class SpelExpressionStringQueryParameterBinder extends StringQueryParameterBinde
      * @param parser                    must not be {@literal null}
      */
     public SpelExpressionStringQueryParameterBinder(DefaultParameters parameters, Object[] values, StringQuery query,
-                                                    EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
+                                                    QueryMethodEvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
 
         super(parameters, values, query);
         Assert.notNull(evaluationContextProvider, "EvaluationContextProvider must not be null!");

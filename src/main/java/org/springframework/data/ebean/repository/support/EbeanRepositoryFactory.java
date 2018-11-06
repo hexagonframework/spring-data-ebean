@@ -23,10 +23,9 @@ import org.springframework.data.ebean.repository.query.EbeanQueryLookupStrategy;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
-import org.springframework.data.repository.core.support.PersistableEntityInformation;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
-import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.QueryLookupStrategy;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -63,7 +62,8 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
     @SuppressWarnings("unchecked")
     @Override
     public <T, ID> EntityInformation<T, ID> getEntityInformation(Class<T> domainClass) {
-        return new PersistableEntityInformation(domainClass);
+
+        return new EbeanEntityInformation(this.ebeanServer, domainClass);
     }
 
     /*
@@ -104,7 +104,7 @@ public class EbeanRepositoryFactory extends RepositoryFactorySupport {
      */
     @Override
     protected Optional<QueryLookupStrategy> getQueryLookupStrategy(QueryLookupStrategy.Key key,
-                                                                   EvaluationContextProvider evaluationContextProvider) {
+                                                                   QueryMethodEvaluationContextProvider evaluationContextProvider) {
         return Optional.ofNullable(EbeanQueryLookupStrategy.create(ebeanServer, key, evaluationContextProvider));
     }
 
