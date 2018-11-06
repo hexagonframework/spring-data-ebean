@@ -18,7 +18,10 @@ package org.springframework.data.ebean.repository.support;
 
 import io.ebean.*;
 import io.ebean.text.PathProperties;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.ebean.repository.EbeanRepository;
 import org.springframework.data.ebean.util.Converters;
 import org.springframework.data.ebean.util.ExampleExpressionBuilder;
@@ -27,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +44,7 @@ import java.util.Optional;
  */
 @Repository
 @Transactional(rollbackFor = Exception.class)
-public class SimpleEbeanRepository<T extends Persistable, ID extends Serializable> implements EbeanRepository<T, ID> {
+public class SimpleEbeanRepository<T, ID> implements EbeanRepository<T, ID> {
 
     private static final String ID_MUST_NOT_BE_NULL = "The given id must not be null!";
     private static final String PROP_MUST_NOT_BE_NULL = "The given property must not be null!";

@@ -24,7 +24,6 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 import org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport;
 import org.springframework.util.Assert;
 
-import java.io.Serializable;
 
 /**
  * Special adapter for Springs {@link org.springframework.beans.factory.FactoryBean} interface to allow easy setup of
@@ -33,7 +32,7 @@ import java.io.Serializable;
  * @param <T> the type of the repository
  * @author Xuegui Yuan
  */
-public class EbeanRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
+public class EbeanRepositoryFactoryBean<T extends Repository<S, ID>, S, ID>
         extends TransactionalRepositoryFactoryBeanSupport<T, S, ID> {
 
     @Autowired

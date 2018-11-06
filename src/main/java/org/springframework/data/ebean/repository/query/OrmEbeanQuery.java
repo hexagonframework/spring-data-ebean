@@ -18,7 +18,7 @@ package org.springframework.data.ebean.repository.query;
 
 import io.ebean.EbeanServer;
 import org.springframework.data.ebean.annotation.Query;
-import org.springframework.data.repository.query.EvaluationContextProvider;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
@@ -39,7 +39,7 @@ final class OrmEbeanQuery extends AbstractStringBasedEbeanQuery {
      * @param evaluationContextProvider must not be {@literal null}
      * @param parser                    must not be {@literal null}
      */
-    public OrmEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, EvaluationContextProvider evaluationContextProvider,
+    public OrmEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, QueryMethodEvaluationContextProvider evaluationContextProvider,
                          SpelExpressionParser parser) {
         this(method, ebeanServer, method.getAnnotatedQuery(), evaluationContextProvider, parser);
     }
@@ -54,7 +54,7 @@ final class OrmEbeanQuery extends AbstractStringBasedEbeanQuery {
      * @param parser                    must not be {@literal null}
      */
     public OrmEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
-                         EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
+                         QueryMethodEvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
         super(method, ebeanServer, queryString, evaluationContextProvider, parser);
     }
 }

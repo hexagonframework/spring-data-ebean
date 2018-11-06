@@ -21,9 +21,9 @@ import org.springframework.data.ebean.annotation.Query;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
-import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryLookupStrategy.Key;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.util.Assert;
 
@@ -51,7 +51,7 @@ public final class EbeanQueryLookupStrategy {
      * @return
      */
     public static QueryLookupStrategy create(EbeanServer ebeanServer, Key key,
-                                             EvaluationContextProvider evaluationContextProvider) {
+                                             QueryMethodEvaluationContextProvider evaluationContextProvider) {
 
         Assert.notNull(ebeanServer, "EbeanServer must not be null!");
         Assert.notNull(evaluationContextProvider, "EvaluationContextProvider must not be null!");
@@ -181,7 +181,7 @@ public final class EbeanQueryLookupStrategy {
      */
     private static class DeclaredQueryLookupStrategy extends AbstractQueryLookupStrategy {
 
-        private final EvaluationContextProvider evaluationContextProvider;
+        private final QueryMethodEvaluationContextProvider evaluationContextProvider;
 
         /**
          * Creates a new {@link DeclaredQueryLookupStrategy}.
@@ -190,7 +190,7 @@ public final class EbeanQueryLookupStrategy {
          * @param evaluationContextProvider
          */
         public DeclaredQueryLookupStrategy(EbeanServer ebeanServer,
-                                           EvaluationContextProvider evaluationContextProvider) {
+                                           QueryMethodEvaluationContextProvider evaluationContextProvider) {
             super(ebeanServer);
             this.evaluationContextProvider = evaluationContextProvider;
         }

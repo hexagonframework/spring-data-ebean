@@ -19,12 +19,14 @@ package org.springframework.data.ebean.repository;
 import io.ebean.EbeanServer;
 import io.ebean.SqlUpdate;
 import io.ebean.UpdateQuery;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +36,7 @@ import java.util.Optional;
  * @author Xuegui Yuan
  */
 @NoRepositoryBean
-public interface EbeanRepository<T extends Persistable, ID extends Serializable> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T> {
+public interface EbeanRepository<T, ID> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T> {
 
     /**
      * Return the current EbeanServer.

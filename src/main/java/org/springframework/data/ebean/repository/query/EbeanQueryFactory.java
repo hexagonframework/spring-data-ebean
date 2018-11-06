@@ -20,8 +20,8 @@ import io.ebean.EbeanServer;
 import io.ebean.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.QueryMethod;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
@@ -51,7 +51,7 @@ enum EbeanQueryFactory {
      * @return the {@link RepositoryQuery} derived from the annotation or {@code null} if no annotation found.
      */
     AbstractEbeanQuery fromQueryAnnotation(EbeanQueryMethod method, EbeanServer ebeanServer,
-                                           EvaluationContextProvider evaluationContextProvider) {
+                                           QueryMethodEvaluationContextProvider evaluationContextProvider) {
 
         LOG.debug("Looking up query for method {}", method.getName());
         return fromMethodWithQueryString(method, ebeanServer, method.getAnnotatedQuery(), evaluationContextProvider);
@@ -67,7 +67,7 @@ enum EbeanQueryFactory {
      * @return
      */
     AbstractEbeanQuery fromMethodWithQueryString(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
-                                                 EvaluationContextProvider evaluationContextProvider) {
+                                                 QueryMethodEvaluationContextProvider evaluationContextProvider) {
 
         if (queryString == null) {
             return null;

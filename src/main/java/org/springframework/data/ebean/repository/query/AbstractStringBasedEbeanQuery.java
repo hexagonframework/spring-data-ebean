@@ -30,7 +30,7 @@ import org.springframework.util.Assert;
 abstract class AbstractStringBasedEbeanQuery extends AbstractEbeanQuery {
 
     private final StringQuery query;
-    private final EvaluationContextProvider evaluationContextProvider;
+    private final QueryMethodEvaluationContextProvider evaluationContextProvider;
     private final SpelExpressionParser parser;
 
     /**
@@ -44,7 +44,7 @@ abstract class AbstractStringBasedEbeanQuery extends AbstractEbeanQuery {
      * @param parser                    must not be {@literal null}.
      */
     public AbstractStringBasedEbeanQuery(EbeanQueryMethod method, EbeanServer ebeanServer, String queryString,
-                                         EvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
+                                         QueryMethodEvaluationContextProvider evaluationContextProvider, SpelExpressionParser parser) {
 
         super(method, ebeanServer);
 
