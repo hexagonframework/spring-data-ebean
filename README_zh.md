@@ -89,7 +89,7 @@
 * 缺点
   * 实现一个DAO、仓储要写很多文件（DAO/Repository、XXXMapper、XXXMapper.xml），方法多了比较繁琐
   * 无法在一个方法里做批处理，无法级联加载
-  * 即时是简单的CRUD，都显得繁琐，导致存在各种弥补mybatis这一缺陷的第三方封装框架
+  * 即使是简单的CRUD，都显得繁琐，导致存在各种弥补mybatis这一缺陷的第三方封装框架
   * 无法面向对象，无法实现DDD
 
 **EBean**
